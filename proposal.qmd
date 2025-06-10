@@ -1,17 +1,22 @@
 ---
-title: "Himalayan Mountaineering Expeditions Visualizations"
-subtitle: "Proposal"
+title: "A Statistical Exploration of Himalayan Expeditions"
+subtitle: "INFO 526 Final Project Proposal"
 author: 
   - name: "Kuthalaraja-Macdonald"
     affiliations:
-      - name: "School of Data Science, University of Arizona"
-description: "Project description"
+      - name: "School of Information, University of Arizona"
+description: >
+  Analysis of Himalayan expeditions from 2020–2024,
+  exploring the factors that influence success, failure, and safety outcomes.
 format:
   html:
+    toc: true
+    toc-depth: 2
     code-tools: true
     code-overflow: wrap
     code-line-numbers: true
     embed-resources: true
+    code-fold: true
 editor: visual
 code-annotations: hover
 execute:
@@ -21,64 +26,167 @@ execute:
 ```{r}
 #| label: load-pkgs
 #| message: false
-library(tidyverse)
+
+#load and install essential libraries
+if (!require("pacman")) 
+  install.packages("pacman")
+
+pacman::p_load(
+  tidyverse,    # Core tidyverse packages
+  here,         # File path management
+  ggrepel,      # Smart text labels
+  ggthemes,     # Extra themes for ggplot2
+  scales,       # Better axis formatting
+  waffle,       # Waffle charts
+  glue,         # String interpolation
+  openintro,    # Datasets
+  patchwork,    # Combine ggplots
+  tidytuesdayR, #Tidyaccess
+  GGally
+)
+
+
+# Set default theme for ggplot2
+ggplot2::theme_set(ggplot2::theme_minimal(base_size = 14))
+
+# Global output width
+options(width = 65)
+
+# Global knitr options
+knitr::opts_chunk$set(
+  fig.width = 7,        # 7" width
+  fig.asp = 0.618,      # Golden ratio aesthetic
+  fig.retina = 3,       # dpi multiplier for displaying HTML output on retina
+  fig.align = "center", # Center align figures
+  dpi = 300             # Higher dpi, sharper image
+)
+
 ```
 
-## Dataset Introduction
+## Dataset
 
-The Chosen dataset is from the tidytuesday repository, located [here](https://github.com/rfordatascience/tidytuesday/blob/main/data/2025/2025-01-21/exped_tidy.csv)
+```{r}
+#| label: load-dataset
+#| message: false
 
-It contains data on Himalayan mountaineering expeditions, curated by Elizabeth Hawley.\
-GitHub URL: [URL](https://github.com/rfordatascience/tidytuesday/blob/main/data/2025/2025-01-21/exped_tidy.csv)
+# Option 1: tidytuesdayR package 
+## install.packages("tidytuesdayR")
 
-------------------------------------------------------------------------
+tuesdata <- tidytuesdayR::tt_load(2025, week = 3)
 
-## Structure & Details
+exped_tidy <- tuesdata$exped_tidy
+peaks_tidy <- tuesdata$peaks_tidy
 
-The dataset contains nearly 34 columns containing parameters about the expeditions like - peak_name, basecamp_date, deaths, etc.
+# Save as CSVs
+write_csv(exped_tidy, here::here("data", "exped_tidy.csv"))
+write_csv(peaks_tidy, here::here("data", "peaks_tidy.csv"))
 
-Each row in the dataset depict each expedition attempted (either success or failure)
+```
 
-------------------------------------------------------------------------
+1.  A brief description of your dataset including its provenance, dimensions, etc. as well as the reason why you chose this dataset.
 
-## Reason for Choosing Dataset
+The Himalayan Database was created to continue the legacy of Elizabeth Hawley, a journalist who spent decades documenting Himalayan expeditions. This procured version is provided on [**TidyTuesday GitHub repository**](https://github.com/rfordatascience/tidytuesday/tree/main/data/2025/2025-01-21) and has been amended to the years 2020 - 2024 to manage file size.
 
-1.  Have wide variety of numerical & Categorical variables with depth of information maintainted cleanly.
-2.  Have great story telling potential with wide array of Visualizations/Plots
-3.  More than anything this dataset talks about Our Species' --\> Homosapien's undying grit, hardwork and courage in exploring one of the harsh environment of the world and is worth to explore as part of this program.
+There are two main datasets included: `exped_tidy`, which contains details of expeditions. And `peaks_tidy`, which includes data about the Himalayan Peaks.
 
-------------------------------------------------------------------------
+```{r}
+# Load TidyTuesday data inline
+tuesdata <- tidytuesdayR::tt_load(2025, week = 3)
+exped_tidy <- tuesdata$exped_tidy
+peaks_tidy <- tuesdata$peaks_tidy
+```
+
+```{r}
+# Dimensions of each tibble
+dim(exped_tidy)
+dim(peaks_tidy)
+```
+
+### Variables from `exped_tidy`
+
+| Variable | Description | Your Notes |
+|------------------|--------------------------|----------------------------|
+| `TERMREASON_FACTOR` | Reason the expedition ended | Outcome variable (success/failure) Also includes injury |
+| `SEASON_FACTOR` | Season of the expedition | Obviously winter is more hazardous |
+| `O2USED` | Whether supplemental oxygen was used | None |
+| `MEMBERS` | Number of expedition team members | Team size |
+| `HIRDMEMB` | Number of hired staff | None |
+| `COMRTE` | Indicates if expedition was commercially organized | Commercial/non-commercial |
+| `YEAR` | Year of expedition 2020–2024 | Dates 2020–2024 |
+| `DEATHS` | Number of deaths during expedition | Safety outcome |
+
+### Variables from `peaks_tidy`
+
+| Variable | Description | Your Notes |
+|------------------|-------------------------|-----------------------------|
+| `HEIGHTM` | Elevation of the peak in meters | High elevation might drive both risk and cost |
+| `HIMAL_FACTOR` | Name of the mountain | None |
+| `REGION_FACTOR` | Broader geographic region grouping peaks | Geographic variability in danger and cost |
+| `PSTATUS_FACTOR` | Peak status climbed or unclimbed | Less frequently climbed peaks possibly more dangerous |
+
+We chose this dataset because it provides multiple opportunities to explore the intersection of geography, climate, and human decision-making under extreme conditions. It supports both modeling and visualization of expedition risk, success, and outcomes.
 
 ## Questions
 
-The two questions we want to answer are:
+The two questions you want to answer.
 
-1.  What factors contribute to the success or failure of a summit?
-2.  How have expedition success and fatality rates changed over time?
+Question 1. What factors contribute to the success or failure of a summit?
 
-------------------------------------------------------------------------
+Question 2. Does an expeditions funding affect safety outcomes?
 
 ## Analysis plan
 
-Here we list down detailed analysis for each of the questions:
+-   A plan for answering each of the questions including the variables involved, variables to be created (if any), external data to be merged in (if any).
 
-### 1. What factors contribute to the success or failure of a summit?
+**Question 1: What factors contribute to the success or failure of a summit?**
 
--   Variables to be Considered: success, termination reason, peak_name, season etc
+We will analyze expedition outcomes using both expedition and peak variables. "Success" will be defined based on the `TERMREASON_FACTOR`, with specific values representing a successful summit (e.g., "Success (main peak)", "Success (claimed)"). The aim is to model how geography, team size, oxygen use, and other factors relate to the likelihood of success.
 
--   Visualizations Heatmaps, Bar Plots for detailed analysis
+We will filter by success and explore facets of the data. Below is an example of how we might focus our attention on correlated variables.
 
-### 2. How have expedition success and fatality rates changed over time?
+```{r}
 
--   Variables to be Considered: success, termination reason, nation, fatality_rate (based on accidents, deaths) etc
+# Select only numeric variables
+exped_numeric <- exped_tidy |> select(where(is.numeric))
 
--   Visualizations Line Graphs, Faceted PLots
+ggcorr(exped_numeric,
+  label = TRUE,
+  label_alpha = TRUE,
+  label_size = 3,
+  hjust = 1,
+  layout.exp = 1
+) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+    axis.text.y = element_text(size = 8),
+    plot.title = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(size = 10)
+  ) +
+  labs(
+    title = "Correlation Matrix of Expedition Variables",
+    subtitle = "numeric variables only*",
+    caption = "Source: Himalayan Database (2020–2024)"
+  )
 
-## ------------------------------------------------------------------------
+```
 
-## Status
+#### Variables involved:
 
-| TaskName            | Status    | Due Date | Priority | Summary                  |
-|---------------------|-----------|----------|----------|--------------------------|
-| Finalizing Dataset  | Completed | May 19   | High     | Chose Expedition Dataset |
-| Proposal Submission | Completed | June 09  | High     | Submitted                |
+These are some of the variables that we think might be promising. Note that the correlation matrix above is only numeric and does not include other data types. Neither the list or the correlation plot is all inclusive.
+
+-   From `exped_tidy`:\
+    `TERMREASON_FACTOR`, `SEASON_FACTOR`, `O2USED`, `MEMBERS`, `HIRDMEMB`, `COMRTE`, `YEAR`
+
+-   From `peaks_tidy`:\
+    `HEIGHTM`, `HIMAL_FACTOR`, `REGION_FACTOR`, `PSTATUS_FACTOR`
+
+#### Variables to be created:
+
+-   `summit_success`
+
+This will filter our data for further analysis.
+
+**Question 2. Does an expeditions funding affect safety outcomes?**
+
+The analysis will be very similar for this question. I suspect there will be some overlap, funding and success rate etc.
