@@ -114,6 +114,7 @@ dim(peaks_tidy)
 | `COMRTE` | Indicates if expedition was commercially organized | Commercial/non-commercial |
 | `YEAR` | Year of expedition 2020–2024 | Dates 2020–2024 |
 | `DEATHS` | Number of deaths during expedition | Safety outcome |
+| `FUNDING_TYPE` | Commercial, Private, etc. | Derived variable to filter for funding type Commercial vs Private |
 
 ### Variables from `peaks_tidy`
 
@@ -163,12 +164,12 @@ ggcorr(exped_numeric,
     plot.subtitle = element_text(size = 12),
     plot.caption = element_text(size = 10)
   ) +
+  
   labs(
     title = "Correlation Matrix of Expedition Variables",
     subtitle = "numeric variables only*",
     caption = "Source: Himalayan Database (2020–2024)"
   )
-
 ```
 
 #### Variables involved:
@@ -183,10 +184,12 @@ These are some of the variables that we think might be promising. Note that the 
 
 #### Variables to be created:
 
--   `summit_success`
+-   `SUMMIT_SUCCESS` `FUNDING_TYPE` SUMMIT_SUCCESS will be composite variable, possibly grouped by country/team etc.
 
 This will filter our data for further analysis.
 
 **Question 2. Does an expeditions funding affect safety outcomes?**
 
-The analysis will be very similar for this question. I suspect there will be some overlap, funding and success rate etc.
+The analysis will be very similar for this question. I suspect there will be some overlap, funding and success rate etc. We will use many of the same variables, but more specifically, `FUNDING_TYPE`.
+
+NOTE: Add "real world" examples of expedition success or failure to make analysis relatable.
