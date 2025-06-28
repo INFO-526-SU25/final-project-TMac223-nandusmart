@@ -20,7 +20,7 @@ execute:
 
 ## Abstract
 
-High-altitude mountaineering offers a natural laboratory for studying how human, environmental, and logistical factors interact to shape risk and achievement. Using tidy versions of the Himalayan Database, this project leverages R (tidyverse, tidymodels) and Quarto to build an interactive, reproducible data-visualisation narrative around two guiding questions:
+High-altitude mountaineering offers a natural laboratory for studying how human, environmental, and logistical factors interact to shape risk and achievement. Using tidy versions of the Himalayan Database, this project leverages R (tidyverse, tidy models) and Quarto to build an interactive, reproducible data-visualisation narrative around two guiding questions:
 
 -   **What factors contribute to the success or failure of a summit?**
 
