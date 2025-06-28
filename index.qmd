@@ -6,11 +6,10 @@ author:
     affiliations:
       - name: "School of Information, University of Arizona"
 description: >
-  Analysis of Himalayan expeditions from 2020–2024,
-  exploring 
+  Analysis of Himalayan expeditions from 2020–2024
 format:
    html:
-    code-tools: true
+    code-tools: false
     code-overflow: wrap
     embed-resources: true
 editor: visual
