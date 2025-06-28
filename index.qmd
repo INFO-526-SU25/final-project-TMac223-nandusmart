@@ -9,7 +9,7 @@ description: >
   Analysis of Himalayan expeditions from 2020–2024
 format:
    html:
-    code-tools: false
+    code-tools: true
     code-overflow: wrap
     embed-resources: true
 editor: visual
@@ -32,11 +32,11 @@ High-altitude mountaineering offers a natural laboratory for studying how human,
 
     -   Because direct cost metrics are absent, we construct a funding proxy that blends sponsorship type, total members & hired staff, oxygen usage, and expedition duration.
 
-    -   We then relate this composite to safety indicators like member and staff fatalities, high-altitude illnesses, rescue events via scatterplot matrices, concentration curves, and Poisson regression. Stratified visualisations highlight differential risk patterns between commercial and self-organised teams.
+    -   We then relate this composite to safety indicators like member and staff fatalities, high-altitude illnesses, rescue events via scatter-plot matrices, concentration curves, and Poisson regression. Stratified visualizations highlight differential risk patterns between commercial and self-organised teams.
 
 Preliminary findings suggest that
 
-\- seasonality and route normalisation remain the strongest predictors of summit success
+\- seasonality and route normalization remain the strongest predictors of summit success
 
 \- larger, commercially sponsored teams enjoy slightly higher success but only marginal safety advantages once altitude and weather are controlled
 
