@@ -1,11 +1,13 @@
 ---
-title: "Project Title"
-subtitle: "INFO 526 - Summer 2024 - Final Project"
+title: "A Statistical Exploration of Himalayan Expeditions"
+subtitle: "INFO 526 Final Project Proposal"
 author: 
-  - name: "Team name"
+  - name: "Kuthalaraja-Macdonald"
     affiliations:
       - name: "School of Information, University of Arizona"
-description: "Project description"
+description: >
+  Analysis of Himalayan expeditions from 2020–2024,
+  exploring 
 format:
    html:
     code-tools: true
