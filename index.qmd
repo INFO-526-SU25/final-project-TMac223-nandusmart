@@ -37,8 +37,8 @@ High-altitude mountaineering offers a natural laboratory for studying how human,
 
 Preliminary findings suggest that
 
-\(i\) seasonality and route normalisation remain the strongest predictors of summit success
+\- seasonality and route normalisation remain the strongest predictors of summit success
 
-\(ii\) larger, commercially sponsored teams enjoy slightly higher success but only marginal safety advantages once altitude and weather are controlled; and
+\- larger, commercially sponsored teams enjoy slightly higher success but only marginal safety advantages once altitude and weather are controlled
 
-\(iii\) resource intensive strategies such as extensive oxygen deployment reduce high-altitude illness yet do not eliminate fatal risk.
+\- resource intensive strategies such as extensive oxygen deployment reduce high-altitude illness yet do not eliminate fatal risk.
