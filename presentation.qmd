@@ -23,7 +23,7 @@ execute:
 
 # Load packages here
 pacman::p_load(tidymodels,
-               tidyverse)
+               tidyverse, patchwork, scales, ggplot2)
 
 ```
 
@@ -61,7 +61,7 @@ knitr::opts_chunk$set(
 
 -   Analyze expedition outcomes using both expedition and peak variables. "Success" will be defined based on the \`TERMREASON_FACTOR\`, with specific values representing a successful summit.
 
--   
+-   Use factors like -- geography, team size, oxygen use, and other factors relate to the likelihood of success
 
 ## Question 1 : Approach
 
@@ -115,8 +115,6 @@ model <- glm(
 
 -   Start plotting various charts building up to the case
 
-
-
 ## Question 1 : Start
 
 Let's start with what is the overall Success vs Failure Rate out of all overall expeditions.
@@ -140,6 +138,100 @@ exped2 |>
     theme_minimal()
 
 ```
+
+## Question 1 : Explore Team Size
+
+::::: columns
+::: {.column width="50%"}
+```{r}
+ggplot(exped2, aes(team_size)) +
+  geom_histogram(binwidth = 1, fill = "steelblue", color = "white") +
+  facet_wrap(~ success, labeller = labeller(success = c(`0` = "Failure", `1` = "Success"))) +
+  labs(
+    x     = "Team Size",
+    y     = "Count",
+    title = "Distribution of Team Sizes\nfor Success vs. Failure"
+  )
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+ggplot(exped2, aes(x = team_size, fill = factor(success))) +
+  geom_bar(position = "fill") +
+  scale_x_continuous(
+    breaks = seq(0, max(exped2$team_size, na.rm = TRUE), by = 10),
+    expand = expansion(add = c(0, 0))
+  ) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    x     = "Team Size",
+    y     = "Proportion",
+    fill  = "Success\n(1 = yes)",
+    title = "Proportion of Success vs. Failure\nby Team Size"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5),
+    plot.title  = element_text(hjust = 0.5)
+  )
+
+```
+:::
+:::::
+::: columns
+::: {.column width="25%"}
+
+<!-- blank left spacer -->
+:::
+
+::: {.column width="50%"}
+```{r}
+df_bin <- exped2 %>%
+  group_by(team_size) %>%
+  summarize(rate = mean(success), n = n(), .groups="drop") %>%
+  filter(n > 3)
+
+ggplot(df_bin, aes(x = team_size, y = rate)) +
+  geom_segment(aes(xend = team_size, y = 0, yend = rate), color = "grey70") +
+  geom_point(size = 2) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    x     = "Team Size",
+    y     = "Success Rate",
+    title = "Lollipop Chart of Success Rate by Team Size"
+  )
+
+```
+:::
+
+::: {.column width="25%"}
+
+<!-- blank right spacer -->
+:::
+:::
+
+
+## Question 1 : Explore Team Size
+
+::: {style="font-size:0.7em; line-height:1.2;"}
+`These plots suggests a non-linear relationship between team size and summit success:`
+
+-   **`Very small teams (1–5 climbers)`**\ tend to have very high success rates.
+
+    Probable cause - agility, lighter logistical needs, and tighter decision-making.\
+
+-   **`Small-to-medium teams (3–8 climbers)`**\ show a noticeable dip in success.
+
+    Probable cause - enough complexity to introduce friction but not enough manpower to provide robust support.\
+
+-   **`Medium-large teams (9–20 climbers)`**\ exhibit steadily increasing success rates, peaking around 20 members at or near 100%.
+
+    Probable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.\
+
+-   **`Very large teams (20+)`**\ see a gradual decline in success.
+
+    Probable cause - supplies, campsite congestion, decision latency.\
+:::
 
 ## Question 2
 
