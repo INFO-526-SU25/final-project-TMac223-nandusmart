@@ -61,7 +61,7 @@ knitr::opts_chunk$set(
 
 -   Analyze expedition outcomes using both expedition and peak variables. "Success" will be defined based on the \`TERMREASON_FACTOR\`, with specific values representing a successful summit.
 
--   Use factors like -- geography, team size, oxygen use, and other factors relate to the likelihood of success
+-   Use factors like -- geography, team size, year, and commercial vs non-commercial expeditions
 
 ## Question 1 : Approach
 
@@ -325,8 +325,6 @@ ggplot(peak_success, aes(x = reorder(PKNAME, HEIGHTM), y = HEIGHTM, color = succ
 -   **`Mid-altitude peaks (~7100–7300 m, like Pumori and Baruntse)`** dips to the bottom of the curve,mountains are often more technical, less commercialized, with fewer fixed ropes and smaller teams—so even though they’re “lower,” they prove tougher
 
 -   **`Higher Peaks (8000 m + like Everest)`** enjoys very high success rates, as they benefit from massive infrastructure (high-traffic base camps, helicopter support etc.), which more than offsets the physiological challenge of extreme altitude
-
-    Probable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.\
 
 
 Overall, a peak’s infrastructure and traffic are at least as critical to success as its height.
