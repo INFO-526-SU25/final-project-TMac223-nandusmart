@@ -47,14 +47,16 @@ knitr::opts_chunk$set(
 #| label: load-data
 #| include: false
 # Load data here
-data(mtcars)
-mtcars$speed <- mtcars$hp / mtcars$wt
 
-data("penguins")
 exped <- read_csv("data/exped_tidy.csv")
-#colnames(exped)
-#head(exped)
+colnames(exped)
+head(exped)
+
+table(exped$SUCCESS1, useNA = "ifany")
+
 ```
+
+
 
 # Using Quarto for presentations
 
@@ -85,23 +87,47 @@ or in two columns
 -   this
 
 ## Code
+```{r}
+#| label: build model
+#| include: false
+#| echo: false
+# Load data here
 
-```{r, echo=FALSE}
-model <- lm(mpg ~ speed, data = mtcars) 
+table(exped$SUCCESS1, useNA = "ifany")
+exped2 <- exped %>%
+  mutate(
+    # Convert summit success to binary numeric (adjust if needed)
+    success = ifelse(SUCCESS1 %in% c("Y", "Yes", "yes"), 1,
+                     ifelse(SUCCESS1 %in% c("N", "No", "no"), 0, as.numeric(SUCCESS1))),
+    peak = as.factor(PEAKID),
+    team_size = as.numeric(TOTMEMBERS),
+    oxygen = ifelse(O2USED %in% c("Y", "Yes", "yes"), 1,
+                    ifelse(O2USED %in% c("N", "No", "no"), 0, as.numeric(O2USED))),
+    season = as.factor(SEASON)
+  ) %>%
+  filter(!is.na(success), !is.na(team_size), !is.na(oxygen)) # Remove rows with missing values
 
-model |> tidy()
-
-model |> glance()
+model <- glm(
+  success ~ peak + team_size + oxygen + season + YEAR,
+  data = exped2,
+  family = "binomial"
+)
+summary(model)
 
 ```
+
+
 
 ## Plots
 
 ```{r}
-penguins |>
-  mutate(species = ifelse(species == "Adelie", "Adelie", "Other")) |>
-  ggplot(aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
-  geom_point()
+exped2 %>%
+  group_by(team_size) %>%
+  summarize(success_rate = mean(success), n = n()) %>%
+  filter(n > 3) %>%
+  ggplot(aes(x = team_size, y = success_rate)) +
+    geom_line() +
+    labs(title = "Success Rate by Team Size", x = "Team Size", y = "Success Rate")
 ```
 
 ## Plot and text
