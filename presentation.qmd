@@ -43,18 +43,19 @@ knitr::opts_chunk$set(
   )
 ```
 
-
 ## Our Dataset
 
-Himalayan Database - Created to continue the legacy of Elizabeth Hawley, a journalist who spent decades documenting Himalayan expeditions. 
+-   Himalayan Database - Created to continue the legacy of Elizabeth Hawley, a journalist who spent decades documenting Himalayan expeditions.
 
-Dataset - [**TidyTuesday GitHub repository**](https://github.com/rfordatascience/tidytuesday/tree/main/data/2025/2025-01-21) and has been amended to the years 2020 - 2024 to manage file size.
+-   Dataset - [**TidyTuesday GitHub repository**](https://github.com/rfordatascience/tidytuesday/tree/main/data/2025/2025-01-21) and has been amended to the years 2020 - 2024 to manage file size.
 
-2 main datasets : 
-- exped_tidy -  contains details of expeditions. 
-- peaks_tidy -  includes data about the Himalayan Peaks.
+-   There are 2 main datasets :
 
-# Question 1
+    -   **exped_tidy** - Contains details of expeditions
+
+    -   **peaks_tidy** - Includes data about the Himalayan Peaks
+
+## Question 1
 
 ```{r}
 #| label: load-data
@@ -68,8 +69,6 @@ head(exped)
 table(exped$SUCCESS1, useNA = "ifany")
 
 ```
-
-
 
 ```{r}
 #| label: build model
@@ -100,10 +99,6 @@ summary(model)
 
 ```
 
-
-
-
-
 ```{r}
 exped2 %>%
   group_by(team_size) %>%
@@ -114,7 +109,7 @@ exped2 %>%
     labs(title = "Success Rate by Team Size", x = "Team Size", y = "Success Rate")
 ```
 
-# Question 2
+## Question 2
 
 # Limitations:
 
@@ -123,4 +118,3 @@ exped2 %>%
 2.  There should not be spaces after the opening `$` or before the closing `$`.
 
 # Wrap up
-
