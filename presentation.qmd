@@ -46,6 +46,12 @@ knitr::opts_chunk$set(
 
 # Our Dataset
 
+The Himalayan Database was created to continue the legacy of Elizabeth Hawley, a journalist who spent decades documenting Himalayan expeditions. 
+
+This procured version is provided on [**TidyTuesday GitHub repository**](https://github.com/rfordatascience/tidytuesday/tree/main/data/2025/2025-01-21) and has been amended to the years 2020 - 2024 to manage file size.
+
+There are two main datasets included: exped_tidy, which contains details of expeditions. And peaks_tidy, which includes data about the Himalayan Peaks.
+
 # Question 1
 
 ```{r}
