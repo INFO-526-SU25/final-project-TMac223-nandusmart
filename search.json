@@ -46,7 +46,21 @@
     "href": "presentation.html#our-dataset",
     "title": "A Statistical Exploration of Himalayan Expeditions",
     "section": "Our Dataset",
-    "text": "Our Dataset\nHimalayan Database - Created to continue the legacy of Elizabeth Hawley, a journalist who spent decades documenting Himalayan expeditions.\nDataset - TidyTuesday GitHub repository and has been amended to the years 2020 - 2024 to manage file size.\n2 main datasets : - exped_tidy - contains details of expeditions. - peaks_tidy - includes data about the Himalayan Peaks."
+    "text": "Our Dataset\n\nHimalayan Database - Created to continue the legacy of Elizabeth Hawley, a journalist who spent decades documenting Himalayan expeditions.\nDataset - TidyTuesday GitHub repository and has been amended to the years 2020 - 2024 to manage file size.\nThere are 2 main datasets :\n\nexped_tidy - Contains details of expeditions\npeaks_tidy - Includes data about the Himalayan Peaks"
+  },
+  {
+    "objectID": "presentation.html#question-1",
+    "href": "presentation.html#question-1",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1",
+    "text": "Question 1"
+  },
+  {
+    "objectID": "presentation.html#question-2",
+    "href": "presentation.html#question-2",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2",
+    "text": "Question 2"
   },
   {
     "objectID": "about.html",
