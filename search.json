@@ -60,14 +60,14 @@
     "href": "presentation.html#question-1-approach",
     "title": "A Statistical Exploration of Himalayan Expeditions",
     "section": "Question 1 : Approach",
-    "text": "Question 1 : Approach\n\nGet Data from the CSV files\n\n\n\nCode\nexped &lt;- read_csv(\"data/exped_tidy.csv\")\ncolnames(exped)\nhead(exped)\n\ntable(exped$SUCCESS1, useNA = \"ifany\")\n\n\n\nBuild Model & Variable Inferences\n\n\n\nCode\ntable(exped$SUCCESS1, useNA = \"ifany\")\nexped2 &lt;- exped |&gt;\n  mutate(\n    success = ifelse(SUCCESS1 %in% c(\"Y\", \"Yes\", \"yes\"), 1,\n                     ifelse(SUCCESS1 %in% c(\"N\", \"No\", \"no\"), 0, as.numeric(SUCCESS1))),\n    peak = as.factor(PEAKID),\n    team_size = as.numeric(TOTMEMBERS),\n    oxygen = ifelse(O2USED %in% c(\"Y\", \"Yes\", \"yes\"), 1,\n                    ifelse(O2USED %in% c(\"N\", \"No\", \"no\"), 0, as.numeric(O2USED))),\n    season = as.factor(SEASON)\n  ) |&gt;\n  filter(!is.na(success), !is.na(team_size), !is.na(oxygen)) \n\nmodel &lt;- glm(\n  success ~ peak + team_size + oxygen + season + YEAR,\n  data = exped2,\n  family = \"binomial\"\n)\n\n\n\nStart plotting various charts building up to the case"
+    "text": "Question 1 : Approach\n\nGet Data from the CSV files\n\n\n\nCode\nexped &lt;- read_csv(\"data/exped_tidy.csv\")\npeaks &lt;- read_csv(\"data/peaks_tidy.csv\")\n\ncolnames(peaks)\nhead(peaks)\ncolnames(exped)\nhead(exped)\n\ntable(exped$SUCCESS1, useNA = \"ifany\")\n\n\n\nBuild Model & Variable Inferences\n\n\n\nCode\ntable(exped$SUCCESS1, useNA = \"ifany\")\nexped2 &lt;- exped |&gt;\n  mutate(\n    success = ifelse(SUCCESS1 %in% c(\"Y\", \"Yes\", \"yes\"), 1,\n                     ifelse(SUCCESS1 %in% c(\"N\", \"No\", \"no\"), 0, as.numeric(SUCCESS1))),\n    peak = as.factor(PEAKID),\n    team_size = as.numeric(TOTMEMBERS),\n    oxygen = ifelse(O2USED %in% c(\"Y\", \"Yes\", \"yes\"), 1,\n                    ifelse(O2USED %in% c(\"N\", \"No\", \"no\"), 0, as.numeric(O2USED))),\n    season = as.factor(SEASON)\n  ) |&gt;\n  filter(!is.na(success), !is.na(team_size), !is.na(oxygen)) \n\nmodel &lt;- glm(\n  success ~ peak + team_size + oxygen + season + YEAR,\n  data = exped2,\n  family = \"binomial\"\n)\n\n\n\nStart plotting various charts building up to the case"
   },
   {
     "objectID": "presentation.html#question-1-start",
     "href": "presentation.html#question-1-start",
     "title": "A Statistical Exploration of Himalayan Expeditions",
     "section": "Question 1 : Start",
-    "text": "Question 1 : Start\nLet’s start with what is the overall Success vs Failure Rate out of all overall expeditions."
+    "text": "Question 1 : Start\n\n\nThe Overall Success vs Failure Rate out of all expeditions.\n\n\n\n\n\n\n\n\n\n\nWe will study with following variables:\n\n\n\nPotential Factors\n\n\n\n\nExplore Team Size\n\n\nEffect of Geography\n\n\nExplore Year\n\n\nExplore Commercial vs Non-Commercial"
   },
   {
     "objectID": "presentation.html#question-1-explore-team-size",
@@ -82,6 +82,48 @@
     "title": "A Statistical Exploration of Himalayan Expeditions",
     "section": "Question 1 : Explore Team Size",
     "text": "Question 1 : Explore Team Size\n\nThese plots suggests a non-linear relationship between team size and summit success:\n\nVery small teams (1–5 climbers) tend to have very high success rates.\nProbable cause - agility, lighter logistical needs, and tighter decision-making.\n\nSmall-to-medium teams (3–8 climbers) show a noticeable dip in success.\nProbable cause - enough complexity to introduce friction but not enough manpower to provide robust support.\n\nMedium-large teams (9–20 climbers) exhibit steadily increasing success rates, peaking around 20 members at or near 100%.\nProbable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.\n\nVery large teams (20+) see a gradual decline in success.\nProbable cause - supplies, campsite congestion, decision latency."
+  },
+  {
+    "objectID": "presentation.html#question-1-effect-of-geography",
+    "href": "presentation.html#question-1-effect-of-geography",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1 : Effect of Geography",
+    "text": "Question 1 : Effect of Geography"
+  },
+  {
+    "objectID": "presentation.html#question-1-effect-of-geography-1",
+    "href": "presentation.html#question-1-effect-of-geography-1",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1 : Effect of Geography",
+    "text": "Question 1 : Effect of Geography\n\nGeography, in particular the altitude band of a peak—turns out not to be a simple “the higher you go, the harder it gets” story.\n\nLow-altitude peaks (~6800 m, e.g. Ama Dablam) enjoy very high success rates, thanks to gentler slopes, shorter approaches and straightforward rope-fixed “ladder” routes\nMid-altitude peaks (~7100–7300 m, like Pumori and Baruntse) dips to the bottom of the curve,mountains are often more technical, less commercialized, with fewer fixed ropes and smaller teams—so even though they’re “lower,” they prove tougher\nHigher Peaks (8000 m + like Everest) enjoys very high success rates, as they benefit from massive infrastructure (high-traffic base camps, helicopter support etc.), which more than offsets the physiological challenge of extreme altitude\nProbable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.\n\n\nOverall, a peak’s infrastructure and traffic are at least as critical to success as its height."
+  },
+  {
+    "objectID": "presentation.html#question-1-explore-year",
+    "href": "presentation.html#question-1-explore-year",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1 : Explore Year",
+    "text": "Question 1 : Explore Year"
+  },
+  {
+    "objectID": "presentation.html#question-1-explore-year-1",
+    "href": "presentation.html#question-1-explore-year-1",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1 : Explore Year",
+    "text": "Question 1 : Explore Year\n\nThese plots suggests a non-linear relationship between team size and summit success:\n\nVery small teams (1–5 climbers) tend to have very high success rates.\nProbable cause - agility, lighter logistical needs, and tighter decision-making.\n\nSmall-to-medium teams (3–8 climbers) show a noticeable dip in success.\nProbable cause - enough complexity to introduce friction but not enough manpower to provide robust support.\n\nMedium-large teams (9–20 climbers) exhibit steadily increasing success rates, peaking around 20 members at or near 100%.\nProbable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.\n\nVery large teams (20+) see a gradual decline in success.\nProbable cause - supplies, campsite congestion, decision latency."
+  },
+  {
+    "objectID": "presentation.html#question-1-explore-commercial-vs-non-commercial",
+    "href": "presentation.html#question-1-explore-commercial-vs-non-commercial",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1 : Explore Commercial vs Non-Commercial",
+    "text": "Question 1 : Explore Commercial vs Non-Commercial"
+  },
+  {
+    "objectID": "presentation.html#question-1-explore-commercial-vs-non-commercial-1",
+    "href": "presentation.html#question-1-explore-commercial-vs-non-commercial-1",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1 : Explore Commercial vs Non-Commercial",
+    "text": "Question 1 : Explore Commercial vs Non-Commercial\n\nThese plots suggests a non-linear relationship between team size and summit success:\n\nVery small teams (1–5 climbers) tend to have very high success rates.\nProbable cause - agility, lighter logistical needs, and tighter decision-making.\n\nSmall-to-medium teams (3–8 climbers) show a noticeable dip in success.\nProbable cause - enough complexity to introduce friction but not enough manpower to provide robust support.\n\nMedium-large teams (9–20 climbers) exhibit steadily increasing success rates, peaking around 20 members at or near 100%.\nProbable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.\n\nVery large teams (20+) see a gradual decline in success.\nProbable cause - supplies, campsite congestion, decision latency."
   },
   {
     "objectID": "presentation.html#question-2",

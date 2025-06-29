@@ -233,10 +233,14 @@ Trevor Macdonald &amp; Nandakumar Kuthalaraja
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>exped <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/exped_tidy.csv"</span>)</span>
-<span id="cb1-2"><a></a><span class="fu">colnames</span>(exped)</span>
-<span id="cb1-3"><a></a><span class="fu">head</span>(exped)</span>
-<span id="cb1-4"><a></a></span>
-<span id="cb1-5"><a></a><span class="fu">table</span>(exped<span class="sc">$</span>SUCCESS1, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a></a>peaks <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/peaks_tidy.csv"</span>)</span>
+<span id="cb1-3"><a></a></span>
+<span id="cb1-4"><a></a><span class="fu">colnames</span>(peaks)</span>
+<span id="cb1-5"><a></a><span class="fu">head</span>(peaks)</span>
+<span id="cb1-6"><a></a><span class="fu">colnames</span>(exped)</span>
+<span id="cb1-7"><a></a><span class="fu">head</span>(exped)</span>
+<span id="cb1-8"><a></a></span>
+<span id="cb1-9"><a></a><span class="fu">table</span>(exped<span class="sc">$</span>SUCCESS1, <span class="at">useNA =</span> <span class="st">"ifany"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <ul>
@@ -271,9 +275,9 @@ Trevor Macdonald &amp; Nandakumar Kuthalaraja
 </section>
 <section id="question-1-start" class="slide level2">
 <h2>Question 1 : Start</h2>
-<p>Let’s start with what is the overall Success vs Failure Rate out of all overall expeditions.</p>
 <div class="columns">
-<div class="column" style="width:60%;">
+<div class="column" style="width:55%;">
+<p>The Overall Success vs Failure Rate out of all expeditions.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -283,8 +287,29 @@ Trevor Macdonald &amp; Nandakumar Kuthalaraja
 </div>
 </div>
 </div>
-</div><div class="column" style="width:50%;">
-
+</div><div class="column" style="width:45%;">
+<p>We will study with following variables:</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Potential Factors</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Explore Team Size</td>
+</tr>
+<tr class="even">
+<td>Effect of Geography</td>
+</tr>
+<tr class="odd">
+<td>Explore Year</td>
+</tr>
+<tr class="even">
+<td>Explore Commercial vs Non-Commercial</td>
+</tr>
+</tbody>
+</table>
 </div></div>
 </section>
 <section id="question-1-explore-team-size" class="slide level2">
@@ -314,7 +339,7 @@ Trevor Macdonald &amp; Nandakumar Kuthalaraja
 <div class="columns">
 <div class="column" style="width:25%;">
 
-</div><div class="column" style="width:50%;">
+</div><div class="column" style="&quot;min-height:100px;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -330,6 +355,175 @@ Trevor Macdonald &amp; Nandakumar Kuthalaraja
 </section>
 <section id="question-1-explore-team-size-1" class="slide level2">
 <h2>Question 1 : Explore Team Size</h2>
+<div style="font-size:0.7em; line-height:1.2;">
+<p><code>These plots suggests a non-linear relationship between team size and summit success:</code></p>
+<ul>
+<li><p><strong><code>Very small teams (1–5 climbers)</code></strong>&nbsp;tend to have very high success rates.</p>
+<p>Probable cause - agility, lighter logistical needs, and tighter decision-making.<br>
+</p></li>
+<li><p><strong><code>Small-to-medium teams (3–8 climbers)</code></strong>&nbsp;show a noticeable dip in success.</p>
+<p>Probable cause - enough complexity to introduce friction but not enough manpower to provide robust support.<br>
+</p></li>
+<li><p><strong><code>Medium-large teams (9–20 climbers)</code></strong>&nbsp;exhibit steadily increasing success rates, peaking around 20 members at or near 100%.</p>
+<p>Probable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.<br>
+</p></li>
+<li><p><strong><code>Very large teams (20+)</code></strong>&nbsp;see a gradual decline in success.</p>
+<p>Probable cause - supplies, campsite congestion, decision latency.<br>
+</p></li>
+</ul>
+</div>
+</section>
+<section id="question-1-effect-of-geography" class="slide level2">
+<h2>Question 1 : Effect of Geography</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-7-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-8-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div class="columns">
+<div class="column" style="width:25%;">
+
+</div><div class="column" style="&quot;min-height:60px;">
+
+</div><div class="column" style="width:25%;">
+<!-- blank right spacer -->
+</div></div>
+</section>
+<section id="question-1-effect-of-geography-1" class="slide level2">
+<h2>Question 1 : Effect of Geography</h2>
+<div style="font-size:0.7em; line-height:1.2;">
+<p><code>Geography, in particular the altitude band of a peak—turns out not to be a simple “the higher you go, the harder it gets” story.</code></p>
+<ul>
+<li><p><strong><code>Low-altitude peaks (~6800 m, e.g. Ama Dablam)</code></strong>&nbsp;enjoy very high success rates, thanks to gentler slopes, shorter approaches and straightforward rope-fixed “ladder” routes</p></li>
+<li><p><strong><code>Mid-altitude peaks (~7100–7300 m, like Pumori and Baruntse)</code></strong>&nbsp;dips to the bottom of the curve,mountains are often more technical, less commercialized, with fewer fixed ropes and smaller teams—so even though they’re “lower,” they prove tougher</p></li>
+<li><p><strong><code>Higher Peaks (8000 m + like Everest)</code></strong>&nbsp;enjoys very high success rates, as they benefit from massive infrastructure (high-traffic base camps, helicopter support etc.), which more than offsets the physiological challenge of extreme altitude</p>
+<p>Probable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.<br>
+</p></li>
+</ul>
+<p>Overall, a peak’s infrastructure and traffic are at least as critical to success as its height.</p>
+</div>
+</section>
+<section id="question-1-explore-year" class="slide level2">
+<h2>Question 1 : Explore Year</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-10-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-11-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div class="columns">
+<div class="column" style="width:25%;">
+
+</div><div class="column" style="&quot;min-height:100px;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-12-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:25%;">
+<!-- blank right spacer -->
+</div></div>
+</section>
+<section id="question-1-explore-year-1" class="slide level2">
+<h2>Question 1 : Explore Year</h2>
+<div style="font-size:0.7em; line-height:1.2;">
+<p><code>These plots suggests a non-linear relationship between team size and summit success:</code></p>
+<ul>
+<li><p><strong><code>Very small teams (1–5 climbers)</code></strong>&nbsp;tend to have very high success rates.</p>
+<p>Probable cause - agility, lighter logistical needs, and tighter decision-making.<br>
+</p></li>
+<li><p><strong><code>Small-to-medium teams (3–8 climbers)</code></strong>&nbsp;show a noticeable dip in success.</p>
+<p>Probable cause - enough complexity to introduce friction but not enough manpower to provide robust support.<br>
+</p></li>
+<li><p><strong><code>Medium-large teams (9–20 climbers)</code></strong>&nbsp;exhibit steadily increasing success rates, peaking around 20 members at or near 100%.</p>
+<p>Probable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.<br>
+</p></li>
+<li><p><strong><code>Very large teams (20+)</code></strong>&nbsp;see a gradual decline in success.</p>
+<p>Probable cause - supplies, campsite congestion, decision latency.<br>
+</p></li>
+</ul>
+</div>
+</section>
+<section id="question-1-explore-commercial-vs-non-commercial" class="slide level2">
+<h2>Question 1 : Explore Commercial vs Non-Commercial</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-13-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-14-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div class="columns">
+<div class="column" style="width:25%;">
+
+</div><div class="column" style="&quot;min-height:100px;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-15-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:25%;">
+<!-- blank right spacer -->
+</div></div>
+</section>
+<section id="question-1-explore-commercial-vs-non-commercial-1" class="slide level2">
+<h2>Question 1 : Explore Commercial vs Non-Commercial</h2>
 <div style="font-size:0.7em; line-height:1.2;">
 <p><code>These plots suggests a non-linear relationship between team size and summit success:</code></p>
 <ul>
