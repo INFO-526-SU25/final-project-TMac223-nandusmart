@@ -109,21 +109,21 @@
     "href": "presentation.html#question-1-explore-year-1",
     "title": "A Statistical Exploration of Himalayan Expeditions",
     "section": "Question 1 : Explore Year",
-    "text": "Question 1 : Explore Year\n\nThese plots suggests a non-linear relationship between team size and summit success:\n\nVery small teams (1–5 climbers) tend to have very high success rates.\nProbable cause - agility, lighter logistical needs, and tighter decision-making.\n\nSmall-to-medium teams (3–8 climbers) show a noticeable dip in success.\nProbable cause - enough complexity to introduce friction but not enough manpower to provide robust support.\n\nMedium-large teams (9–20 climbers) exhibit steadily increasing success rates, peaking around 20 members at or near 100%.\nProbable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.\n\nVery large teams (20+) see a gradual decline in success.\nProbable cause - supplies, campsite congestion, decision latency."
+    "text": "Question 1 : Explore Year\n\nThese plots suggests, despite a pandemic-driven slump in 2021, overall expedition success has rebounded strongly by 2024\n\n2020 average success rate ~ 72%\nProbable cause – pre-pandemic normalcy, full staffing, established logistics.\n\n2021-2022 average success rate fell to ~ 63%\nProbable cause – COVID travel restrictions & teams adapted to new health protocols and smaller expedition sizes.\n\n2023-2024 average success rate rebound to ~ 80%\nProbable cause – full operational recovery, improved high-altitude gear, accumulated guiding experience."
   },
   {
-    "objectID": "presentation.html#question-1-explore-commercial-vs-non-commercial",
-    "href": "presentation.html#question-1-explore-commercial-vs-non-commercial",
+    "objectID": "presentation.html#question-1-commercial-factor",
+    "href": "presentation.html#question-1-commercial-factor",
     "title": "A Statistical Exploration of Himalayan Expeditions",
-    "section": "Question 1 : Explore Commercial vs Non-Commercial",
-    "text": "Question 1 : Explore Commercial vs Non-Commercial"
+    "section": "Question 1 : Commercial Factor",
+    "text": "Question 1 : Commercial Factor"
   },
   {
-    "objectID": "presentation.html#question-1-explore-commercial-vs-non-commercial-1",
-    "href": "presentation.html#question-1-explore-commercial-vs-non-commercial-1",
+    "objectID": "presentation.html#question-1-commercial-factor-1",
+    "href": "presentation.html#question-1-commercial-factor-1",
     "title": "A Statistical Exploration of Himalayan Expeditions",
-    "section": "Question 1 : Explore Commercial vs Non-Commercial",
-    "text": "Question 1 : Explore Commercial vs Non-Commercial\n\nThese plots suggests a non-linear relationship between team size and summit success:\n\nVery small teams (1–5 climbers) tend to have very high success rates.\nProbable cause - agility, lighter logistical needs, and tighter decision-making.\n\nSmall-to-medium teams (3–8 climbers) show a noticeable dip in success.\nProbable cause - enough complexity to introduce friction but not enough manpower to provide robust support.\n\nMedium-large teams (9–20 climbers) exhibit steadily increasing success rates, peaking around 20 members at or near 100%.\nProbable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.\n\nVery large teams (20+) see a gradual decline in success.\nProbable cause - supplies, campsite congestion, decision latency."
+    "section": "Question 1 : Commercial Factor",
+    "text": "Question 1 : Commercial Factor\n\nThese plots suggests, A professional, well-resourced support structure not only accelerates recovery from external shocks (like a pandemic) but also delivers uniformly higher success rates—regardless of mountain or team size.\n\nCommercial expeditions rebound faster and to a higher plateau\nIn 2021, both types dipped (COVID impact), but commercial climbs dropped only to ~67%, whereas non-commercial fell to ~53%. By 2024, commercial success surged to ~95 %, while non-commercial languished around ~64%.\nAcross individual peaks, company-run trips consistently outshine independent ones\nOn major peaks (Everest, Lhotse, Ama Dablam), commercial success rates hover in the 85–95 % range. Non-commercial attempts on the same mountains are 5–10 % lower.\nTeam-size effects differ by expedition type\nCommercial: success stays high (75–100 %) across all team sizes, peaking around 20 members.\nNon-commercial: a pronounced “U-shape”, very small groups (&gt; 80 %) and very large groups (~75 %) do better, but mid-sized teams (5–10 climbers) dip down near 50 %"
   },
   {
     "objectID": "presentation.html#question-2",
@@ -137,6 +137,6 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "This project was developed by [Team Name] For INFO 526 - Data Analysis and Visualization at the University of Arizona, taught by Dr. Greg Chism. The team is comprised of the following team members.\n\nTeam member 1: One sentence description of Team member 1 (e.g., year, major, etc.).\nTeam member 2: One sentence description of Team member 2 (e.g., year, major, etc.).\nTeam member 3: One sentence description of Team member 3 (e.g., year, major, etc.).\nTeam member 4: One sentence description of Team member 4 (e.g., year, major, etc.)."
+    "text": "This project was developed by Macdonald-Kuthalaraja team For INFO 526 - Data Analysis and Visualization at the University of Arizona, taught by Dr. Greg Chism. The team is comprised of the following team members.\n\nTrevor Macdonald: .\nNandakumar Kuthalaraja: Currently Enrolled in 2025-2027 Masters in Data Science program (Online). A professional , working full-time as Principal Architect for a Wealth Management Bank in Chicago."
   }
 ]
