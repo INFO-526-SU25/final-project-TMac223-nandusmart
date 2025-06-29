@@ -262,7 +262,7 @@ ggplot(df_bin, aes(x = team_size, y = rate)) +
 
 ## Question 1 : Explore Team Size Analysis
 
-::: {style="font-size:0.7em; line-height:1.2;"}
+::: {style="font-size:0.5em; line-height:1.2;"}
 `These plots suggests a non-linear relationship between team size and summit success:`
 
 -   **`Very small teams (1–5 climbers)`** tend to have very high success rates.
@@ -348,7 +348,7 @@ ggplot(peak_success, aes(x = reorder(PKNAME, HEIGHTM), y = HEIGHTM, color = succ
 
 ## Question 1 : Effect of Geography Analysis
 
-::: {style="font-size:0.7em; line-height:1.2;"}
+::: {style="font-size:0.5em; line-height:1.2;"}
 `Geography, in particular the altitude band of a peak—turns out not to be a simple “the higher you go, the harder it gets” story.`
 
 -   **`Low-altitude peaks (~6800 m, e.g. Ama Dablam)`** enjoy very high success rates, thanks to gentler slopes, shorter approaches and straightforward rope-fixed “ladder” routes
@@ -430,7 +430,7 @@ ggplot(peak_year, aes(x = YEAR, y = reorder(PKNAME, -success_rate), fill = succe
 
 ## Question 1 : Explore by Year Analysis
 
-::: {style="font-size:0.7em; line-height:1.2;"}
+::: {style="font-size:0.5em; line-height:1.2;"}
 `These plots suggests, despite a pandemic-driven slump in 2021, overall expedition success has rebounded strongly by 2024`
 
 -   **`2020`** average success rate \~ 72%
@@ -540,7 +540,7 @@ exped2 |>
 
 ## Question 1 : Commercial Factor Analysis
 
-::: {style="font-size:0.7em; line-height:1.2;"}
+::: {style="font-size:0.5em; line-height:1.2;"}
 `These plots suggests, A professional, well-resourced support structure not only accelerates recovery from external shocks (like a pandemic) but also delivers uniformly higher success rates—regardless of mountain or team size.`
 
 -   **`Commercial expeditions rebound faster and to a higher plateau`**
