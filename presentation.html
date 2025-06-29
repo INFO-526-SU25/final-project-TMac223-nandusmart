@@ -221,7 +221,7 @@ Trevor Macdonald &amp; Nandakumar Kuthalaraja
 <p><strong>What factors contribute to the success or failure of a summit?</strong></p>
 <ul>
 <li><p>Analyze expedition outcomes using both expedition and peak variables. “Success” will be defined based on the `TERMREASON_FACTOR`, with specific values representing a successful summit.</p></li>
-<li></li>
+<li><p>Use factors like – geography, team size, oxygen use, and other factors relate to the likelihood of success</p></li>
 </ul>
 </section>
 <section id="question-1-approach" class="slide level2">
@@ -274,6 +274,67 @@ Trevor Macdonald &amp; Nandakumar Kuthalaraja
 <p>Let’s start with what is the overall Success vs Failure Rate out of all overall expeditions.</p>
 
 <img data-src="presentation_files/figure-revealjs/unnamed-chunk-3-1.png" width="1800" class="r-stretch"></section>
+<section id="question-1-explore-team-size" class="slide level2">
+<h2>Question 1 : Explore Team Size</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-4-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-5-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div class="columns">
+<div class="column" style="width:25%;">
+<!-- blank left spacer -->
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-6-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:25%;">
+<!-- blank right spacer -->
+</div></div>
+</section>
+<section id="question-1-explore-team-size-1" class="slide level2">
+<h2>Question 1 : Explore Team Size</h2>
+<div style="font-size:0.7em; line-height:1.2;">
+<p><code>These plots suggests a non-linear relationship between team size and summit success:</code></p>
+<ul>
+<li><p><strong><code>Very small teams (1–5 climbers)</code></strong>&nbsp;tend to have very high success rates.</p>
+<p>Probable cause - agility, lighter logistical needs, and tighter decision-making.<br>
+</p></li>
+<li><p><strong><code>Small-to-medium teams (3–8 climbers)</code></strong>&nbsp;show a noticeable dip in success.</p>
+<p>Probable cause - enough complexity to introduce friction but not enough manpower to provide robust support.<br>
+</p></li>
+<li><p><strong><code>Medium-large teams (9–20 climbers)</code></strong>&nbsp;exhibit steadily increasing success rates, peaking around 20 members at or near 100%.</p>
+<p>Probable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.<br>
+</p></li>
+<li><p><strong><code>Very large teams (20+)</code></strong>&nbsp;see a gradual decline in success.</p>
+<p>Probable cause - supplies, campsite congestion, decision latency.<br>
+</p></li>
+</ul>
+</div>
+</section>
 <section id="question-2" class="slide level2">
 <h2>Question 2</h2>
 <h3 id="approach">Approach:</h3>

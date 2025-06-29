@@ -53,7 +53,7 @@
     "href": "presentation.html#question-1",
     "title": "A Statistical Exploration of Himalayan Expeditions",
     "section": "Question 1",
-    "text": "Question 1\nWhat factors contribute to the success or failure of a summit?\n\nAnalyze expedition outcomes using both expedition and peak variables. “Success” will be defined based on the `TERMREASON_FACTOR`, with specific values representing a successful summit."
+    "text": "Question 1\nWhat factors contribute to the success or failure of a summit?\n\nAnalyze expedition outcomes using both expedition and peak variables. “Success” will be defined based on the `TERMREASON_FACTOR`, with specific values representing a successful summit.\nUse factors like – geography, team size, oxygen use, and other factors relate to the likelihood of success"
   },
   {
     "objectID": "presentation.html#question-1-approach",
@@ -68,6 +68,20 @@
     "title": "A Statistical Exploration of Himalayan Expeditions",
     "section": "Question 1 : Start",
     "text": "Question 1 : Start\nLet’s start with what is the overall Success vs Failure Rate out of all overall expeditions."
+  },
+  {
+    "objectID": "presentation.html#question-1-explore-team-size",
+    "href": "presentation.html#question-1-explore-team-size",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1 : Explore Team Size",
+    "text": "Question 1 : Explore Team Size"
+  },
+  {
+    "objectID": "presentation.html#question-1-explore-team-size-1",
+    "href": "presentation.html#question-1-explore-team-size-1",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1 : Explore Team Size",
+    "text": "Question 1 : Explore Team Size\n\nThese plots suggests a non-linear relationship between team size and summit success:\n\nVery small teams (1–5 climbers) tend to have very high success rates.\nProbable cause - agility, lighter logistical needs, and tighter decision-making.\n\nSmall-to-medium teams (3–8 climbers) show a noticeable dip in success.\nProbable cause - enough complexity to introduce friction but not enough manpower to provide robust support.\n\nMedium-large teams (9–20 climbers) exhibit steadily increasing success rates, peaking around 20 members at or near 100%.\nProbable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.\n\nVery large teams (20+) see a gradual decline in success.\nProbable cause - supplies, campsite congestion, decision latency."
   },
   {
     "objectID": "presentation.html#question-2",
