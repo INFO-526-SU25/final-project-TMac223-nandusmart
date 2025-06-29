@@ -46,21 +46,7 @@
     "href": "presentation.html#our-dataset",
     "title": "A Statistical Exploration of Himalayan Expeditions",
     "section": "Our Dataset",
-    "text": "Our Dataset\n\nHimalayan Database - Created to continue the legacy of Elizabeth Hawley, a journalist who spent decades documenting Himalayan expeditions.\nDataset - TidyTuesday GitHub repository and has been amended to the years 2020 - 2024 to manage file size.\nThere are 2 main datasets :\n\nexped_tidy - Contains details of expeditions\npeaks_tidy - Includes data about the Himalayan Peaks"
-  },
-  {
-    "objectID": "presentation.html#question-1",
-    "href": "presentation.html#question-1",
-    "title": "A Statistical Exploration of Himalayan Expeditions",
-    "section": "Question 1",
-    "text": "Question 1"
-  },
-  {
-    "objectID": "presentation.html#question-2",
-    "href": "presentation.html#question-2",
-    "title": "A Statistical Exploration of Himalayan Expeditions",
-    "section": "Question 2",
-    "text": "Question 2"
+    "text": "Our Dataset\n\nHimalayan Database - Created to continue the legacy of Elizabeth Hawley, a journalist who spent decades documenting Himalayan expeditions.\nDataset - TidyTuesday GitHub repository and has been amended to the years 2020 - 2024 to manage file size.\nThere are 2 main datasets :\n\nexped_tidy - Contains details of expeditions\npeaks_tidy - Includes data about the Himalayan Peaks\n\n\nQuestion 1\nWhat factors contribute to the success or failure of a summit?\nAnalyze expedition outcomes using both expedition and peak variables. “Success” will be defined based on the `TERMREASON_FACTOR`, with specific values representing a successful summit (e.g., “Success (main peak)”, “Success (claimed)”).\nApproach\n\nGet Data from the CSV files\nBuild Model\n\n\n\n\nFALSE  TRUE \n  258   624 \n\n\n\n\nSuccess rate By Year\n\n\n\nQuestion 2\nLimitations:\nWrap up"
   },
   {
     "objectID": "about.html",
