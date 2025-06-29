@@ -2,7 +2,7 @@
 title: "A Statistical Exploration of Himalayan Expeditions"
 subtitle: "INFO 526 Final Project Proposal"
 author: 
-  - name: "Kuthalaraja-Macdonald"
+  - name: "Trevor Macdonald & Nandakumar Kuthalaraja"
     affiliations:
       - name: "School of Information, University of Arizona"
 description: >

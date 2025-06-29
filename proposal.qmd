@@ -2,7 +2,7 @@
 title: "A Statistical Exploration of Himalayan Expeditions"
 subtitle: "INFO 526 Final Project Proposal"
 author: 
-  - name: "Kuthalaraja-Macdonald"
+  - name: "Trevor Macdonald & Nandakumar Kuthalaraja"
     affiliations:
       - name: "School of Information, University of Arizona"
 description: >
@@ -105,7 +105,7 @@ dim(peaks_tidy)
 ### Variables from `exped_tidy`
 
 | Variable | Description | Your Notes |
-|------------------|--------------------------|----------------------------|
+|------------------------|------------------------|------------------------|
 | `TERMREASON_FACTOR` | Reason the expedition ended | Outcome variable (success/failure) Also includes injury |
 | `SEASON_FACTOR` | Season of the expedition | Obviously winter is more hazardous |
 | `O2USED` | Whether supplemental oxygen was used | None |
@@ -119,7 +119,7 @@ dim(peaks_tidy)
 ### Variables from `peaks_tidy`
 
 | Variable | Description | Your Notes |
-|------------------|-------------------------|-----------------------------|
+|------------------------|------------------------|------------------------|
 | `HEIGHTM` | Elevation of the peak in meters | High elevation might drive both risk and cost |
 | `HIMAL_FACTOR` | Name of the mountain | None |
 | `REGION_FACTOR` | Broader geographic region grouping peaks | Geographic variability in danger and cost |
