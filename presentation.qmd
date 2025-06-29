@@ -61,7 +61,7 @@ knitr::opts_chunk$set(
 
 Analyze expedition outcomes using both expedition and peak variables. "Success" will be defined based on the \`TERMREASON_FACTOR\`, with specific values representing a successful summit (e.g., "Success (main peak)", "Success (claimed)").
 
-### Approach
+## Approach
 
 -   Get Data from the CSV files
 
@@ -79,6 +79,7 @@ table(exped$SUCCESS1, useNA = "ifany")
 ```
 
 -   Build Model
+
 ```{r}
 #| label: build model
 #| code-fold: true
@@ -107,7 +108,10 @@ model <- glm(
 
 ```
 
--   1. Success rate By Year
+-   
+
+    1.  Success rate By Year
+
 ```{r}
 exped2 %>%
   group_by(team_size) %>%

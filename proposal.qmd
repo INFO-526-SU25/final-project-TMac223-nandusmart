@@ -141,7 +141,9 @@ Question 2. Does an expeditions funding affect safety outcomes?
 
 **Question 1: What factors contribute to the success or failure of a summit?**
 
-We will analyze expedition outcomes using both expedition and peak variables. "Success" will be defined based on the `TERMREASON_FACTOR`, with specific values representing a successful summit (e.g., "Success (main peak)", "Success (claimed)"). The aim is to model how geography, team size, oxygen use, and other factors relate to the likelihood of success.
+We will analyze expedition outcomes using both expedition and peak variables. "Success" will be defined based on the `TERMREASON_FACTOR`, with specific values representing a successful summit (e.g., "Success (main peak)", "Success (claimed)"). 
+
+As part of this attempt, we will also hypothesize that expeditions attempted during monsoon months have a significantly lower success rate similarly other factors like -- geography, team size, oxygen use, and other factors relate to the likelihood of success
 
 We will filter by success and explore facets of the data. Below is an example of how we might focus our attention on correlated variables.
 
@@ -188,8 +190,12 @@ These are some of the variables that we think might be promising. Note that the 
 
 This will filter our data for further analysis.
 
+
+
 **Question 2. Does an expeditions funding affect safety outcomes?**
 
 The analysis will be very similar for this question. I suspect there will be some overlap, funding and success rate etc. We will use many of the same variables, but more specifically, `FUNDING_TYPE`.
+
+We will Compare specific funding types like commercial vs. independent expeditions across countries for more insights
 
 NOTE: Add "real world" examples of expedition success or failure to make analysis relatable.
