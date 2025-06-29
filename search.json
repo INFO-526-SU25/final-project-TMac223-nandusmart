@@ -42,6 +42,13 @@
     "text": "High-altitude mountaineering offers a natural laboratory for studying how human, environmental, and logistical factors interact to shape risk and achievement. Using tidy versions of the Himalayan Database, this project leverages R (tidyverse, tidy models) and Quarto to build an interactive, reproducible data-visualisation narrative around two guiding questions:\n\nWhat factors contribute to the success or failure of a summit?\n\nWe knit together expedition, peak, and temporal attributes to explore how season, route choice, peak height, team size, leader nationality, weather windows, and oxygen strategy correlate with summit outcomes. Visual encodings include faceted ridge plots of summit probability across seasons, interactive geographic representations of route popularity versus success.\nA multilevel logistic model provides effect-size estimates while accounting for peak-level heterogeneity.\n\nDoes an expedition’s funding affect safety outcomes?\n\nBecause direct cost metrics are absent, we construct a funding proxy that blends sponsorship type, total members & hired staff, oxygen usage, and expedition duration.\nWe then relate this composite to safety indicators like member and staff fatalities, high-altitude illnesses, rescue events via scatter-plot matrices, concentration curves, and Poisson regression. Stratified visualizations highlight differential risk patterns between commercial and self-organised teams.\n\n\nPreliminary findings suggest that\n- seasonality and route normalization remain the strongest predictors of summit success\n- larger, commercially sponsored teams enjoy slightly higher success but only marginal safety advantages once altitude and weather are controlled\n- resource intensive strategies such as extensive oxygen deployment reduce high-altitude illness yet do not eliminate fatal risk."
   },
   {
+    "objectID": "presentation.html#our-dataset",
+    "href": "presentation.html#our-dataset",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Our Dataset",
+    "text": "Our Dataset\nHimalayan Database - Created to continue the legacy of Elizabeth Hawley, a journalist who spent decades documenting Himalayan expeditions.\nDataset - TidyTuesday GitHub repository and has been amended to the years 2020 - 2024 to manage file size.\n2 main datasets : - exped_tidy - contains details of expeditions. - peaks_tidy - includes data about the Himalayan Peaks."
+  },
+  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
