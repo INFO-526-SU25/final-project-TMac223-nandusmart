@@ -42,6 +42,90 @@
     "text": "High-altitude mountaineering offers a natural laboratory for studying how human, environmental, and logistical factors interact to shape risk and achievement. Using tidy versions of the Himalayan Database, this project leverages R (tidyverse, tidy models) and Quarto to build an interactive, reproducible data-visualisation narrative around two guiding questions:\n\nWhat factors contribute to the success or failure of a summit?\n\nWe knit together expedition, peak, and temporal attributes to explore how season, route choice, peak height, team size, leader nationality, weather windows, and oxygen strategy correlate with summit outcomes. Visual encodings include faceted ridge plots of summit probability across seasons, interactive geographic representations of route popularity versus success.\nA multilevel logistic model provides effect-size estimates while accounting for peak-level heterogeneity.\n\nDoes an expedition’s funding affect safety outcomes?\n\nBecause direct cost metrics are absent, we construct a funding proxy that blends sponsorship type, total members & hired staff, oxygen usage, and expedition duration.\nWe then relate this composite to safety indicators like member and staff fatalities, high-altitude illnesses, rescue events via scatter-plot matrices, concentration curves, and Poisson regression. Stratified visualizations highlight differential risk patterns between commercial and self-organised teams.\n\n\nPreliminary findings suggest that\n- seasonality and route normalization remain the strongest predictors of summit success\n- larger, commercially sponsored teams enjoy slightly higher success but only marginal safety advantages once altitude and weather are controlled\n- resource intensive strategies such as extensive oxygen deployment reduce high-altitude illness yet do not eliminate fatal risk."
   },
   {
+    "objectID": "index.html#introduction",
+    "href": "index.html#introduction",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Introduction",
+    "text": "Introduction\nThis project looks at data from many Himalayan mountain climbing trips. We use two main files: one has details about each expedition (called exped_tidy.csv), and the other has information about the mountains themselves (peaks_tidy.csv). The expedition data covers hundreds of trips over many years. For each trip, we know things like which mountain was climbed, how many people were in the team, if they used oxygen, if it was a commercial (guided) trip, and whether the team reached the summit or not.\nThe mountain (peaks) data gives us extra facts, like each mountain’s name, height, and what region it is in. By putting these two datasets together, we can explore how things like team size, the use of oxygen, type of trip, and which mountain was climbed affect the chances of reaching the summit."
+  },
+  {
+    "objectID": "index.html#question-1-what-factors-contribute-to-the-success-or-failure-of-a-summit",
+    "href": "index.html#question-1-what-factors-contribute-to-the-success-or-failure-of-a-summit",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1: What factors contribute to the success or failure of a summit?",
+    "text": "Question 1: What factors contribute to the success or failure of a summit?\n\nAnalyze expedition outcomes using both expedition and peak variables. “Success” will be defined based on the `TERMREASON_FACTOR`, with specific values representing a successful summit.\nUse factors like – geography, team size, year, and commercial vs non-commercial expeditions\n\n\nIntroduction\nClimbing a Himalayan peak is a big challenge, and not every team that tries will reach the top. Some expeditions succeed, while others turn back before the summit. But what makes the difference? In this project, we want to understand what factors help climbers succeed and what might make them fail.\nWe have used following factors:\n\n\n\nExplore Team Size\n\n\nEffect of Geography\n\n\nExplore by Year\n\n\nExplore Commercial Factor\n\n\n\n\n\nApproach\n\nGet Data from the CSV files\n\n\n\nCode\nexped &lt;- read_csv(\"data/exped_tidy.csv\")\npeaks &lt;- read_csv(\"data/peaks_tidy.csv\")\n\ncolnames(peaks)\nhead(peaks)\ncolnames(exped)\nhead(exped)\n\ntable(exped$SUCCESS1, useNA = \"ifany\")\n\n\n\nBuild Model & Variable Inferences\n\n\n\nCode\ntable(exped$SUCCESS1, useNA = \"ifany\")\nexped2 &lt;- exped |&gt;\n  mutate(\n    success = ifelse(SUCCESS1 %in% c(\"Y\", \"Yes\", \"yes\"), 1,\n                     ifelse(SUCCESS1 %in% c(\"N\", \"No\", \"no\"), 0, as.numeric(SUCCESS1))),\n    peak = as.factor(PEAKID),\n    team_size = as.numeric(TOTMEMBERS),\n    oxygen = ifelse(O2USED %in% c(\"Y\", \"Yes\", \"yes\"), 1,\n                    ifelse(O2USED %in% c(\"N\", \"No\", \"no\"), 0, as.numeric(O2USED))),\n    season = as.factor(SEASON)\n  ) |&gt;\n  filter(!is.na(success), !is.na(team_size), !is.na(oxygen)) \n\nmodel &lt;- glm(\n  success ~ peak + team_size + oxygen + season + YEAR,\n  data = exped2,\n  family = \"binomial\"\n)\n\n\n\nStart plotting various charts building up to the case"
+  },
+  {
+    "objectID": "index.html#question-1-start",
+    "href": "index.html#question-1-start",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1 : Start",
+    "text": "Question 1 : Start\n\n\nThe Overall Success vs Failure Rate out of all expeditions.\n\n\n\n\n\n\n\n\n\n\nWe will study with following variables:\n\n\n\nPotential Factors to Study Success Rate\n\n\n\n\nExplore Team Size\n\n\nEffect of Geography\n\n\nExplore by Year\n\n\nExplore Commercial Factor"
+  },
+  {
+    "objectID": "index.html#question-1-explore-team-size",
+    "href": "index.html#question-1-explore-team-size",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1 : Explore Team Size",
+    "text": "Question 1 : Explore Team Size"
+  },
+  {
+    "objectID": "index.html#question-1-explore-team-size-analysis",
+    "href": "index.html#question-1-explore-team-size-analysis",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1 : Explore Team Size Analysis",
+    "text": "Question 1 : Explore Team Size Analysis\n\nThese plots suggests a non-linear relationship between team size and summit success:\n\nVery small teams (1–5 climbers) tend to have very high success rates.\nProbable cause - agility, lighter logistical needs, and tighter decision-making.\nSmall-to-medium teams (3–8 climbers) show a noticeable dip in success.\nProbable cause - enough complexity to introduce friction but not enough manpower to provide robust support.\nMedium-large teams (9–20 climbers) exhibit steadily increasing success rates, peaking around 20 members at or near 100%.\nProbable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.\nVery large teams (20+) see a gradual decline in success.\nProbable cause - supplies, campsite congestion, decision latency."
+  },
+  {
+    "objectID": "index.html#question-1-effect-of-geography",
+    "href": "index.html#question-1-effect-of-geography",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1 : Effect of Geography",
+    "text": "Question 1 : Effect of Geography"
+  },
+  {
+    "objectID": "index.html#question-1-effect-of-geography-analysis",
+    "href": "index.html#question-1-effect-of-geography-analysis",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1 : Effect of Geography Analysis",
+    "text": "Question 1 : Effect of Geography Analysis\n\nGeography, in particular the altitude band of a peak—turns out not to be a simple “the higher you go, the harder it gets” story.\n\nLow-altitude peaks (~6800 m, e.g. Ama Dablam) enjoy very high success rates, thanks to gentler slopes, shorter approaches and straightforward rope-fixed “ladder” routes\nMid-altitude peaks (~7100–7300 m, like Pumori and Baruntse) dips to the bottom of the curve,mountains are often more technical, less commercialized, with fewer fixed ropes and smaller teams—so even though they’re “lower,” they prove tougher\nHigher Peaks (8000 m + like Everest) enjoys very high success rates, as they benefit from massive infrastructure (high-traffic base camps, helicopter support etc.), which more than offsets the physiological challenge of extreme altitude\n\nOverall, a peak’s infrastructure and traffic are at least as critical to success as its height."
+  },
+  {
+    "objectID": "index.html#question-1-explore-by-year",
+    "href": "index.html#question-1-explore-by-year",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1 : Explore by Year",
+    "text": "Question 1 : Explore by Year"
+  },
+  {
+    "objectID": "index.html#question-1-explore-by-year-analysis",
+    "href": "index.html#question-1-explore-by-year-analysis",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1 : Explore by Year Analysis",
+    "text": "Question 1 : Explore by Year Analysis\n\nThese plots suggests, despite a pandemic-driven slump in 2021, overall expedition success has rebounded strongly by 2024\n\n2020 average success rate ~ 72%\nProbable cause – pre-pandemic normalcy, full staffing, established logistics.\n2021-2022 average success rate fell to ~ 63%\nProbable cause – COVID travel restrictions & teams adapted to new health protocols and smaller expedition sizes.\n2023-2024 average success rate rebound to ~ 80%\nProbable cause – full operational recovery, improved high-altitude gear, accumulated guiding experience."
+  },
+  {
+    "objectID": "index.html#question-1-commercial-factor",
+    "href": "index.html#question-1-commercial-factor",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1 : Commercial Factor",
+    "text": "Question 1 : Commercial Factor"
+  },
+  {
+    "objectID": "index.html#question-1-commercial-factor-analysis",
+    "href": "index.html#question-1-commercial-factor-analysis",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 1 : Commercial Factor Analysis",
+    "text": "Question 1 : Commercial Factor Analysis\n\nThese plots suggests, A professional, well-resourced support structure not only accelerates recovery from external shocks (like a pandemic) but also delivers uniformly higher success rates—regardless of mountain or team size.\n\nCommercial expeditions rebound faster and to a higher plateau\nIn 2021, both types dipped (COVID impact), but commercial climbs dropped only to ~67%, whereas non-commercial fell to ~53%. By 2024, commercial success surged to ~95 %, while non-commercial languished around ~64%.\nAcross individual peaks, company-run trips consistently outshine independent ones\nOn major peaks (Everest, Lhotse, Ama Dablam), commercial success rates hover in the 85–95 % range. Non-commercial attempts on the same mountains are 5–10 % lower.\nTeam-size effects differ by expedition type\nCommercial: success stays high (75–100 %) across all team sizes, peaking around 20 members.\nNon-commercial: a pronounced “U-shape”, very small groups (&gt; 80 %) and very large groups (~75 %) do better, but mid-sized teams (5–10 climbers) dip down near 50 %"
+  },
+  {
+    "objectID": "index.html#question-2",
+    "href": "index.html#question-2",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2",
+    "text": "Question 2"
+  },
+  {
     "objectID": "presentation.html#our-dataset",
     "href": "presentation.html#our-dataset",
     "title": "A Statistical Exploration of Himalayan Expeditions",
@@ -67,7 +151,7 @@
     "href": "presentation.html#question-1-start",
     "title": "A Statistical Exploration of Himalayan Expeditions",
     "section": "Question 1 : Start",
-    "text": "Question 1 : Start\n\n\nThe Overall Success vs Failure Rate out of all expeditions.\n\n\n\n\n\n\n\n\n\n\nWe will study with following variables:\n\n\n\nPotential Factors\n\n\n\n\nExplore Team Size\n\n\nEffect of Geography\n\n\nExplore Year\n\n\nExplore Commercial vs Non-Commercial"
+    "text": "Question 1 : Start\n\n\nThe Overall Success vs Failure Rate out of all expeditions.\n\n\n\n\n\n\n\n\n\n\nWe will study with following variables:\n\n\n\nPotential Factors to Study Success Rate\n\n\n\n\nExplore Team Size\n\n\nEffect of Geography\n\n\nExplore by Year\n\n\nExplore Commercial Factor"
   },
   {
     "objectID": "presentation.html#question-1-explore-team-size",
@@ -77,11 +161,11 @@
     "text": "Question 1 : Explore Team Size"
   },
   {
-    "objectID": "presentation.html#question-1-explore-team-size-1",
-    "href": "presentation.html#question-1-explore-team-size-1",
+    "objectID": "presentation.html#question-1-explore-team-size-analysis",
+    "href": "presentation.html#question-1-explore-team-size-analysis",
     "title": "A Statistical Exploration of Himalayan Expeditions",
-    "section": "Question 1 : Explore Team Size",
-    "text": "Question 1 : Explore Team Size\n\nThese plots suggests a non-linear relationship between team size and summit success:\n\nVery small teams (1–5 climbers) tend to have very high success rates.\nProbable cause - agility, lighter logistical needs, and tighter decision-making.\n\nSmall-to-medium teams (3–8 climbers) show a noticeable dip in success.\nProbable cause - enough complexity to introduce friction but not enough manpower to provide robust support.\n\nMedium-large teams (9–20 climbers) exhibit steadily increasing success rates, peaking around 20 members at or near 100%.\nProbable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.\n\nVery large teams (20+) see a gradual decline in success.\nProbable cause - supplies, campsite congestion, decision latency."
+    "section": "Question 1 : Explore Team Size Analysis",
+    "text": "Question 1 : Explore Team Size Analysis\n\nThese plots suggests a non-linear relationship between team size and summit success:\n\nVery small teams (1–5 climbers) tend to have very high success rates.\nProbable cause - agility, lighter logistical needs, and tighter decision-making.\n\nSmall-to-medium teams (3–8 climbers) show a noticeable dip in success.\nProbable cause - enough complexity to introduce friction but not enough manpower to provide robust support.\n\nMedium-large teams (9–20 climbers) exhibit steadily increasing success rates, peaking around 20 members at or near 100%.\nProbable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.\n\nVery large teams (20+) see a gradual decline in success.\nProbable cause - supplies, campsite congestion, decision latency."
   },
   {
     "objectID": "presentation.html#question-1-effect-of-geography",
@@ -91,25 +175,25 @@
     "text": "Question 1 : Effect of Geography"
   },
   {
-    "objectID": "presentation.html#question-1-effect-of-geography-1",
-    "href": "presentation.html#question-1-effect-of-geography-1",
+    "objectID": "presentation.html#question-1-effect-of-geography-analysis",
+    "href": "presentation.html#question-1-effect-of-geography-analysis",
     "title": "A Statistical Exploration of Himalayan Expeditions",
-    "section": "Question 1 : Effect of Geography",
-    "text": "Question 1 : Effect of Geography\n\nGeography, in particular the altitude band of a peak—turns out not to be a simple “the higher you go, the harder it gets” story.\n\nLow-altitude peaks (~6800 m, e.g. Ama Dablam) enjoy very high success rates, thanks to gentler slopes, shorter approaches and straightforward rope-fixed “ladder” routes\nMid-altitude peaks (~7100–7300 m, like Pumori and Baruntse) dips to the bottom of the curve,mountains are often more technical, less commercialized, with fewer fixed ropes and smaller teams—so even though they’re “lower,” they prove tougher\nHigher Peaks (8000 m + like Everest) enjoys very high success rates, as they benefit from massive infrastructure (high-traffic base camps, helicopter support etc.), which more than offsets the physiological challenge of extreme altitude\n\nOverall, a peak’s infrastructure and traffic are at least as critical to success as its height."
+    "section": "Question 1 : Effect of Geography Analysis",
+    "text": "Question 1 : Effect of Geography Analysis\n\nGeography, in particular the altitude band of a peak—turns out not to be a simple “the higher you go, the harder it gets” story.\n\nLow-altitude peaks (~6800 m, e.g. Ama Dablam) enjoy very high success rates, thanks to gentler slopes, shorter approaches and straightforward rope-fixed “ladder” routes\nMid-altitude peaks (~7100–7300 m, like Pumori and Baruntse) dips to the bottom of the curve,mountains are often more technical, less commercialized, with fewer fixed ropes and smaller teams—so even though they’re “lower,” they prove tougher\nHigher Peaks (8000 m + like Everest) enjoys very high success rates, as they benefit from massive infrastructure (high-traffic base camps, helicopter support etc.), which more than offsets the physiological challenge of extreme altitude\n\nOverall, a peak’s infrastructure and traffic are at least as critical to success as its height."
   },
   {
-    "objectID": "presentation.html#question-1-explore-year",
-    "href": "presentation.html#question-1-explore-year",
+    "objectID": "presentation.html#question-1-explore-by-year",
+    "href": "presentation.html#question-1-explore-by-year",
     "title": "A Statistical Exploration of Himalayan Expeditions",
-    "section": "Question 1 : Explore Year",
-    "text": "Question 1 : Explore Year"
+    "section": "Question 1 : Explore by Year",
+    "text": "Question 1 : Explore by Year"
   },
   {
-    "objectID": "presentation.html#question-1-explore-year-1",
-    "href": "presentation.html#question-1-explore-year-1",
+    "objectID": "presentation.html#question-1-explore-by-year-analysis",
+    "href": "presentation.html#question-1-explore-by-year-analysis",
     "title": "A Statistical Exploration of Himalayan Expeditions",
-    "section": "Question 1 : Explore Year",
-    "text": "Question 1 : Explore Year\n\nThese plots suggests, despite a pandemic-driven slump in 2021, overall expedition success has rebounded strongly by 2024\n\n2020 average success rate ~ 72%\nProbable cause – pre-pandemic normalcy, full staffing, established logistics.\n\n2021-2022 average success rate fell to ~ 63%\nProbable cause – COVID travel restrictions & teams adapted to new health protocols and smaller expedition sizes.\n\n2023-2024 average success rate rebound to ~ 80%\nProbable cause – full operational recovery, improved high-altitude gear, accumulated guiding experience."
+    "section": "Question 1 : Explore by Year Analysis",
+    "text": "Question 1 : Explore by Year Analysis\n\nThese plots suggests, despite a pandemic-driven slump in 2021, overall expedition success has rebounded strongly by 2024\n\n2020 average success rate ~ 72%\nProbable cause – pre-pandemic normalcy, full staffing, established logistics.\n\n2021-2022 average success rate fell to ~ 63%\nProbable cause – COVID travel restrictions & teams adapted to new health protocols and smaller expedition sizes.\n\n2023-2024 average success rate rebound to ~ 80%\nProbable cause – full operational recovery, improved high-altitude gear, accumulated guiding experience."
   },
   {
     "objectID": "presentation.html#question-1-commercial-factor",
@@ -119,11 +203,11 @@
     "text": "Question 1 : Commercial Factor"
   },
   {
-    "objectID": "presentation.html#question-1-commercial-factor-1",
-    "href": "presentation.html#question-1-commercial-factor-1",
+    "objectID": "presentation.html#question-1-commercial-factor-analysis",
+    "href": "presentation.html#question-1-commercial-factor-analysis",
     "title": "A Statistical Exploration of Himalayan Expeditions",
-    "section": "Question 1 : Commercial Factor",
-    "text": "Question 1 : Commercial Factor\n\nThese plots suggests, A professional, well-resourced support structure not only accelerates recovery from external shocks (like a pandemic) but also delivers uniformly higher success rates—regardless of mountain or team size.\n\nCommercial expeditions rebound faster and to a higher plateau\nIn 2021, both types dipped (COVID impact), but commercial climbs dropped only to ~67%, whereas non-commercial fell to ~53%. By 2024, commercial success surged to ~95 %, while non-commercial languished around ~64%.\nAcross individual peaks, company-run trips consistently outshine independent ones\nOn major peaks (Everest, Lhotse, Ama Dablam), commercial success rates hover in the 85–95 % range. Non-commercial attempts on the same mountains are 5–10 % lower.\nTeam-size effects differ by expedition type\nCommercial: success stays high (75–100 %) across all team sizes, peaking around 20 members.\nNon-commercial: a pronounced “U-shape”, very small groups (&gt; 80 %) and very large groups (~75 %) do better, but mid-sized teams (5–10 climbers) dip down near 50 %"
+    "section": "Question 1 : Commercial Factor Analysis",
+    "text": "Question 1 : Commercial Factor Analysis\n\nThese plots suggests, A professional, well-resourced support structure not only accelerates recovery from external shocks (like a pandemic) but also delivers uniformly higher success rates—regardless of mountain or team size.\n\nCommercial expeditions rebound faster and to a higher plateau\nIn 2021, both types dipped (COVID impact), but commercial climbs dropped only to ~67%, whereas non-commercial fell to ~53%. By 2024, commercial success surged to ~95 %, while non-commercial languished around ~64%.\nAcross individual peaks, company-run trips consistently outshine independent ones\nOn major peaks (Everest, Lhotse, Ama Dablam), commercial success rates hover in the 85–95 % range. Non-commercial attempts on the same mountains are 5–10 % lower.\nTeam-size effects differ by expedition type\nCommercial: success stays high (75–100 %) across all team sizes, peaking around 20 members.\nNon-commercial: a pronounced “U-shape”, very small groups (&gt; 80 %) and very large groups (~75 %) do better, but mid-sized teams (5–10 climbers) dip down near 50 %"
   },
   {
     "objectID": "presentation.html#question-2",
