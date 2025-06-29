@@ -53,7 +53,7 @@
     "href": "presentation.html#question-1",
     "title": "A Statistical Exploration of Himalayan Expeditions",
     "section": "Question 1",
-    "text": "Question 1\nWhat factors contribute to the success or failure of a summit?\n\nAnalyze expedition outcomes using both expedition and peak variables. “Success” will be defined based on the `TERMREASON_FACTOR`, with specific values representing a successful summit.\nUse factors like – geography, team size, oxygen use, and other factors relate to the likelihood of success"
+    "text": "Question 1\nWhat factors contribute to the success or failure of a summit?\n\nAnalyze expedition outcomes using both expedition and peak variables. “Success” will be defined based on the `TERMREASON_FACTOR`, with specific values representing a successful summit.\nUse factors like – geography, team size, year, and commercial vs non-commercial expeditions"
   },
   {
     "objectID": "presentation.html#question-1-approach",
@@ -95,7 +95,7 @@
     "href": "presentation.html#question-1-effect-of-geography-1",
     "title": "A Statistical Exploration of Himalayan Expeditions",
     "section": "Question 1 : Effect of Geography",
-    "text": "Question 1 : Effect of Geography\n\nGeography, in particular the altitude band of a peak—turns out not to be a simple “the higher you go, the harder it gets” story.\n\nLow-altitude peaks (~6800 m, e.g. Ama Dablam) enjoy very high success rates, thanks to gentler slopes, shorter approaches and straightforward rope-fixed “ladder” routes\nMid-altitude peaks (~7100–7300 m, like Pumori and Baruntse) dips to the bottom of the curve,mountains are often more technical, less commercialized, with fewer fixed ropes and smaller teams—so even though they’re “lower,” they prove tougher\nHigher Peaks (8000 m + like Everest) enjoys very high success rates, as they benefit from massive infrastructure (high-traffic base camps, helicopter support etc.), which more than offsets the physiological challenge of extreme altitude\nProbable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.\n\n\nOverall, a peak’s infrastructure and traffic are at least as critical to success as its height."
+    "text": "Question 1 : Effect of Geography\n\nGeography, in particular the altitude band of a peak—turns out not to be a simple “the higher you go, the harder it gets” story.\n\nLow-altitude peaks (~6800 m, e.g. Ama Dablam) enjoy very high success rates, thanks to gentler slopes, shorter approaches and straightforward rope-fixed “ladder” routes\nMid-altitude peaks (~7100–7300 m, like Pumori and Baruntse) dips to the bottom of the curve,mountains are often more technical, less commercialized, with fewer fixed ropes and smaller teams—so even though they’re “lower,” they prove tougher\nHigher Peaks (8000 m + like Everest) enjoys very high success rates, as they benefit from massive infrastructure (high-traffic base camps, helicopter support etc.), which more than offsets the physiological challenge of extreme altitude\n\nOverall, a peak’s infrastructure and traffic are at least as critical to success as its height."
   },
   {
     "objectID": "presentation.html#question-1-explore-year",
