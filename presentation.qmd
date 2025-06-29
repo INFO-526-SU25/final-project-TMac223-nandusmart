@@ -149,12 +149,12 @@ exped2 |>
 ::: {.column width="45%"}
 We will study with following variables:
 
-| Potential Factors                    |
-|--------------------------------------|
-| Explore Team Size                    |
-| Effect of Geography                  |
-| Explore Year                         |
-| Explore Commercial vs Non-Commercial |
+| Potential Factors to Study Success Rate |
+|-----------------------------------------|
+| Explore Team Size                       |
+| Effect of Geography                     |
+| Explore by Year                         |
+| Explore Commercial Factor               |
 :::
 :::::
 
@@ -204,9 +204,9 @@ ggplot(exped2, aes(x = team_size, fill = factor(success))) +
 
 ::: {.column width="50%" style="\"min-height:100px;"}
 ```{r, fig.height=3}
-df_bin <- exped2 %>%
-  group_by(team_size) %>%
-  summarize(rate = mean(success), n = n(), .groups="drop") %>%
+df_bin <- exped2 |>
+  group_by(team_size) |>
+  summarize(rate = mean(success), n = n(), .groups="drop") |>
   filter(n > 3)
 
 ggplot(df_bin, aes(x = team_size, y = rate)) +
@@ -228,7 +228,7 @@ ggplot(df_bin, aes(x = team_size, y = rate)) +
 :::
 ::::::
 
-## Question 1 : Explore Team Size
+## Question 1 : Explore Team Size Analysis
 
 ::: {style="font-size:0.7em; line-height:1.2;"}
 `These plots suggests a non-linear relationship between team size and summit success:`
@@ -255,10 +255,10 @@ ggplot(df_bin, aes(x = team_size, y = rate)) +
 ::::: columns
 ::: {.column width="50%"}
 ```{r}
-peak_success <- exped2 %>%
-  left_join(peaks %>% select(PEAKID, PKNAME, HEIGHTM), by = "PEAKID") %>%
-  group_by(PEAKID, PKNAME, HEIGHTM) %>%
-  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) %>%
+peak_success <- exped2 |>
+  left_join(peaks |> select(PEAKID, PKNAME, HEIGHTM), by = "PEAKID") |>
+  group_by(PEAKID, PKNAME, HEIGHTM) |>
+  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) |>
   filter(n > 10)
 
 ggplot(peak_success, aes(x = HEIGHTM, y = success_rate, label = PKNAME)) +
@@ -274,10 +274,10 @@ ggplot(peak_success, aes(x = HEIGHTM, y = success_rate, label = PKNAME)) +
 
 ::: {.column width="50%"}
 ```{r}
-peak_success <- exped2 %>%
-  left_join(peaks %>% select(PEAKID, PKNAME, HEIGHTM), by = "PEAKID") %>%
-  group_by(PKNAME, HEIGHTM) %>%
-  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) %>%
+peak_success <- exped2 |>
+  left_join(peaks |> select(PEAKID, PKNAME, HEIGHTM), by = "PEAKID") |>
+  group_by(PKNAME, HEIGHTM) |>
+  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) |>
   filter(n > 10)
 
 ggplot(peak_success, aes(x = reorder(PKNAME, HEIGHTM), y = HEIGHTM, color = success_rate, size = n)) +
@@ -314,7 +314,7 @@ ggplot(peak_success, aes(x = reorder(PKNAME, HEIGHTM), y = HEIGHTM, color = succ
 :::
 ::::::
 
-## Question 1 : Effect of Geography
+## Question 1 : Effect of Geography Analysis
 
 ::: {style="font-size:0.7em; line-height:1.2;"}
 `Geography, in particular the altitude band of a peak—turns out not to be a simple “the higher you go, the harder it gets” story.`
@@ -328,17 +328,17 @@ ggplot(peak_success, aes(x = reorder(PKNAME, HEIGHTM), y = HEIGHTM, color = succ
 Overall, a peak’s infrastructure and traffic are at least as critical to success as its height.
 :::
 
-## Question 1 : Explore Year
+## Question 1 : Explore by Year
 
 ::::: columns
 ::: {.column width="50%"}
 ```{r}
-yearly_success <- exped2 %>%
-  group_by(YEAR) %>%
+yearly_success <- exped2 |>
+  group_by(YEAR) |>
   summarize(
     success_rate = mean(success == 1, na.rm = TRUE),
     n = n()
-  ) %>%
+  ) |>
   filter(n > 1)
 
 ggplot(yearly_success, aes(x = YEAR, y = success_rate)) +
@@ -358,10 +358,10 @@ ggplot(yearly_success, aes(x = YEAR, y = success_rate)) +
 
 ::: {.column width="50%"}
 ```{r}
-peak_year <- exped2 %>%
-  left_join(peaks %>% select(PEAKID, PKNAME), by = "PEAKID") %>%
-  group_by(YEAR, PKNAME) %>%
-  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) %>%
+peak_year <- exped2 |>
+  left_join(peaks |> select(PEAKID, PKNAME), by = "PEAKID") |>
+  group_by(YEAR, PKNAME) |>
+  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) |>
   filter(n > 3)
 
 # Plot heatmap
@@ -396,7 +396,7 @@ ggplot(peak_year, aes(x = YEAR, y = reorder(PKNAME, -success_rate), fill = succe
 :::
 ::::::
 
-## Question 1 : Explore Year
+## Question 1 : Explore by Year Analysis
 
 ::: {style="font-size:0.7em; line-height:1.2;"}
 `These plots suggests, despite a pandemic-driven slump in 2021, overall expedition success has rebounded strongly by 2024`
@@ -419,7 +419,7 @@ ggplot(peak_year, aes(x = YEAR, y = reorder(PKNAME, -success_rate), fill = succe
 ::::: columns
 ::: {.column width="50%"}
 ```{r}
-exped2 <- exped2 %>%
+exped2 <- exped2 |>
   mutate(
     commercial = case_when(
       COMRTE == TRUE ~ "Commercial",
@@ -428,10 +428,10 @@ exped2 <- exped2 %>%
     )
   )
 
-comm_year <- exped2 %>%
-  filter(!is.na(commercial)) %>%
-  group_by(YEAR, commercial) %>%
-  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) %>%
+comm_year <- exped2 |>
+  filter(!is.na(commercial)) |>
+  group_by(YEAR, commercial) |>
+  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) |>
   filter(n > 3)
 
 ggplot(comm_year, aes(x = YEAR, y = success_rate, color = commercial)) +
@@ -452,12 +452,12 @@ ggplot(comm_year, aes(x = YEAR, y = success_rate, color = commercial)) +
 
 ::: {.column width="50%"}
 ```{r}
-exped2 %>%
-  filter(!is.na(commercial)) %>%
-  left_join(peaks %>% select(PEAKID, PKNAME), by = "PEAKID") %>%
-  group_by(PKNAME, commercial) %>%
-  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) %>%
-  filter(n > 5) %>%
+exped2 |>
+  filter(!is.na(commercial)) |>
+  left_join(peaks |> select(PEAKID, PKNAME), by = "PEAKID") |>
+  group_by(PKNAME, commercial) |>
+  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) |>
+  filter(n > 5) |>
   ggplot(aes(x = reorder(PKNAME, -success_rate), y = success_rate, fill = commercial)) +
     geom_col(position = "dodge") +
     coord_flip() +
@@ -480,11 +480,11 @@ exped2 %>%
 
 ::: {.column width="50%" style="\"min-height:100px;"}
 ```{r, fig.height=3}
-exped2 %>%
-  filter(!is.na(commercial)) %>%
-  group_by(team_size = TOTMEMBERS, commercial) %>%
-  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) %>%
-  filter(n > 3, !is.na(team_size)) %>%
+exped2 |>
+  filter(!is.na(commercial)) |>
+  group_by(team_size = TOTMEMBERS, commercial) |>
+  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) |>
+  filter(n > 3, !is.na(team_size)) |>
   ggplot(aes(x = team_size, y = success_rate, color = commercial)) +
     geom_point(size = 2, alpha = 0.7) +
     geom_smooth(se = FALSE) +
@@ -506,7 +506,7 @@ exped2 %>%
 :::
 ::::::
 
-## Question 1 : Commercial Factor
+## Question 1 : Commercial Factor Analysis
 
 ::: {style="font-size:0.7em; line-height:1.2;"}
 `These plots suggests, A professional, well-resourced support structure not only accelerates recovery from external shocks (like a pandemic) but also delivers uniformly higher success rates—regardless of mountain or team size.`

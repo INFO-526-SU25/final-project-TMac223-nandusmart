@@ -18,6 +18,34 @@ execute:
   echo: false
 ---
 
+
+```{r}
+#| label: load-packages
+#| include: false
+#| echo: false
+
+# Load packages here
+pacman::p_load(tidymodels,
+               tidyverse, patchwork, scales, ggplot2)
+
+```
+
+```{r}
+#| label: setup
+#| include: false
+#| echo: false
+
+ggplot2::theme_set(ggplot2::theme_minimal(base_size = 11))
+
+knitr::opts_chunk$set(
+  fig.retina = 3, 
+  dpi = 300, 
+  fig.width = 6, 
+  fig.asp = 0.618 
+  )
+```
+
+
 ## Abstract
 
 High-altitude mountaineering offers a natural laboratory for studying how human, environmental, and logistical factors interact to shape risk and achievement. Using tidy versions of the Himalayan Database, this project leverages R (tidyverse, tidy models) and Quarto to build an interactive, reproducible data-visualisation narrative around two guiding questions:
@@ -41,3 +69,492 @@ Preliminary findings suggest that
 \- larger, commercially sponsored teams enjoy slightly higher success but only marginal safety advantages once altitude and weather are controlled
 
 \- resource intensive strategies such as extensive oxygen deployment reduce high-altitude illness yet do not eliminate fatal risk.
+
+## Introduction
+
+This project looks at data from many Himalayan mountain climbing trips. We use two main files: one has details about each expedition (called `exped_tidy.csv`), and the other has information about the mountains themselves (`peaks_tidy.csv`). The expedition data covers hundreds of trips over many years. For each trip, we know things like which mountain was climbed, how many people were in the team, if they used oxygen, if it was a commercial (guided) trip, and whether the team reached the summit or not.
+
+The mountain (peaks) data gives us extra facts, like each mountain’s name, height, and what region it is in. By putting these two datasets together, we can explore how things like team size, the use of oxygen, type of trip, and which mountain was climbed affect the chances of reaching the summit.
+
+## Question 1: **What factors contribute to the success or failure of a summit?**
+
+-   Analyze expedition outcomes using both expedition and peak variables. "Success" will be defined based on the \`TERMREASON_FACTOR\`, with specific values representing a successful summit.
+
+-   Use factors like -- geography, team size, year, and commercial vs non-commercial expeditions
+
+### **Introduction**
+
+Climbing a Himalayan peak is a big challenge, and not every team that tries will reach the top. Some expeditions succeed, while others turn back before the summit. But what makes the difference? In this project, we want to understand what factors help climbers succeed and what might make them fail.
+
+We have used following factors:
+
+|                           |
+|---------------------------|
+| Explore Team Size         |
+| Effect of Geography       |
+| Explore by Year           |
+| Explore Commercial Factor |
+
+### **Approach**
+
+-   Get Data from the CSV files
+
+```{r}
+#| code-fold: true
+#| code-summary: "Code"
+#| echo: true
+#| results: hide
+#| message: false
+#| warning: false
+
+exped <- read_csv("data/exped_tidy.csv")
+peaks <- read_csv("data/peaks_tidy.csv")
+
+colnames(peaks)
+head(peaks)
+colnames(exped)
+head(exped)
+
+table(exped$SUCCESS1, useNA = "ifany")
+
+```
+
+-   Build Model & Variable Inferences
+
+```{r}
+#| code-fold: true
+#| code-summary: "Code"
+#| echo: true
+#| results: hide
+#| message: false
+#| warning: false
+
+table(exped$SUCCESS1, useNA = "ifany")
+exped2 <- exped |>
+  mutate(
+    success = ifelse(SUCCESS1 %in% c("Y", "Yes", "yes"), 1,
+                     ifelse(SUCCESS1 %in% c("N", "No", "no"), 0, as.numeric(SUCCESS1))),
+    peak = as.factor(PEAKID),
+    team_size = as.numeric(TOTMEMBERS),
+    oxygen = ifelse(O2USED %in% c("Y", "Yes", "yes"), 1,
+                    ifelse(O2USED %in% c("N", "No", "no"), 0, as.numeric(O2USED))),
+    season = as.factor(SEASON)
+  ) |>
+  filter(!is.na(success), !is.na(team_size), !is.na(oxygen)) 
+
+model <- glm(
+  success ~ peak + team_size + oxygen + season + YEAR,
+  data = exped2,
+  family = "binomial"
+)
+```
+
+-   Start plotting various charts building up to the case
+
+## Question 1 : Start
+
+::::: columns
+::: {.column width="55%"}
+The Overall Success vs Failure Rate out of all expeditions.
+
+```{r}
+
+exped2 |>
+  mutate(outcome = ifelse(success == 1, "Success", "Failure")) |>
+  group_by(outcome) |>
+  summarize(n = n()) |>
+  mutate(rate = n / sum(n)) |>
+  ggplot(aes(x = outcome, y = rate, fill = outcome)) +
+    geom_col(width = 0.5) +
+    scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c("Success" = "forestgreen", "Failure" = "firebrick")) +
+    labs(
+      title = "Overall Expedition Success vs Failure Rate",
+      x = "Expedition Outcome",
+      y = "Proportion"
+    ) +
+    theme_minimal()
+
+```
+:::
+
+::: {.column width="45%"}
+We will study with following variables:
+
+| Potential Factors to Study Success Rate |
+|-----------------------------------------|
+| Explore Team Size                       |
+| Effect of Geography                     |
+| Explore by Year                         |
+| Explore Commercial Factor               |
+:::
+:::::
+
+## Question 1 : Explore Team Size
+
+::::: columns
+::: {.column width="50%"}
+```{r}
+ggplot(exped2, aes(team_size)) +
+  geom_histogram(binwidth = 1, fill = "steelblue", color = "white") +
+  facet_wrap(~ success, labeller = labeller(success = c(`0` = "Failure", `1` = "Success"))) +
+  labs(
+    x     = "Team Size",
+    y     = "Count",
+    title = "Distribution of Team Sizes\nfor Success vs. Failure"
+  )
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+ggplot(exped2, aes(x = team_size, fill = factor(success))) +
+  geom_bar(position = "fill") +
+  scale_x_continuous(
+    breaks = seq(0, max(exped2$team_size, na.rm = TRUE), by = 10),
+    expand = expansion(add = c(0, 0))
+  ) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    x     = "Team Size",
+    y     = "Proportion",
+    fill  = "Success\n(1 = yes)",
+    title = "Proportion of Success vs. Failure\nby Team Size"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5),
+    plot.title  = element_text(hjust = 0.5)
+  )
+
+```
+:::
+:::::
+
+:::::: columns
+::: {.column width="25%"}
+:::
+
+::: {.column width="50%" style="\"min-height:100px;"}
+```{r, fig.height=3}
+df_bin <- exped2 |>
+  group_by(team_size) |>
+  summarize(rate = mean(success), n = n(), .groups="drop") |>
+  filter(n > 3)
+
+ggplot(df_bin, aes(x = team_size, y = rate)) +
+  geom_segment(aes(xend = team_size, y = 0, yend = rate), color = "grey70") +
+  geom_point(size = 2) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    x     = "Team Size",
+    y     = "Success Rate",
+    title = "Lollipop Chart of Success Rate by Team Size",
+    caption = "Source: Himalayan Database (2020–2024)"
+  )
+
+```
+:::
+
+::: {.column width="25%"}
+<!-- blank right spacer -->
+:::
+::::::
+
+## Question 1 : Explore Team Size Analysis
+
+::: {style="font-size:0.7em; line-height:1.2;"}
+`These plots suggests a non-linear relationship between team size and summit success:`
+
+-   **`Very small teams (1–5 climbers)`** tend to have very high success rates.
+
+    Probable cause - agility, lighter logistical needs, and tighter decision-making.
+
+-   **`Small-to-medium teams (3–8 climbers)`** show a noticeable dip in success.
+
+    Probable cause - enough complexity to introduce friction but not enough manpower to provide robust support.
+
+-   **`Medium-large teams (9–20 climbers)`** exhibit steadily increasing success rates, peaking around 20 members at or near 100%.
+
+    Probable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.
+
+-   **`Very large teams (20+)`** see a gradual decline in success.
+
+    Probable cause - supplies, campsite congestion, decision latency.
+:::
+
+## Question 1 : Effect of Geography
+
+::::: columns
+::: {.column width="50%"}
+```{r}
+peak_success <- exped2 |>
+  left_join(peaks |> select(PEAKID, PKNAME, HEIGHTM), by = "PEAKID") |>
+  group_by(PEAKID, PKNAME, HEIGHTM) |>
+  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) |>
+  filter(n > 10)
+
+ggplot(peak_success, aes(x = HEIGHTM, y = success_rate, label = PKNAME)) +
+  geom_point(color = "steelblue", size = 3, alpha = 0.7) +
+  geom_text(vjust = -0.8, size = 2.5, check_overlap = TRUE) +
+  labs(
+    title = "Altitude vs. Success Rate Across Peaks",
+    x = "Altitude (meters)",
+    y = "Success Rate"
+  ) + geom_smooth(method = "loess", se = FALSE, color = "darkred")
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+peak_success <- exped2 |>
+  left_join(peaks |> select(PEAKID, PKNAME, HEIGHTM), by = "PEAKID") |>
+  group_by(PKNAME, HEIGHTM) |>
+  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) |>
+  filter(n > 10)
+
+ggplot(peak_success, aes(x = reorder(PKNAME, HEIGHTM), y = HEIGHTM, color = success_rate, size = n)) +
+  geom_point(alpha = 0.8) +
+  scale_color_gradient(low = "red", high = "green") +
+  labs(
+    title = "Altitude and Success Rate Across Peaks",
+    x = "Peak",
+    y = "Altitude (meters)",
+    color = "Success Rate",
+    size = "Number of Expeditions"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1)
+  )
+```
+:::
+:::::
+
+:::::: columns
+::: {.column width="25%"}
+:::
+
+::: {.column width="50%" style="\"min-height:60px;"}
+```{r, fig.height=3}
+
+
+```
+:::
+
+::: {.column width="25%"}
+<!-- blank right spacer -->
+:::
+::::::
+
+## Question 1 : Effect of Geography Analysis
+
+::: {style="font-size:0.7em; line-height:1.2;"}
+`Geography, in particular the altitude band of a peak—turns out not to be a simple “the higher you go, the harder it gets” story.`
+
+-   **`Low-altitude peaks (~6800 m, e.g. Ama Dablam)`** enjoy very high success rates, thanks to gentler slopes, shorter approaches and straightforward rope-fixed “ladder” routes
+
+-   **`Mid-altitude peaks (~7100–7300 m, like Pumori and Baruntse)`** dips to the bottom of the curve,mountains are often more technical, less commercialized, with fewer fixed ropes and smaller teams—so even though they’re “lower,” they prove tougher
+
+-   **`Higher Peaks (8000 m + like Everest)`** enjoys very high success rates, as they benefit from massive infrastructure (high-traffic base camps, helicopter support etc.), which more than offsets the physiological challenge of extreme altitude
+
+Overall, a peak’s infrastructure and traffic are at least as critical to success as its height.
+:::
+
+## Question 1 : Explore by Year
+
+::::: columns
+::: {.column width="50%"}
+```{r}
+yearly_success <- exped2 |>
+  group_by(YEAR) |>
+  summarize(
+    success_rate = mean(success == 1, na.rm = TRUE),
+    n = n()
+  ) |>
+  filter(n > 1)
+
+ggplot(yearly_success, aes(x = YEAR, y = success_rate)) +
+  geom_line(color = "steelblue", size = 1.2) +
+  geom_point(color = "darkred", size = 2) +
+  geom_smooth(method = "loess", se = FALSE, color = "forestgreen", linetype = "dashed") +
+  labs(
+    title = "Expedition Success Rate by Year (with Trend)",
+    x = "Year",
+    y = "Success Rate"
+  ) +
+  scale_y_continuous(labels = scales::percent) +
+  theme_minimal()
+
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+peak_year <- exped2 |>
+  left_join(peaks |> select(PEAKID, PKNAME), by = "PEAKID") |>
+  group_by(YEAR, PKNAME) |>
+  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) |>
+  filter(n > 3)
+
+# Plot heatmap
+ggplot(peak_year, aes(x = YEAR, y = reorder(PKNAME, -success_rate), fill = success_rate)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "red", high = "green") +
+  labs(
+    title = "Success Rate by Year and Peak",
+    x = "Year",
+    y = "Peak",
+    fill = "Success Rate"
+  ) +
+  theme_minimal()
+
+```
+:::
+:::::
+
+:::::: columns
+::: {.column width="25%"}
+:::
+
+::: {.column width="50%" style="\"min-height:100px;"}
+```{r, fig.height=3}
+
+
+```
+:::
+
+::: {.column width="25%"}
+<!-- blank right spacer -->
+:::
+::::::
+
+## Question 1 : Explore by Year Analysis
+
+::: {style="font-size:0.7em; line-height:1.2;"}
+`These plots suggests, despite a pandemic-driven slump in 2021, overall expedition success has rebounded strongly by 2024`
+
+-   **`2020`** average success rate \~ 72%
+
+    Probable cause – pre-pandemic normalcy, full staffing, established logistics.
+
+-   **`2021-2022`** average success rate fell to \~ 63%
+
+    Probable cause – COVID travel restrictions & teams adapted to new health protocols and smaller expedition sizes.
+
+-   **`2023-2024`** average success rate rebound to \~ 80%
+
+    Probable cause – full operational recovery, improved high-altitude gear, accumulated guiding experience.
+:::
+
+## Question 1 : Commercial Factor
+
+::::: columns
+::: {.column width="50%"}
+```{r}
+exped2 <- exped2 |>
+  mutate(
+    commercial = case_when(
+      COMRTE == TRUE ~ "Commercial",
+      COMRTE == FALSE ~ "Non-Commercial",
+      TRUE ~ NA_character_
+    )
+  )
+
+comm_year <- exped2 |>
+  filter(!is.na(commercial)) |>
+  group_by(YEAR, commercial) |>
+  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) |>
+  filter(n > 3)
+
+ggplot(comm_year, aes(x = YEAR, y = success_rate, color = commercial)) +
+  geom_line(size = 1.1) +
+  geom_point() +
+  scale_color_manual(values = c("Commercial" = "skyblue", "Non-Commercial" = "gray40")) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    title = "Success Rate by Year: Commercial vs Non-Commercial",
+    x = "Year",
+    y = "Success Rate",
+    color = "Expedition Type"
+  ) +
+  theme_minimal()
+
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+exped2 |>
+  filter(!is.na(commercial)) |>
+  left_join(peaks |> select(PEAKID, PKNAME), by = "PEAKID") |>
+  group_by(PKNAME, commercial) |>
+  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) |>
+  filter(n > 5) |>
+  ggplot(aes(x = reorder(PKNAME, -success_rate), y = success_rate, fill = commercial)) +
+    geom_col(position = "dodge") +
+    coord_flip() +
+    scale_fill_manual(values = c("Commercial" = "skyblue", "Non-Commercial" = "gray70")) +
+    labs(
+      title = "Success Rate by Peak and Expedition Type",
+      x = "Peak",
+      y = "Success Rate",
+      fill = "Type"
+    ) +
+    theme_minimal()
+
+```
+:::
+:::::
+
+:::::: columns
+::: {.column width="25%"}
+:::
+
+::: {.column width="50%" style="\"min-height:100px;"}
+```{r, fig.height=3}
+exped2 |>
+  filter(!is.na(commercial)) |>
+  group_by(team_size = TOTMEMBERS, commercial) |>
+  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) |>
+  filter(n > 3, !is.na(team_size)) |>
+  ggplot(aes(x = team_size, y = success_rate, color = commercial)) +
+    geom_point(size = 2, alpha = 0.7) +
+    geom_smooth(se = FALSE) +
+    scale_color_manual(values = c("Commercial" = "skyblue", "Non-Commercial" = "gray70")) +
+    scale_y_continuous(labels = scales::percent) +
+    labs(
+      title = "Team Size vs Success Rate by Expedition Type",
+      x = "Team Size",
+      y = "Success Rate",
+      color = "Expedition Type"
+    ) +
+    theme_minimal()
+
+```
+:::
+
+::: {.column width="25%"}
+<!-- blank right spacer -->
+:::
+::::::
+
+## Question 1 : Commercial Factor Analysis
+
+::: {style="font-size:0.7em; line-height:1.2;"}
+`These plots suggests, A professional, well-resourced support structure not only accelerates recovery from external shocks (like a pandemic) but also delivers uniformly higher success rates—regardless of mountain or team size.`
+
+-   **`Commercial expeditions rebound faster and to a higher plateau`**
+
+    In 2021, both types dipped (COVID impact), but commercial climbs dropped only to \~67%, whereas non-commercial fell to \~53%. By 2024, commercial success surged to \~95 %, while non-commercial languished around \~64%.
+
+-   **`Across individual peaks, company-run trips consistently outshine independent ones`**
+
+    On major peaks (Everest, Lhotse, Ama Dablam), commercial success rates hover in the 85–95 % range. Non-commercial attempts on the same mountains are 5–10 % lower.
+
+-   **`Team-size effects differ by expedition type`**
+
+    **Commercial**: success stays high (75–100 %) across all team sizes, peaking around 20 members. \
+    **Non-commercial**: a pronounced “U-shape”, very small groups (\> 80 %) and very large groups (\~75 %) do better, but mid-sized teams (5–10 climbers) dip down near 50 %
+:::
+
+## Question 2
