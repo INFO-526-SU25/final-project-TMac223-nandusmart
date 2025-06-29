@@ -119,6 +119,8 @@ model <- glm(
 
 Let's start with what is the overall Success vs Failure Rate out of all overall expeditions.
 
+::::: columns
+::: {.column width="60%"}
 ```{r}
 
 exped2 |>
@@ -138,7 +140,13 @@ exped2 |>
     theme_minimal()
 
 ```
+:::
 
+::: {.column width="50%"}
+
+
+:::
+:::::
 ## Question 1 : Explore Team Size
 
 ::::: columns
@@ -154,6 +162,7 @@ ggplot(exped2, aes(team_size)) +
   )
 ```
 :::
+
 
 ::: {.column width="50%"}
 ```{r}
@@ -177,15 +186,12 @@ ggplot(exped2, aes(x = team_size, fill = factor(success))) +
 
 ```
 :::
-:::::
+:::
 ::: columns
 ::: {.column width="25%"}
-
-<!-- blank left spacer -->
 :::
-
 ::: {.column width="50%"}
-```{r}
+```{r, fig.height=2}
 df_bin <- exped2 %>%
   group_by(team_size) %>%
   summarize(rate = mean(success), n = n(), .groups="drop") %>%
@@ -198,7 +204,8 @@ ggplot(df_bin, aes(x = team_size, y = rate)) +
   labs(
     x     = "Team Size",
     y     = "Success Rate",
-    title = "Lollipop Chart of Success Rate by Team Size"
+    title = "Lollipop Chart of Success Rate by Team Size",
+    caption = "Source: Himalayan Database (2020–2024)"
   )
 
 ```
