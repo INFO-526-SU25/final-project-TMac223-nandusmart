@@ -55,7 +55,15 @@ knitr::opts_chunk$set(
 
     -   **peaks_tidy** - Includes data about the Himalayan Peaks
 
-## Question 1
+### Question 1
+
+**What factors contribute to the success or failure of a summit?**
+
+Analyze expedition outcomes using both expedition and peak variables. "Success" will be defined based on the \`TERMREASON_FACTOR\`, with specific values representing a successful summit (e.g., "Success (main peak)", "Success (claimed)").
+
+### Approach
+
+-   Get Data from the CSV files
 
 ```{r}
 #| label: load-data
@@ -70,10 +78,10 @@ table(exped$SUCCESS1, useNA = "ifany")
 
 ```
 
+-   Build Model
 ```{r}
 #| label: build model
-#| include: false
-#| echo: false
+#| code-fold: true
 # Load data here
 
 table(exped$SUCCESS1, useNA = "ifany")
@@ -95,10 +103,11 @@ model <- glm(
   data = exped2,
   family = "binomial"
 )
-summary(model)
+
 
 ```
 
+-   1. Success rate By Year
 ```{r}
 exped2 %>%
   group_by(team_size) %>%
@@ -109,12 +118,8 @@ exped2 %>%
     labs(title = "Success Rate by Team Size", x = "Team Size", y = "Success Rate")
 ```
 
-## Question 2
+### Question 2
 
-# Limitations:
+#### Limitations:
 
-1.  The source code of a LaTeX math expression must be in one line, unless it is inside a pair of double dollar signs, in which case the starting `$$` must appear in the very beginning of a line, followed immediately by a non-space character, and the ending `$$` must be at the end of a line, led by a non-space character;
-
-2.  There should not be spaces after the opening `$` or before the closing `$`.
-
-# Wrap up
+### Wrap up
