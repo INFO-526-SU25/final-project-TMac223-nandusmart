@@ -55,7 +55,7 @@ knitr::opts_chunk$set(
 
     -   **peaks_tidy** - Includes data about the Himalayan Peaks
 
-### Question 1
+## Question 1
 
 **What factors contribute to the success or failure of a summit?**
 
@@ -118,8 +118,8 @@ exped2 %>%
     labs(title = "Success Rate by Team Size", x = "Team Size", y = "Success Rate")
 ```
 
-### Question 2
+## Question 2
 
-#### Limitations:
+### Approach:
 
 ### Wrap up
