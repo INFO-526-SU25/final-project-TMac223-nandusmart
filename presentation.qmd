@@ -76,6 +76,10 @@ knitr::opts_chunk$set(
 #| warning: false
 
 exped <- read_csv("data/exped_tidy.csv")
+peaks <- read_csv("data/peaks_tidy.csv")
+
+colnames(peaks)
+head(peaks)
 colnames(exped)
 head(exped)
 
@@ -117,10 +121,10 @@ model <- glm(
 
 ## Question 1 : Start
 
-Let's start with what is the overall Success vs Failure Rate out of all overall expeditions.
-
 ::::: columns
-::: {.column width="60%"}
+::: {.column width="55%"}
+The Overall Success vs Failure Rate out of all expeditions.
+
 ```{r}
 
 exped2 |>
@@ -142,11 +146,18 @@ exped2 |>
 ```
 :::
 
-::: {.column width="50%"}
+::: {.column width="45%"}
+We will study with following variables:
 
-
+| Potential Factors                    |
+|--------------------------------------|
+| Explore Team Size                    |
+| Effect of Geography                   |
+| Explore Year                         |
+| Explore Commercial vs Non-Commercial |
 :::
 :::::
+
 ## Question 1 : Explore Team Size
 
 ::::: columns
@@ -162,7 +173,6 @@ ggplot(exped2, aes(team_size)) +
   )
 ```
 :::
-
 
 ::: {.column width="50%"}
 ```{r}
@@ -186,12 +196,14 @@ ggplot(exped2, aes(x = team_size, fill = factor(success))) +
 
 ```
 :::
-:::
-::: columns
+:::::
+
+:::::: columns
 ::: {.column width="25%"}
 :::
-::: {.column width="50%"}
-```{r, fig.height=2}
+
+::: {.column width="50%" style="\"min-height:100px;"}
+```{r, fig.height=3}
 df_bin <- exped2 %>%
   group_by(team_size) %>%
   summarize(rate = mean(success), n = n(), .groups="drop") %>%
@@ -212,30 +224,297 @@ ggplot(df_bin, aes(x = team_size, y = rate)) +
 :::
 
 ::: {.column width="25%"}
-
 <!-- blank right spacer -->
 :::
-:::
-
+::::::
 
 ## Question 1 : Explore Team Size
 
 ::: {style="font-size:0.7em; line-height:1.2;"}
 `These plots suggests a non-linear relationship between team size and summit success:`
 
--   **`Very small teams (1–5 climbers)`**\ tend to have very high success rates.
+-   **`Very small teams (1–5 climbers)`** tend to have very high success rates.
 
     Probable cause - agility, lighter logistical needs, and tighter decision-making.\
 
--   **`Small-to-medium teams (3–8 climbers)`**\ show a noticeable dip in success.
+-   **`Small-to-medium teams (3–8 climbers)`** show a noticeable dip in success.
 
     Probable cause - enough complexity to introduce friction but not enough manpower to provide robust support.\
 
--   **`Medium-large teams (9–20 climbers)`**\ exhibit steadily increasing success rates, peaking around 20 members at or near 100%.
+-   **`Medium-large teams (9–20 climbers)`** exhibit steadily increasing success rates, peaking around 20 members at or near 100%.
 
     Probable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.\
 
--   **`Very large teams (20+)`**\ see a gradual decline in success.
+-   **`Very large teams (20+)`** see a gradual decline in success.
+
+    Probable cause - supplies, campsite congestion, decision latency.\
+:::
+
+
+## Question 1 : Effect of Geography
+
+::::: columns
+::: {.column width="50%"}
+```{r}
+peak_success <- exped2 %>%
+  left_join(peaks %>% select(PEAKID, PKNAME, HEIGHTM), by = "PEAKID") %>%
+  group_by(PEAKID, PKNAME, HEIGHTM) %>%
+  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) %>%
+  filter(n > 10)
+
+ggplot(peak_success, aes(x = HEIGHTM, y = success_rate, label = PKNAME)) +
+  geom_point(color = "steelblue", size = 3, alpha = 0.7) +
+  geom_text(vjust = -0.8, size = 2.5, check_overlap = TRUE) +
+  labs(
+    title = "Altitude vs. Success Rate Across Peaks",
+    x = "Altitude (meters)",
+    y = "Success Rate"
+  ) + geom_smooth(method = "loess", se = FALSE, color = "darkred")
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+peak_success <- exped2 %>%
+  left_join(peaks %>% select(PEAKID, PKNAME, HEIGHTM), by = "PEAKID") %>%
+  group_by(PKNAME, HEIGHTM) %>%
+  summarize(success_rate = mean(success == 1, na.rm = TRUE), n = n()) %>%
+  filter(n > 10)
+
+ggplot(peak_success, aes(x = reorder(PKNAME, HEIGHTM), y = HEIGHTM, color = success_rate, size = n)) +
+  geom_point(alpha = 0.8) +
+  scale_color_gradient(low = "red", high = "green") +
+  labs(
+    title = "Altitude and Success Rate Across Peaks",
+    x = "Peak",
+    y = "Altitude (meters)",
+    color = "Success Rate",
+    size = "Number of Expeditions"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1)
+  )
+```
+:::
+:::::
+
+:::::: columns
+::: {.column width="25%"}
+:::
+
+::: {.column width="50%" style="\"min-height:60px;"}
+```{r, fig.height=3}
+
+
+```
+:::
+
+::: {.column width="25%"}
+<!-- blank right spacer -->
+:::
+::::::
+
+## Question 1 : Effect of Geography
+
+::: {style="font-size:0.7em; line-height:1.2;"}
+`Geography, in particular the altitude band of a peak—turns out not to be a simple “the higher you go, the harder it gets” story. `
+
+-   **`Low-altitude peaks (~6800 m, e.g. Ama Dablam)`** enjoy very high success rates, thanks to gentler slopes, shorter approaches and straightforward rope-fixed “ladder” routes
+
+-   **`Mid-altitude peaks (~7100–7300 m, like Pumori and Baruntse)`** dips to the bottom of the curve,mountains are often more technical, less commercialized, with fewer fixed ropes and smaller teams—so even though they’re “lower,” they prove tougher
+
+-   **`Higher Peaks (8000 m + like Everest)`** enjoys very high success rates, as they benefit from massive infrastructure (high-traffic base camps, helicopter support etc.), which more than offsets the physiological challenge of extreme altitude
+
+    Probable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.\
+
+
+Overall, a peak’s infrastructure and traffic are at least as critical to success as its height.
+
+:::
+
+
+## Question 1 : Explore Year
+
+::::: columns
+::: {.column width="50%"}
+```{r}
+ggplot(exped2, aes(team_size)) +
+  geom_histogram(binwidth = 1, fill = "steelblue", color = "white") +
+  facet_wrap(~ success, labeller = labeller(success = c(`0` = "Failure", `1` = "Success"))) +
+  labs(
+    x     = "Team Size",
+    y     = "Count",
+    title = "Distribution of Team Sizes\nfor Success vs. Failure"
+  )
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+ggplot(exped2, aes(x = team_size, fill = factor(success))) +
+  geom_bar(position = "fill") +
+  scale_x_continuous(
+    breaks = seq(0, max(exped2$team_size, na.rm = TRUE), by = 10),
+    expand = expansion(add = c(0, 0))
+  ) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    x     = "Team Size",
+    y     = "Proportion",
+    fill  = "Success\n(1 = yes)",
+    title = "Proportion of Success vs. Failure\nby Team Size"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5),
+    plot.title  = element_text(hjust = 0.5)
+  )
+
+```
+:::
+:::::
+
+:::::: columns
+::: {.column width="25%"}
+:::
+
+::: {.column width="50%" style="\"min-height:100px;"}
+```{r, fig.height=3}
+df_bin <- exped2 %>%
+  group_by(team_size) %>%
+  summarize(rate = mean(success), n = n(), .groups="drop") %>%
+  filter(n > 3)
+
+ggplot(df_bin, aes(x = team_size, y = rate)) +
+  geom_segment(aes(xend = team_size, y = 0, yend = rate), color = "grey70") +
+  geom_point(size = 2) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    x     = "Team Size",
+    y     = "Success Rate",
+    title = "Lollipop Chart of Success Rate by Team Size",
+    caption = "Source: Himalayan Database (2020–2024)"
+  )
+
+```
+:::
+
+::: {.column width="25%"}
+<!-- blank right spacer -->
+:::
+::::::
+
+## Question 1 : Explore Year
+
+::: {style="font-size:0.7em; line-height:1.2;"}
+`These plots suggests a non-linear relationship between team size and summit success:`
+
+-   **`Very small teams (1–5 climbers)`** tend to have very high success rates.
+
+    Probable cause - agility, lighter logistical needs, and tighter decision-making.\
+
+-   **`Small-to-medium teams (3–8 climbers)`** show a noticeable dip in success.
+
+    Probable cause - enough complexity to introduce friction but not enough manpower to provide robust support.\
+
+-   **`Medium-large teams (9–20 climbers)`** exhibit steadily increasing success rates, peaking around 20 members at or near 100%.
+
+    Probable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.\
+
+-   **`Very large teams (20+)`** see a gradual decline in success.
+
+    Probable cause - supplies, campsite congestion, decision latency.\
+:::
+
+
+## Question 1 : Explore Commercial vs Non-Commercial
+
+::::: columns
+::: {.column width="50%"}
+```{r}
+ggplot(exped2, aes(team_size)) +
+  geom_histogram(binwidth = 1, fill = "steelblue", color = "white") +
+  facet_wrap(~ success, labeller = labeller(success = c(`0` = "Failure", `1` = "Success"))) +
+  labs(
+    x     = "Team Size",
+    y     = "Count",
+    title = "Distribution of Team Sizes\nfor Success vs. Failure"
+  )
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+ggplot(exped2, aes(x = team_size, fill = factor(success))) +
+  geom_bar(position = "fill") +
+  scale_x_continuous(
+    breaks = seq(0, max(exped2$team_size, na.rm = TRUE), by = 10),
+    expand = expansion(add = c(0, 0))
+  ) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    x     = "Team Size",
+    y     = "Proportion",
+    fill  = "Success\n(1 = yes)",
+    title = "Proportion of Success vs. Failure\nby Team Size"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5),
+    plot.title  = element_text(hjust = 0.5)
+  )
+
+```
+:::
+:::::
+
+:::::: columns
+::: {.column width="25%"}
+:::
+
+::: {.column width="50%" style="\"min-height:100px;"}
+```{r, fig.height=3}
+df_bin <- exped2 %>%
+  group_by(team_size) %>%
+  summarize(rate = mean(success), n = n(), .groups="drop") %>%
+  filter(n > 3)
+
+ggplot(df_bin, aes(x = team_size, y = rate)) +
+  geom_segment(aes(xend = team_size, y = 0, yend = rate), color = "grey70") +
+  geom_point(size = 2) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    x     = "Team Size",
+    y     = "Success Rate",
+    title = "Lollipop Chart of Success Rate by Team Size",
+    caption = "Source: Himalayan Database (2020–2024)"
+  )
+
+```
+:::
+
+::: {.column width="25%"}
+<!-- blank right spacer -->
+:::
+::::::
+
+## Question 1 : Explore Commercial vs Non-Commercial
+
+::: {style="font-size:0.7em; line-height:1.2;"}
+`These plots suggests a non-linear relationship between team size and summit success:`
+
+-   **`Very small teams (1–5 climbers)`** tend to have very high success rates.
+
+    Probable cause - agility, lighter logistical needs, and tighter decision-making.\
+
+-   **`Small-to-medium teams (3–8 climbers)`** show a noticeable dip in success.
+
+    Probable cause - enough complexity to introduce friction but not enough manpower to provide robust support.\
+
+-   **`Medium-large teams (9–20 climbers)`** exhibit steadily increasing success rates, peaking around 20 members at or near 100%.
+
+    Probable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.\
+
+-   **`Very large teams (20+)`** see a gradual decline in success.
 
     Probable cause - supplies, campsite congestion, decision latency.\
 :::
