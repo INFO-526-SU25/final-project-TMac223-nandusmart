@@ -59,16 +59,21 @@ knitr::opts_chunk$set(
 
 **What factors contribute to the success or failure of a summit?**
 
-Analyze expedition outcomes using both expedition and peak variables. "Success" will be defined based on the \`TERMREASON_FACTOR\`, with specific values representing a successful summit (e.g., "Success (main peak)", "Success (claimed)").
+-   Analyze expedition outcomes using both expedition and peak variables. "Success" will be defined based on the \`TERMREASON_FACTOR\`, with specific values representing a successful summit.
 
-## Approach
+-   
+
+## Question 1 : Approach
 
 -   Get Data from the CSV files
 
 ```{r}
-#| label: load-data
-#| include: false
-# Load data here
+#| code-fold: true
+#| code-summary: "Code"
+#| echo: true
+#| results: hide
+#| message: false
+#| warning: false
 
 exped <- read_csv("data/exped_tidy.csv")
 colnames(exped)
@@ -78,17 +83,19 @@ table(exped$SUCCESS1, useNA = "ifany")
 
 ```
 
--   Build Model
+-   Build Model & Variable Inferences
 
 ```{r}
-#| label: build model
 #| code-fold: true
-# Load data here
+#| code-summary: "Code"
+#| echo: true
+#| results: hide
+#| message: false
+#| warning: false
 
 table(exped$SUCCESS1, useNA = "ifany")
-exped2 <- exped %>%
+exped2 <- exped |>
   mutate(
-    # Convert summit success to binary numeric (adjust if needed)
     success = ifelse(SUCCESS1 %in% c("Y", "Yes", "yes"), 1,
                      ifelse(SUCCESS1 %in% c("N", "No", "no"), 0, as.numeric(SUCCESS1))),
     peak = as.factor(PEAKID),
@@ -96,30 +103,42 @@ exped2 <- exped %>%
     oxygen = ifelse(O2USED %in% c("Y", "Yes", "yes"), 1,
                     ifelse(O2USED %in% c("N", "No", "no"), 0, as.numeric(O2USED))),
     season = as.factor(SEASON)
-  ) %>%
-  filter(!is.na(success), !is.na(team_size), !is.na(oxygen)) # Remove rows with missing values
+  ) |>
+  filter(!is.na(success), !is.na(team_size), !is.na(oxygen)) 
 
 model <- glm(
   success ~ peak + team_size + oxygen + season + YEAR,
   data = exped2,
   family = "binomial"
 )
-
-
 ```
 
--   
+-   Start plotting various charts building up to the case
 
-    1.  Success rate By Year
+
+
+## Question 1 : Start
+
+Let's start with what is the overall Success vs Failure Rate out of all overall expeditions.
 
 ```{r}
-exped2 %>%
-  group_by(team_size) %>%
-  summarize(success_rate = mean(success), n = n()) %>%
-  filter(n > 3) %>%
-  ggplot(aes(x = team_size, y = success_rate)) +
-    geom_line() +
-    labs(title = "Success Rate by Team Size", x = "Team Size", y = "Success Rate")
+
+exped2 |>
+  mutate(outcome = ifelse(success == 1, "Success", "Failure")) |>
+  group_by(outcome) |>
+  summarize(n = n()) |>
+  mutate(rate = n / sum(n)) |>
+  ggplot(aes(x = outcome, y = rate, fill = outcome)) +
+    geom_col(width = 0.5) +
+    scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c("Success" = "forestgreen", "Failure" = "firebrick")) +
+    labs(
+      title = "Overall Expedition Success vs Failure Rate",
+      x = "Expedition Outcome",
+      y = "Proportion"
+    ) +
+    theme_minimal()
+
 ```
 
 ## Question 2
