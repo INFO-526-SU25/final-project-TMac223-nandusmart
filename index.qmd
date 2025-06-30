@@ -18,7 +18,6 @@ execute:
   echo: false
 ---
 
-
 ```{r}
 #| label: load-packages
 #| include: false
@@ -44,7 +43,6 @@ knitr::opts_chunk$set(
   fig.asp = 0.618 
   )
 ```
-
 
 ## Abstract
 
@@ -76,13 +74,13 @@ This project looks at data from many Himalayan mountain climbing trips. We use t
 
 The mountain (peaks) data gives us extra facts, like each mountain’s name, height, and what region it is in. By putting these two datasets together, we can explore how things like team size, the use of oxygen, type of trip, and which mountain was climbed affect the chances of reaching the summit.
 
-## Question 1: **What factors contribute to the success or failure of a summit?**
+## Question 1: What factors contribute to the success or failure of a summit?
 
 -   Analyze expedition outcomes using both expedition and peak variables. "Success" will be defined based on the \`TERMREASON_FACTOR\`, with specific values representing a successful summit.
 
 -   Use factors like -- geography, team size, year, and commercial vs non-commercial expeditions
 
-### **Introduction**
+### Introduction
 
 Climbing a Himalayan peak is a big challenge, and not every team that tries will reach the top. Some expeditions succeed, while others turn back before the summit. But what makes the difference? In this project, we want to understand what factors help climbers succeed and what might make them fail.
 
@@ -95,7 +93,7 @@ We have used following factors:
 | Explore by Year           |
 | Explore Commercial Factor |
 
-### **Approach**
+### Approach
 
 -   Get Data from the CSV files
 
@@ -151,7 +149,7 @@ model <- glm(
 
 -   Start plotting various charts building up to the case
 
-## Question 1 : Start
+### Start
 
 ::::: columns
 ::: {.column width="55%"}
@@ -190,7 +188,7 @@ We will study with following variables:
 :::
 :::::
 
-## Question 1 : Explore Team Size
+### Explore Team Size
 
 ::::: columns
 ::: {.column width="50%"}
@@ -260,7 +258,7 @@ ggplot(df_bin, aes(x = team_size, y = rate)) +
 :::
 ::::::
 
-## Question 1 : Explore Team Size Analysis
+### Explore Team Size Analysis
 
 ::: {style="font-size:0.8em; line-height:1.2;"}
 `These plots suggests a non-linear relationship between team size and summit success:`
@@ -282,7 +280,7 @@ ggplot(df_bin, aes(x = team_size, y = rate)) +
     Probable cause - supplies, campsite congestion, decision latency.
 :::
 
-## Question 1 : Effect of Geography
+### Effect of Geography
 
 ::::: columns
 ::: {.column width="50%"}
@@ -346,7 +344,7 @@ ggplot(peak_success, aes(x = reorder(PKNAME, HEIGHTM), y = HEIGHTM, color = succ
 :::
 ::::::
 
-## Question 1 : Effect of Geography Analysis
+### Effect of Geography Analysis
 
 ::: {style="font-size:0.8em; line-height:1.2;"}
 `Geography, in particular the altitude band of a peak—turns out not to be a simple “the higher you go, the harder it gets” story.`
@@ -360,7 +358,7 @@ ggplot(peak_success, aes(x = reorder(PKNAME, HEIGHTM), y = HEIGHTM, color = succ
 Overall, a peak’s infrastructure and traffic are at least as critical to success as its height.
 :::
 
-## Question 1 : Explore by Year
+### Explore by Year
 
 ::::: columns
 ::: {.column width="50%"}
@@ -428,7 +426,7 @@ ggplot(peak_year, aes(x = YEAR, y = reorder(PKNAME, -success_rate), fill = succe
 :::
 ::::::
 
-## Question 1 : Explore by Year Analysis
+### Explore by Year Analysis
 
 ::: {style="font-size:0.8em; line-height:1.2;"}
 `These plots suggests, despite a pandemic-driven slump in 2021, overall expedition success has rebounded strongly by 2024`
@@ -446,7 +444,7 @@ ggplot(peak_year, aes(x = YEAR, y = reorder(PKNAME, -success_rate), fill = succe
     Probable cause – full operational recovery, improved high-altitude gear, accumulated guiding experience.
 :::
 
-## Question 1 : Commercial Factor
+### Commercial Factor
 
 ::::: columns
 ::: {.column width="50%"}
@@ -538,7 +536,7 @@ exped2 |>
 :::
 ::::::
 
-## Question 1 : Commercial Factor Analysis
+### Commercial Factor Analysis
 
 ::: {style="font-size:0.8em; line-height:1.2;"}
 `These plots suggests, A professional, well-resourced support structure not only accelerates recovery from external shocks (like a pandemic) but also delivers uniformly higher success rates—regardless of mountain or team size.`
@@ -553,7 +551,7 @@ exped2 |>
 
 -   **`Team-size effects differ by expedition type`**
 
-    **Commercial**: success stays high (75–100 %) across all team sizes, peaking around 20 members. \
+    **Commercial**: success stays high (75–100 %) across all team sizes, peaking around 20 members.\
     **Non-commercial**: very small groups (\> 80 %) and very large groups (\~75 %) do better, but mid-sized teams (5–10 climbers) dip down near 50 %
 :::
 
