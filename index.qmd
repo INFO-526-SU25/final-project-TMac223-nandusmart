@@ -156,6 +156,12 @@ model <- glm(
 The Overall Success vs Failure Rate out of all expeditions.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Code"
+#| echo: true
+#| results: hide
+#| message: false
+#| warning: false
 
 exped2 |>
   mutate(outcome = ifelse(success == 1, "Success", "Failure")) |>
@@ -193,6 +199,13 @@ We will study with following variables:
 ::::: columns
 ::: {.column width="50%"}
 ```{r}
+#| code-fold: true
+#| code-summary: "Code"
+#| echo: true
+#| results: hide
+#| message: false
+#| warning: false
+#| 
 ggplot(exped2, aes(team_size)) +
   geom_histogram(binwidth = 1, fill = "steelblue", color = "white") +
   facet_wrap(~ success, labeller = labeller(success = c(`0` = "Failure", `1` = "Success"))) +
@@ -206,6 +219,14 @@ ggplot(exped2, aes(team_size)) +
 
 ::: {.column width="50%"}
 ```{r}
+#| code-fold: true
+#| code-summary: "Code"
+#| echo: true
+#| results: hide
+#| message: false
+#| warning: false
+
+
 ggplot(exped2, aes(x = team_size, fill = factor(success))) +
   geom_bar(position = "fill") +
   scale_x_continuous(
@@ -234,6 +255,14 @@ ggplot(exped2, aes(x = team_size, fill = factor(success))) +
 
 ::: {.column width="50%" style="\"min-height:100px;"}
 ```{r, fig.height=3}
+#| code-fold: true
+#| code-summary: "Code"
+#| echo: true
+#| results: hide
+#| message: false
+#| warning: false
+
+
 df_bin <- exped2 |>
   group_by(team_size) |>
   summarize(rate = mean(success), n = n(), .groups="drop") |>
@@ -285,6 +314,14 @@ ggplot(df_bin, aes(x = team_size, y = rate)) +
 ::::: columns
 ::: {.column width="50%"}
 ```{r}
+#| code-fold: true
+#| code-summary: "Code"
+#| echo: true
+#| results: hide
+#| message: false
+#| warning: false
+
+
 peak_success <- exped2 |>
   left_join(peaks |> select(PEAKID, PKNAME, HEIGHTM), by = "PEAKID") |>
   group_by(PEAKID, PKNAME, HEIGHTM) |>
@@ -304,6 +341,14 @@ ggplot(peak_success, aes(x = HEIGHTM, y = success_rate, label = PKNAME)) +
 
 ::: {.column width="50%"}
 ```{r}
+#| code-fold: true
+#| code-summary: "Code"
+#| echo: true
+#| results: hide
+#| message: false
+#| warning: false
+
+
 peak_success <- exped2 |>
   left_join(peaks |> select(PEAKID, PKNAME, HEIGHTM), by = "PEAKID") |>
   group_by(PKNAME, HEIGHTM) |>
@@ -363,6 +408,14 @@ Overall, a peak’s infrastructure and traffic are at least as critical to succe
 ::::: columns
 ::: {.column width="50%"}
 ```{r}
+#| code-fold: true
+#| code-summary: "Code"
+#| echo: true
+#| results: hide
+#| message: false
+#| warning: false
+
+
 yearly_success <- exped2 |>
   group_by(YEAR) |>
   summarize(
@@ -388,6 +441,14 @@ ggplot(yearly_success, aes(x = YEAR, y = success_rate)) +
 
 ::: {.column width="50%"}
 ```{r}
+#| code-fold: true
+#| code-summary: "Code"
+#| echo: true
+#| results: hide
+#| message: false
+#| warning: false
+
+
 peak_year <- exped2 |>
   left_join(peaks |> select(PEAKID, PKNAME), by = "PEAKID") |>
   group_by(YEAR, PKNAME) |>
@@ -449,6 +510,14 @@ ggplot(peak_year, aes(x = YEAR, y = reorder(PKNAME, -success_rate), fill = succe
 ::::: columns
 ::: {.column width="50%"}
 ```{r}
+#| code-fold: true
+#| code-summary: "Code"
+#| echo: true
+#| results: hide
+#| message: false
+#| warning: false
+
+
 exped2 <- exped2 |>
   mutate(
     commercial = case_when(
@@ -482,6 +551,14 @@ ggplot(comm_year, aes(x = YEAR, y = success_rate, color = commercial)) +
 
 ::: {.column width="50%"}
 ```{r}
+#| code-fold: true
+#| code-summary: "Code"
+#| echo: true
+#| results: hide
+#| message: false
+#| warning: false
+
+
 exped2 |>
   filter(!is.na(commercial)) |>
   left_join(peaks |> select(PEAKID, PKNAME), by = "PEAKID") |>
@@ -510,6 +587,14 @@ exped2 |>
 
 ::: {.column width="50%" style="\"min-height:100px;"}
 ```{r, fig.height=3}
+#| code-fold: true
+#| code-summary: "Code"
+#| echo: true
+#| results: hide
+#| message: false
+#| warning: false
+
+
 exped2 |>
   filter(!is.na(commercial)) |>
   group_by(team_size = TOTMEMBERS, commercial) |>
