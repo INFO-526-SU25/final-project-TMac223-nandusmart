@@ -319,11 +319,11 @@ ggplot(peak_success, aes(x = reorder(PKNAME, HEIGHTM), y = HEIGHTM, color = succ
 ::: {style="font-size:0.6em; line-height:1.2;"}
 `Geography, in particular the altitude band of a peak—turns out not to be a simple “the higher you go, the harder it gets” story.`
 
--   **`Low-altitude peaks (~6800 m, e.g. Ama Dablam)`** enjoy very high success rates, thanks to gentler slopes, shorter approaches and straightforward rope-fixed “ladder” routes
+-   **`Low-altitude peaks (~6800m, e.g. Ama Dablam)`** enjoy very high success rates, thanks to gentler slopes, shorter approaches and straightforward rope-fixed “ladder” routes
 
--   **`Mid-altitude peaks (~7100–7300 m, like Pumori and Baruntse)`** dips to the bottom of the curve,mountains are often more technical, less commercialized, with fewer fixed ropes and smaller teams—so even though they’re “lower,” they prove tougher
+-   **`Mid-altitude peaks (~7100–7300m, like Pumori and Baruntse)`** dips to the bottom of the curve,mountains are often more technical, less commercialized, with fewer fixed ropes and smaller teams—so even though they’re “lower,” they prove tougher
 
--   **`Higher Peaks (8000 m + like Everest)`** enjoys very high success rates, as they benefit from massive infrastructure (high-traffic base camps, helicopter support etc.), which more than offsets the physiological challenge of extreme altitude
+-   **`Higher Peaks (8000m+, like Everest)`** enjoys very high success rates, as they benefit from massive infrastructure (high-traffic base camps, helicopter support etc.), which more than offsets the physiological challenge of extreme altitude
 
 Overall, a peak’s infrastructure and traffic are at least as critical to success as its height.
 :::
