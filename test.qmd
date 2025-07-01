@@ -1,27 +1,25 @@
 ---
 title: "A Statistical Exploration of Himalayan Expeditions"
-subtitle: "INFO 526 Final Project Proposal"
-author: 
-  - name: "Trevor Macdonald & Nandakumar Kuthalaraja"
-    affiliations:
-      - name: "School of Information, University of Arizona"
-description: >
-  Analysis of Himalayan expeditions from 2020–2024
+subtitle: "INFO 526 - Summer 2025 - Final Project"
+author: "Trevor Macdonald & Nandakumar Kuthalaraja"
+title-slide-attributes:
+  data-background-image: images/HimalayanExpedition.png
+  data-background-size: stretch
+  data-background-opacity: "0.7"
+  data-slide-number: none
+  style: "color: white;"
 format:
-   html:
-    code-tools: true
-    code-overflow: wrap
-    embed-resources: true
+  revealjs:
+    theme:  ['data/customtheming.scss']
+  
 editor: visual
 execute:
-  warning: false
   echo: false
 ---
 
 ```{r}
 #| label: load-packages
 #| include: false
-#| echo: false
 
 # Load packages here
 pacman::p_load(tidymodels,
@@ -32,10 +30,11 @@ pacman::p_load(tidymodels,
 ```{r}
 #| label: setup
 #| include: false
-#| echo: false
 
+# Plot theme
 ggplot2::theme_set(ggplot2::theme_minimal(base_size = 11))
 
+# For better figure resolution
 knitr::opts_chunk$set(
   fig.retina = 3, 
   dpi = 300, 
@@ -44,56 +43,27 @@ knitr::opts_chunk$set(
   )
 ```
 
-## Abstract
+## Our Dataset
 
-High-altitude mountaineering offers a natural laboratory for studying how human, environmental, and logistical factors interact to shape risk and achievement. Using tidy versions of the Himalayan Database, this project leverages R (tidyverse, tidy models) and Quarto to build an interactive, reproducible data-visualisation narrative around two guiding questions:
+-   Himalayan Database - Created to continue the legacy of Elizabeth Hawley, a journalist who spent decades documenting Himalayan expeditions.
 
--   **What factors contribute to the success or failure of a summit?**
+-   Dataset - [**TidyTuesday GitHub repository**](https://github.com/rfordatascience/tidytuesday/tree/main/data/2025/2025-01-21) and has been amended to the years 2020 - 2024 to manage file size.
 
-    -   We knit together expedition, peak, and temporal attributes to explore how season, route choice, peak height, team size, leader nationality, weather windows, and oxygen strategy correlate with summit outcomes. Visual encodings include faceted ridge plots of summit probability across seasons, interactive geographic representations of route popularity versus success.
+-   There are 2 main datasets :
 
-    -   A multilevel logistic model provides effect-size estimates while accounting for peak-level heterogeneity.
+    -   **exped_tidy** - Contains details of expeditions
 
--   **Does an expedition’s funding affect safety outcomes?**
+    -   **peaks_tidy** - Includes data about the Himalayan Peaks
 
-    -   Because direct cost metrics are absent, we construct a funding proxy that blends sponsorship type, total members & hired staff, oxygen usage, and expedition duration.
+## Question 1
 
-    -   We then relate this composite to safety indicators like member and staff fatalities, high-altitude illnesses, rescue events via scatter-plot matrices, concentration curves, and Poisson regression. Stratified visualizations highlight differential risk patterns between commercial and self-organised teams.
-
-Preliminary findings suggest that
-
-\- seasonality and route normalization remain the strongest predictors of summit success
-
-\- larger, commercially sponsored teams enjoy slightly higher success but only marginal safety advantages once altitude and weather are controlled
-
-\- resource intensive strategies such as extensive oxygen deployment reduce high-altitude illness yet do not eliminate fatal risk.
-
-## Introduction
-
-This project looks at data from many Himalayan mountain climbing trips. We use two main files: one has details about each expedition (called `exped_tidy.csv`), and the other has information about the mountains themselves (`peaks_tidy.csv`). The expedition data covers hundreds of trips over many years. For each trip, we know things like which mountain was climbed, how many people were in the team, if they used oxygen, if it was a commercial (guided) trip, and whether the team reached the summit or not.
-
-The mountain (peaks) data gives us extra facts, like each mountain’s name, height, and what region it is in. By putting these two datasets together, we can explore how things like team size, the use of oxygen, type of trip, and which mountain was climbed affect the chances of reaching the summit.
-
-## Question 1: What factors contribute to the success or failure of a summit?
+**What factors contribute to the success or failure of a summit?**
 
 -   Analyze expedition outcomes using both expedition and peak variables. "Success" will be defined based on the \`TERMREASON_FACTOR\`, with specific values representing a successful summit.
 
 -   Use factors like -- geography, team size, year, and commercial vs non-commercial expeditions
 
-### Introduction
-
-Climbing a Himalayan peak is a big challenge, and not every team that tries will reach the top. Some expeditions succeed, while others turn back before the summit. But what makes the difference? In this project, we want to understand what factors help climbers succeed and what might make them fail.
-
-We have used following factors:
-
-|                           |
-|---------------------------|
-| Explore Team Size         |
-| Effect of Geography       |
-| Explore by Year           |
-| Explore Commercial Factor |
-
-### Approach
+## Question 1 : Approach
 
 -   Get Data from the CSV files
 
@@ -149,19 +119,13 @@ model <- glm(
 
 -   Start plotting various charts building up to the case
 
-### Start
+## Question 1 : Start
 
 ::::: columns
 ::: {.column width="55%"}
 The Overall Success vs Failure Rate out of all expeditions.
 
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
 
 exped2 |>
   mutate(outcome = ifelse(success == 1, "Success", "Failure")) |>
@@ -194,18 +158,11 @@ We will study with following variables:
 :::
 :::::
 
-### Explore Team Size
+## Question 1 : Explore Team Size
 
 ::::: columns
 ::: {.column width="50%"}
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
-#| 
 ggplot(exped2, aes(team_size)) +
   geom_histogram(binwidth = 1, fill = "steelblue", color = "white") +
   facet_wrap(~ success, labeller = labeller(success = c(`0` = "Failure", `1` = "Success"))) +
@@ -219,14 +176,6 @@ ggplot(exped2, aes(team_size)) +
 
 ::: {.column width="50%"}
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
-
-
 ggplot(exped2, aes(x = team_size, fill = factor(success))) +
   geom_bar(position = "fill") +
   scale_x_continuous(
@@ -255,14 +204,6 @@ ggplot(exped2, aes(x = team_size, fill = factor(success))) +
 
 ::: {.column width="50%" style="\"min-height:100px;"}
 ```{r, fig.height=3}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
-
-
 df_bin <- exped2 |>
   group_by(team_size) |>
   summarize(rate = mean(success), n = n(), .groups="drop") |>
@@ -287,41 +228,33 @@ ggplot(df_bin, aes(x = team_size, y = rate)) +
 :::
 ::::::
 
-### Explore Team Size Analysis
+## Question 1 : Explore Team Size Analysis
 
-::: {style="font-size:0.8em; line-height:1.2;"}
+::: {style="font-size:0.6em; line-height:1.2;"}
 `These plots suggests a non-linear relationship between team size and summit success:`
 
 -   **`Very small teams (1–5 climbers)`** tend to have very high success rates.
 
-    Probable cause - agility, lighter logistical needs, and tighter decision-making.
+    Probable cause - agility, lighter logistical needs, and tighter decision-making.\
 
 -   **`Small-to-medium teams (3–8 climbers)`** show a noticeable dip in success.
 
-    Probable cause - enough complexity to introduce friction but not enough manpower to provide robust support.
+    Probable cause - enough complexity to introduce friction but not enough manpower to provide robust support.\
 
 -   **`Medium-large teams (9–20 climbers)`** exhibit steadily increasing success rates, peaking around 20 members at or near 100%.
 
-    Probable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.
+    Probable cause - have enough members to spread tasks, establish well-stocked camps without yet suffering the full burden of very large-group logistics.\
 
 -   **`Very large teams (20+)`** see a gradual decline in success.
 
-    Probable cause - supplies, campsite congestion, decision latency.
+    Probable cause - supplies, campsite congestion, decision latency.\
 :::
 
-### Effect of Geography
+## Question 1 : Effect of Geography
 
 ::::: columns
 ::: {.column width="50%"}
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
-
-
 peak_success <- exped2 |>
   left_join(peaks |> select(PEAKID, PKNAME, HEIGHTM), by = "PEAKID") |>
   group_by(PEAKID, PKNAME, HEIGHTM) |>
@@ -341,14 +274,6 @@ ggplot(peak_success, aes(x = HEIGHTM, y = success_rate, label = PKNAME)) +
 
 ::: {.column width="50%"}
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
-
-
 peak_success <- exped2 |>
   left_join(peaks |> select(PEAKID, PKNAME, HEIGHTM), by = "PEAKID") |>
   group_by(PKNAME, HEIGHTM) |>
@@ -389,9 +314,9 @@ ggplot(peak_success, aes(x = reorder(PKNAME, HEIGHTM), y = HEIGHTM, color = succ
 :::
 ::::::
 
-### Effect of Geography Analysis
+## Question 1 : Effect of Geography Analysis
 
-::: {style="font-size:0.8em; line-height:1.2;"}
+::: {style="font-size:0.6em; line-height:1.2;"}
 `Geography, in particular the altitude band of a peak—turns out not to be a simple “the higher you go, the harder it gets” story.`
 
 -   **`Low-altitude peaks (~6800 m, e.g. Ama Dablam)`** enjoy very high success rates, thanks to gentler slopes, shorter approaches and straightforward rope-fixed “ladder” routes
@@ -403,19 +328,11 @@ ggplot(peak_success, aes(x = reorder(PKNAME, HEIGHTM), y = HEIGHTM, color = succ
 Overall, a peak’s infrastructure and traffic are at least as critical to success as its height.
 :::
 
-### Explore by Year
+## Question 1 : Explore by Year
 
 ::::: columns
 ::: {.column width="50%"}
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
-
-
 yearly_success <- exped2 |>
   group_by(YEAR) |>
   summarize(
@@ -441,14 +358,6 @@ ggplot(yearly_success, aes(x = YEAR, y = success_rate)) +
 
 ::: {.column width="50%"}
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
-
-
 peak_year <- exped2 |>
   left_join(peaks |> select(PEAKID, PKNAME), by = "PEAKID") |>
   group_by(YEAR, PKNAME) |>
@@ -487,37 +396,29 @@ ggplot(peak_year, aes(x = YEAR, y = reorder(PKNAME, -success_rate), fill = succe
 :::
 ::::::
 
-### Explore by Year Analysis
+## Question 1 : Explore by Year Analysis
 
-::: {style="font-size:0.8em; line-height:1.2;"}
+::: {style="font-size:0.6em; line-height:1.2;"}
 `These plots suggests, despite a pandemic-driven slump in 2021, overall expedition success has rebounded strongly by 2024`
 
 -   **`2020`** average success rate \~ 72%
 
-    Probable cause – pre-pandemic normalcy, full staffing, established logistics.
+    Probable cause – pre-pandemic normalcy, full staffing, established logistics.\
 
 -   **`2021-2022`** average success rate fell to \~ 63%
 
-    Probable cause – COVID travel restrictions & teams adapted to new health protocols and smaller expedition sizes.
+    Probable cause – COVID travel restrictions & teams adapted to new health protocols and smaller expedition sizes.\
 
 -   **`2023-2024`** average success rate rebound to \~ 80%
 
-    Probable cause – full operational recovery, improved high-altitude gear, accumulated guiding experience.
+    Probable cause – full operational recovery, improved high-altitude gear, accumulated guiding experience.\
 :::
 
-### Commercial Factor
+## Question 1 : Commercial Factor
 
 ::::: columns
 ::: {.column width="50%"}
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
-
-
 exped2 <- exped2 |>
   mutate(
     commercial = case_when(
@@ -551,14 +452,6 @@ ggplot(comm_year, aes(x = YEAR, y = success_rate, color = commercial)) +
 
 ::: {.column width="50%"}
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
-
-
 exped2 |>
   filter(!is.na(commercial)) |>
   left_join(peaks |> select(PEAKID, PKNAME), by = "PEAKID") |>
@@ -587,14 +480,6 @@ exped2 |>
 
 ::: {.column width="50%" style="\"min-height:100px;"}
 ```{r, fig.height=3}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
-
-
 exped2 |>
   filter(!is.na(commercial)) |>
   group_by(team_size = TOTMEMBERS, commercial) |>
@@ -621,9 +506,9 @@ exped2 |>
 :::
 ::::::
 
-### Commercial Factor Analysis
+## Question 1 : Commercial Factor Analysis
 
-::: {style="font-size:0.8em; line-height:1.2;"}
+::: {style="font-size:0.6em; line-height:1.2;"}
 `These plots suggests, A professional, well-resourced support structure not only accelerates recovery from external shocks (like a pandemic) but also delivers uniformly higher success rates—regardless of mountain or team size.`
 
 -   **`Commercial expeditions rebound faster and to a higher plateau`**
@@ -637,42 +522,22 @@ exped2 |>
 -   **`Team-size effects differ by expedition type`**
 
     **Commercial**: success stays high (75–100 %) across all team sizes, peaking around 20 members.\
-    **Non-commercial**: very small groups (\> 80 %) and very large groups (\~75 %) do better, but mid-sized teams (5–10 climbers) dip down near 50 %
+    **Non-commercial**: a pronounced “U-shape”, very small groups (\> 80 %) and very large groups (\~75 %) do better, but mid-sized teams (5–10 climbers) dip down near 50 %\
 :::
 
 ## Question 2
 
-The analysis will be very similar for this question. I suspect there will be some overlap, funding and success rate etc. We will use many of the same variables, but more specifically, FUNDING_TYPE.
+Does an expedition’s funding (commercial vs non-commercial) affect safety outcomes?
 
-We will Compare specific funding types like commercial vs. independent expeditions across countries for more insights
-
-NOTE: Add "real world" examples of expedition success or failure to make analysis relatable.
-
-### Approach
-
--   Get Data from the CSV files
+Import data , sort and wrangle
 
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
+#| label: Wrangle
 #| message: false
 #| warning: false
 
+#Import
 exped <- read_csv("data/exped_tidy.csv")
-
-```
-
--   Data Wrangling & Variable Inferences
-
-```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
 
 # Lean tibble of variables of interest
 exped_q2 <- exped |>
@@ -719,16 +584,11 @@ exped_q2 <- exped_q2 |>
       TRUE ~ "Unknown"
     )
   )
+
 ```
 
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
-
+#| label: Funding source wrangle
 library(stringr)
 
 # Source: https://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when
@@ -767,32 +627,27 @@ exped_q2 <- exped_q2 |>
       FUNDING_TYPE %in% c("Private/Individual", "Other/Unknown") ~ "Independent/Other"
     )
   )
-
-#glimpse(exped_q2)
 ```
 
-### Motivation & Setup
+## Question 2 : Motivation & Setup
 
-#### Does Funding Type Affect Expedition Safety?
+### Does Funding Type Affect Expedition Safety?
 
-##### Purpose
+### Purpose
 
 Commercial expeditions are often seen as safer due to better logistics, guides, and resources.
 
 The following analysis aims to address this assumption by comparing commercial, private, and non-commercial groups.
 
-##### How Sponsors Were Categorized
+### How Sponsors Were Categorized
 
-To determine funding source the data was wrangled and sorted using the "SPONSOR" column. This was accomplished by repeatedly editing the sorted list. The sponsor column were nearly all unique. I found an example here:https://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when
+To determine funding source the data was wrangled and sorted using the "SPONSOR" column. This was accomplished by repeatedly editing the sorted list. The sponsor column were nearly all unique. I found an example here:<https://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when>
 
-#### Summary Statistics on Safety
+## Question 2 : summary statistics on safety
 
 ```{r}
 #| label: safety-summary-table
-#| code-fold: true
-#| code-summary: "Code"
 #| echo: true
-#| results: hide
 #| message: false
 #| warning: false
 
@@ -828,21 +683,10 @@ exped_q2 |>
   )
 ```
 
-Let's Start the plotting
+## Question 2 : How do Expeditions End?
 
-### How do Expeditions End?
-
-These figures shows that proportionally, accidents are more common with None-commercial expeditions. Termination due to bad weather appears uniform across all groups, which is expected.
-
-::::: columns
-::: {.column width="50%"}
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
+#| label: How do expeditions end
 
 ggplot(exped_q2, aes(
   x = FUNDING_SIMPLIFIED,
@@ -874,17 +718,11 @@ ggplot(exped_q2, aes(
     panel.grid.major.x = element_blank()
   )
 ```
-:::
 
-::: {.column width="50%"}
+The above figure shows that proportionally, accidents are more common with Non-Commercial expeditions. Termination due to bad weather appears uniform across all groups, which is expected.
+
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
-
+#| label: plot-outcome-distribution
 ggplot(exped_q2, aes(x = FUNDING_SIMPLIFIED, fill = OUTCOME_LABEL)) +
   geom_bar(position = "fill") +
   scale_y_continuous(labels = scales::percent) +
@@ -896,25 +734,13 @@ ggplot(exped_q2, aes(x = FUNDING_SIMPLIFIED, fill = OUTCOME_LABEL)) +
     y = "Proportion of Expeditions",
     fill = "Outcome"
   )
-
 ```
-:::
-:::::
 
-:::::: columns
-::: {.column width="25%"}
-:::
-
-
-::: {.column width="50%" style="\"min-height:100px;"}
-```{r, fig.height=3}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
+```{r}
+#| label: plot-outcome-distribution2
+#| fig-cap: "Distribution of Expedition Outcomes by Funding Type (2020–2024)"
 #| message: false
 #| warning: false
-
 
 ggplot(exped_q2, aes(x = FUNDING_SIMPLIFIED, fill = OUTCOME_LABEL)) +
   geom_bar(position = "fill") +
@@ -938,21 +764,11 @@ ggplot(exped_q2, aes(x = FUNDING_SIMPLIFIED, fill = OUTCOME_LABEL)) +
 
 ```
 
-:::
-
-::: {.column width="25%"}
-<!-- blank right spacer -->
-:::
-::::::
-
-### Fatality Trend
-
+## Question 2 : Fatality trend
 
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
+#| label: plot-fatality-trend
+#| fig-cap: "Trend in Member Fatalities by Funding Type, 2020–2024"
 #| message: false
 #| warning: false
 
@@ -977,17 +793,13 @@ exped_q2 |>
 
 It’s one thing to say commercial expeditions are safer but is that always true? I wanted to check whether fatality rates have changed over time, and if so, whether some groups are improving faster than others. This smoothed line chart shows the share of expeditions with fatalities by year and funding type. This is overlap with question 1.
 
-### Team Size vs Fatality
+## Question 2 : Team Size vs Fatality
 
 Next question: does team size make a difference? You’d think larger teams might be safer due to support and redundancy, but also possibly riskier if they’re less experienced or move slowly. This scatterplot checks whether total team size correlates with success, failure, or fatalities — and whether that varies by funding type.
 
 ```{r}
 #| label: plot-teamsize-vs-outcome
 #| fig-cap: "Team Size and Expedition Outcome by Funding Type"
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
 #| message: false
 #| warning: false
 
@@ -1006,7 +818,7 @@ ggplot(exped_q2, aes(x = TOTMEMBERS, y = OUTCOME_LABEL, color = FUNDING_SIMPLIFI
 
 ```
 
-### Team Size by Funding As Proxy for Safety Resources
+## Question 2 : **Team Size by Funding As Proxy for Safety Resources**
 
 Large commercial teams often come with more resources: guides, oxygen, fixed ropes, medical support. That could partly explain why they have **lower fatality rates**.
 
@@ -1021,10 +833,8 @@ Meanwhile, small non-commercial teams might:
 So while team size alone doesn’t determine safety, it’s a **proxy** for resourcing — and resourcing links back to safety.
 
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
+#| label: plot-team-size-ridge
+#| fig-cap: "Distribution of Team Size by Funding Type"
 #| message: false
 #| warning: false
 
@@ -1055,4 +865,3 @@ exped_q2 |>
   theme(legend.position = "none")
 
 ```
-
