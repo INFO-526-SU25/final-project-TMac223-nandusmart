@@ -5,8 +5,6 @@ author:
   - name: "Trevor Macdonald & Nandakumar Kuthalaraja"
     affiliations:
       - name: "School of Information, University of Arizona"
-description: >
-  Analysis of Himalayan expeditions from 2020–2024
 format:
    html:
     code-tools: true

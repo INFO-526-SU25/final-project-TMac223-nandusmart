@@ -677,6 +677,7 @@ To determine funding source the data was wrangled and sorted using the "SPONSOR"
 ## Question 2 : Start
 
 #### What is Summary Statistics on Safety
+
 ::: {style="font-size:0.6em; line-height:1.2;"}
 ```{r}
 #| label: safety-summary-table
@@ -718,7 +719,6 @@ exped_q2 |>
   )
 ```
 :::
-
 
 ## Question 2 : How do Expeditions End?
 
@@ -765,10 +765,10 @@ ggplot(exped_q2, aes(x = FUNDING_SIMPLIFIED, fill = OUTCOME_LABEL)) +
 ```
 :::
 :::::
+
 :::::: columns
 ::: {.column width="25%"}
 :::
-
 
 ::: {.column width="50%" style="\"min-height:100px;"}
 ```{r}
@@ -789,7 +789,6 @@ ggplot(exped_q2, aes(x = FUNDING_SIMPLIFIED, fill = OUTCOME_LABEL)) +
   )
 
 ```
-
 :::
 
 ::: {.column width="25%"}
@@ -797,20 +796,18 @@ ggplot(exped_q2, aes(x = FUNDING_SIMPLIFIED, fill = OUTCOME_LABEL)) +
 :::
 ::::::
 
-
-
 ## Question 2 : Expediations End Analysis
 
 ::: {style="font-size:0.6em; line-height:1.2;"}
-These figures shows that proportionally, accidents are more common with Non-commercial expeditions. 
+These figures shows that proportionally, accidents are more common with Non-commercial expeditions.
 
 While Termination due to bad weather appears uniform across all groups, which is expected.
 :::
 
 ## Question 2 : Fatality Trend
-::::: columns
-::: {.column width="70%"}
 
+:::: columns
+::: {.column width="70%"}
 ```{r}
 
 exped_q2 |> 
@@ -832,7 +829,7 @@ exped_q2 |>
   ) 
 ```
 :::
-::::: 
+::::
 
 ::: {style="font-size:0.5em; line-height:1.2;"}
 It’s one thing to say commercial expeditions are safer but is that always true? I wanted to check whether fatality rates have changed over time, and if so, whether some groups are improving faster than others. This smoothed line chart shows the share of expeditions with fatalities by year and funding type. This is overlap with question 1.
@@ -842,8 +839,9 @@ It’s one thing to say commercial expeditions are safer but is that always true
 
 ::: {style="font-size:0.5em; line-height:1.2;"}
 Next question: does team size make a difference? You’d think larger teams might be safer due to support and redundancy, but also possibly riskier if they’re less experienced or move slowly. This scatterplot checks whether total team size correlates with success, failure, or fatalities — and whether that varies by funding type.
-::: 
-::::: columns
+:::
+
+:::: columns
 ::: {.column width="70%"}
 ```{r}
 
@@ -862,9 +860,11 @@ ggplot(exped_q2, aes(x = TOTMEMBERS, y = OUTCOME_LABEL, color = FUNDING_SIMPLIFI
 
 ```
 :::
-:::::
-## Question 2 : Team Size by Funding 
-::::: columns
+::::
+
+## Question 2 : Team Size by Funding
+
+:::: columns
 ::: {.column width="90%"}
 ```{r}
 
@@ -895,7 +895,8 @@ exped_q2 |>
 
 ```
 :::
-:::::
+::::
+
 ## Question 2 : Team Size by Funding As Proxy for Safety Resources Analysis
 
 ::: {style="font-size:0.4em; line-height:1.2;"}
@@ -910,13 +911,11 @@ Meanwhile, small non-commercial teams might:
 -   Face more exposure if things go wrong
 
 So while team size alone doesn’t determine safety, it’s a **proxy** for resourcing — and resourcing links back to safety.
-::: 
-
-
+:::
 
 ## Wrap Up
 
-1. **Seasonality & route normalization** remain the strongest summit predictors.  
-2. **Resource-intensive strategies** (guided support, oxygen deployment) boost success with only **marginal safety gains** once environment is controlled.  
-3. **Mid-altitude peaks** present the greatest risk–reward paradox: technically harder but fewer logistics.  
-4. **Stakeholders** (climbers, agencies, policymakers) can use these insights to optimize team size, funding models, and risk mitigation plans.
+1.  **Seasonality & route normalization** remain the strongest summit predictors.\
+2.  **Resource-intensive strategies** (guided support, oxygen deployment) boost success with only **marginal safety gains** once environment is controlled.\
+3.  **Mid-altitude peaks** present the greatest risk–reward paradox: technically harder but fewer logistics.\
+4.  **Stakeholders** (climbers, agencies, policymakers) can use these insights to optimize team size, funding models, and risk mitigation plans.
