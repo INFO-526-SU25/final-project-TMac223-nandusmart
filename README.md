@@ -1,6 +1,6 @@
 # project-final
 
-Final Project repo for INFO 526 - Summer 2024.
+Final Project repo for INFO 526 - Summer 2025.
 
 #### Disclosure:
 
