@@ -911,3 +911,12 @@ Meanwhile, small non-commercial teams might:
 
 So while team size alone doesn’t determine safety, it’s a **proxy** for resourcing — and resourcing links back to safety.
 ::: 
+
+
+
+## Wrap Up
+
+1. **Seasonality & route normalization** remain the strongest summit predictors.  
+2. **Resource-intensive strategies** (guided support, oxygen deployment) boost success with only **marginal safety gains** once environment is controlled.  
+3. **Mid-altitude peaks** present the greatest risk–reward paradox: technically harder but fewer logistics.  
+4. **Stakeholders** (climbers, agencies, policymakers) can use these insights to optimize team size, funding models, and risk mitigation plans.

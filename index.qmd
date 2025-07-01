@@ -1055,4 +1055,47 @@ exped_q2 |>
   theme(legend.position = "none")
 
 ```
+## Key Findings (Q1 – Summit Success)
+
+- **Team Size**  
+  - Very small teams (1–5) & medium-large (9–20) show the highest success  
+  - Mid-sized groups (3–8) dip, and very large (>20) see slight declines  
+
+- **Peak Geography**  
+  - Mid-altitude (~7100–7300 m) hardest—technical routes, low infrastructure  
+  - High-traffic 8000 m peaks benefit from camps, fixed ropes and support  
+
+- **Temporal Trend**  
+  - Pre-COVID (2020): ~72% success  
+  - COVID slump (2021–22): ~63%  
+  - Full rebound (2023–24): ~80%  
+
+- **Commercial vs Non-Commercial**  
+  - Commercial teams recover faster post-COVID & hit ~95% success by 2024  
+  - Non-commercial plateau near ~64%
+
+---
+
+## Key Findings (Q2 – Funding & Safety)
+
+- **Funding Proxy**  
+  - **Commercial** – guided operators & adventure companies  
+  - **Non-commercial** – academic clubs, national programs, military  
+  - **Independent/Other** – private, self-organized, unknown  
+
+- **Safety Outcomes**  
+  - Commercial expeditions have **slightly lower fatality rates** (~ 5–8%) vs independent (~ 10–12%)  
+  - Accident-related terminations more common in non-commercial & independent groups  
+  - Weather-driven turn-backs uniform across all funding types  
+
+- **Fatality Trend**  
+  - All groups show modest declines in fatality rates over 2020–24  
+  - **Commercial** maintain the lowest trajectory; **Independent** show the steepest decline
+  
+## Wrap Up
+
+1. **Seasonality & route normalization** remain the strongest summit predictors.  
+2. **Resource-intensive strategies** (guided support, oxygen deployment) boost success with only **marginal safety gains** once environment is controlled.  
+3. **Mid-altitude peaks** present the greatest risk–reward paradox: technically harder but fewer logistics.  
+4. **Stakeholders** (climbers, agencies, policymakers) can use these insights to optimize team size, funding models, and risk mitigation plans.
 
