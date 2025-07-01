@@ -396,7 +396,7 @@ ggplot(peak_success, aes(x = reorder(PKNAME, HEIGHTM), y = HEIGHTM, color = succ
 
 -   **`Mid-altitude peaks (~7100–7300m, like Pumori and Baruntse)`** dips to the bottom of the curve,mountains are often more technical, less commercialized, with fewer fixed ropes and smaller teams—so even though they’re “lower,” they prove tougher
 
--   **`Higher Peaks (8000m+, like Everest)`** enjoys very high success rates, as they benefit from massive infrastructure (high-traffic base camps, helicopter support etc.), which more than offsets the physiological challenge of extreme altitude
+-   **`Higher Peaks (8000m+ like Everest)`** enjoys very high success rates, as they benefit from massive infrastructure (high-traffic base camps, helicopter support etc.), which more than offsets the physiological challenge of extreme altitude
 
 Overall, a peak’s infrastructure and traffic are at least as critical to success as its height.
 :::
