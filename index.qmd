@@ -58,14 +58,6 @@ High-altitude mountaineering offers a natural laboratory for studying how human,
 
     -   We then relate this composite to safety indicators like member and staff fatalities, high-altitude illnesses, rescue events via scatter-plot matrices, concentration curves, and Poisson regression. Stratified visualizations highlight differential risk patterns between commercial and self-organised teams.
 
-Preliminary findings suggest that
-
-\- seasonality and route normalization remain the strongest predictors of summit success
-
-\- larger, commercially sponsored teams enjoy slightly higher success but only marginal safety advantages once altitude and weather are controlled
-
-\- resource intensive strategies such as extensive oxygen deployment reduce high-altitude illness yet do not eliminate fatal risk.
-
 ## Introduction
 
 This project looks at data from many Himalayan mountain climbing trips. We use two main files: one has details about each expedition (called `exped_tidy.csv`), and the other has information about the mountains themselves (`peaks_tidy.csv`). The expedition data covers hundreds of trips over many years. For each trip, we know things like which mountain was climbed, how many people were in the team, if they used oxygen, if it was a commercial (guided) trip, and whether the team reached the summit or not.
