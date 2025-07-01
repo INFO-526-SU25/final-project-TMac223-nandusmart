@@ -123,7 +123,70 @@
     "href": "presentation.html#question-2",
     "title": "A Statistical Exploration of Himalayan Expeditions",
     "section": "Question 2",
-    "text": "Question 2\nApproach:\nWrap up"
+    "text": "Question 2\nDoes an expeditions funding affect safety outcomes?\nThe analysis will be very similar for this question. I suspect there will be some overlap, funding and success rate etc. We will use many of the same variables, but more specifically, FUNDING_TYPE.\nWe will Compare specific funding types like commercial vs. independent expeditions across countries for more insights"
+  },
+  {
+    "objectID": "presentation.html#question-2-approach",
+    "href": "presentation.html#question-2-approach",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Approach",
+    "text": "Question 2 : Approach\n\nGet Data from the CSV files\n\n\n\nCode\nexped &lt;- read_csv(\"data/exped_tidy.csv\")\n\n\n\nData Wrangling - Slimmed-down tibble of key variables\n\n\n\nCode\n# Lean tibble of variables of interest\nexped_q2 &lt;- exped |&gt;\n  select(\n    YEAR,           # Year of the expedition\n    SPONSOR,        # Sponsor or funding organization\n    SUCCESS1,       # Success on primary route\n    SUCCESS2,       # Success on second route\n    SUCCESS3,       # Success on third route\n    SUCCESS4,       # Success on fourth route\n    TERMDATE,       # Date expedition was terminated\n    TERMREASON,     # Numeric code for termination reason\n    TERMREASON_FACTOR, # Description of termination reason\n    TOTMEMBERS,     # Total members in the team\n    MDEATHS,        # Number of member deaths\n    HDEATHS,        # Hired staff deaths\n    OTHERSMTS,      # Other summits during expedition\n    ACCIDENTS,      # Description of accidents\n    AGENCY,         # Trekking/expedition agency\n    O2USED          #\n  ) |&gt;\n  mutate(\n    ANY_SUCCESS = SUCCESS1 | SUCCESS2 | SUCCESS3 | SUCCESS4,\n    FATALITIES = (MDEATHS + HDEATHS &gt; 0),\n    OUTCOME_LABEL = case_when(\n      ANY_SUCCESS & !FATALITIES ~ \"Success, No Deaths\",\n      ANY_SUCCESS & FATALITIES  ~ \"Success + Deaths\",\n      !ANY_SUCCESS & FATALITIES ~ \"Failure + Deaths\",\n      TRUE                      ~ \"Failure, No Deaths\"\n    )\n  ) |&gt;\n  select(-SUCCESS1, -SUCCESS2, -SUCCESS3, -SUCCESS4, -MDEATHS, -HDEATHS)\n\n\nexped_q2 &lt;- exped_q2 |&gt; \n  mutate(\n    TERMINATION_TYPE = case_when(\n      TERMREASON %in% c(1, 2, 3) ~ \"Successful\",\n      TERMREASON %in% c(4, 5) ~ \"Bad Weather/Conditions\",\n      TERMREASON %in% c(6, 7) ~ \"Accident/Illness/Exhaustion\",\n      TERMREASON %in% c(8, 9, 10) ~ \"Logistics/Technical\",\n      TERMREASON %in% c(11, 12, 13) ~ \"No Attempt/Base Only\",\n      TERMREASON == 14 ~ \"Other\",\n      TRUE ~ \"Unknown\"\n    )\n  )\n\n\n\nData Wrangling - Assigns funding categories from cleaned sponsor prefixes.\n\n\n\nCode\nlibrary(stringr)\n\n# Source: https://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when\n\nsponsor_prefix_tbl &lt;- exped_q2 |&gt; \n  mutate(\n    SPONSOR_CLEAN = str_to_lower(str_trim(SPONSOR)),\n    SPONSOR_CLEAN = str_remove(SPONSOR_CLEAN, \"\\\\s*\\\\b20\\\\d{2}\\\\b$\"),\n    SPONSOR_PREFIX = str_extract(SPONSOR_CLEAN, \"^\\\\w+\\\\s*\\\\w*\")\n  ) |&gt; \n  count(SPONSOR_PREFIX, sort = TRUE)\n\n#Sponsors &lt;- exped_q2 |&gt; \n  #distinct(SPONSOR_CLEAN) #|&gt; \n #count()\n\nexped_q2 &lt;- exped_q2 |&gt; \n  mutate(\n    SPONSOR_CLEAN = str_to_lower(str_trim(SPONSOR)),\n    SPONSOR_CLEAN = str_remove(SPONSOR_CLEAN, \"\\\\s*\\\\b20\\\\d{2}\\\\b$\"),\n    SPONSOR_PREFIX = str_extract(SPONSOR_CLEAN, \"^\\\\w+\\\\s*\\\\w*\"),\n    FUNDING_TYPE = case_when(\n      str_detect(SPONSOR_PREFIX, \"army|police|military|defense\") ~ \"Military\",\n      str_detect(SPONSOR_PREFIX, \"university|college|school|club|jac|univ\") ~ \"Academic/Alpine Club\",\n      str_detect(SPONSOR_PREFIX, \"guides|treks|adventure|travel|ascent|trip|climbalaya|madison|imagine|kobler|makalu|highland|satori|elite|glacier|dream|thamserku\") ~ \"Commercial\",\n      str_detect(SPONSOR_PREFIX, \"private|individual|self|solo|1st|friends|father|jon|jost|alex|kilian|marc|kishori|soren\") ~ \"Private/Individual\",\n      str_detect(SPONSOR_PREFIX, \"national geographic|japanese|korean|slovakian|french|chinese|indian|nepalese|russian|german|austrian|canadian|italian|spanish|swiss|american|latvian\") ~ \"National Program\",\n      is.na(SPONSOR_PREFIX) | SPONSOR_PREFIX == \"\" ~ \"Other/Unknown\",\n      TRUE ~ \"Other/Unknown\"\n    )\n  )|&gt; \n  mutate(\n    FUNDING_SIMPLIFIED = case_when(\n      FUNDING_TYPE == \"Commercial\" ~ \"Commercial\",\n      FUNDING_TYPE %in% c(\"Academic/Alpine Club\", \"National Program\", \"Military\") ~ \"Non-commercial\",\n      FUNDING_TYPE %in% c(\"Private/Individual\", \"Other/Unknown\") ~ \"Independent/Other\"\n    )\n  )\n\n#glimpse(exped_q2)"
+  },
+  {
+    "objectID": "presentation.html#question-2-motivation-setup",
+    "href": "presentation.html#question-2-motivation-setup",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Motivation & Setup",
+    "text": "Question 2 : Motivation & Setup\n\nDoes Funding Type Affect Expedition Safety?\nPurpose\nCommercial expeditions are often seen as safer due to better logistics, guides, and resources.\nThe following analysis aims to address this assumption by comparing commercial, private, and non-commercial groups.\nHow Sponsors Were Categorized\nTo determine funding source the data was wrangled and sorted using the “SPONSOR” column. This was accomplished by repeatedly editing the sorted list. The sponsor column were nearly all unique. (As found in an example here:https://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when)"
+  },
+  {
+    "objectID": "presentation.html#question-2-start",
+    "href": "presentation.html#question-2-start",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Start",
+    "text": "Question 2 : Start\nWhat is Summary Statistics on Safety\n\n\n\nCode\n# Summarize safety metrics by funding type\nlibrary(dplyr)\nlibrary(knitr)\n\nexped_q2 |&gt;\n  group_by(FUNDING_SIMPLIFIED) |&gt;\n  summarise(\n    n_expeditions = n(),\n    n_success = sum(ANY_SUCCESS),\n    n_fatalities = sum(FATALITIES),\n    pct_success = mean(ANY_SUCCESS),\n    pct_fatal = mean(FATALITIES),\n    .groups = \"drop\"\n  ) |&gt;\n  mutate(\n    pct_success = scales::percent(pct_success, accuracy = 0.1),\n    pct_fatal = scales::percent(pct_fatal, accuracy = 0.1)\n  ) |&gt;\n  kable(\n    caption = \"Expedition Outcomes by Funding Type (2020–2024)\",\n    col.names = c(\n      \"Funding Type\",\n      \"Total Expeditions\",\n      \"Number Successful\",\n      \"Number with Fatalities\",\n      \"Success Rate\",\n      \"Fatality Rate\"\n    ),\n    format = \"html\"\n  )\n\n\n\nExpedition Outcomes by Funding Type (2020–2024)\n\n\nFunding Type\nTotal Expeditions\nNumber Successful\nNumber with Fatalities\nSuccess Rate\nFatality Rate\n\n\n\n\nCommercial\n274\n212\n8\n77.4%\n2.9%\n\n\nIndependent/Other\n517\n365\n27\n70.6%\n5.2%\n\n\nNon-commercial\n91\n51\n3\n56.0%\n3.3%"
+  },
+  {
+    "objectID": "presentation.html#question-2-how-do-expeditions-end",
+    "href": "presentation.html#question-2-how-do-expeditions-end",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : How do Expeditions End?",
+    "text": "Question 2 : How do Expeditions End?"
+  },
+  {
+    "objectID": "presentation.html#question-2-expediations-end-analysis",
+    "href": "presentation.html#question-2-expediations-end-analysis",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Expediations End Analysis",
+    "text": "Question 2 : Expediations End Analysis\n\nThese figures shows that proportionally, accidents are more common with Non-commercial expeditions.\nWhile Termination due to bad weather appears uniform across all groups, which is expected."
+  },
+  {
+    "objectID": "presentation.html#question-2-fatality-trend",
+    "href": "presentation.html#question-2-fatality-trend",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Fatality Trend",
+    "text": "Question 2 : Fatality Trend\n\n\n\n\n\n\n\n\n\n\n\n\n\nIt’s one thing to say commercial expeditions are safer but is that always true? I wanted to check whether fatality rates have changed over time, and if so, whether some groups are improving faster than others. This smoothed line chart shows the share of expeditions with fatalities by year and funding type. This is overlap with question 1."
+  },
+  {
+    "objectID": "presentation.html#question-2-team-size-vs-fatality",
+    "href": "presentation.html#question-2-team-size-vs-fatality",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Team Size vs Fatality",
+    "text": "Question 2 : Team Size vs Fatality\n\nNext question: does team size make a difference? You’d think larger teams might be safer due to support and redundancy, but also possibly riskier if they’re less experienced or move slowly. This scatterplot checks whether total team size correlates with success, failure, or fatalities — and whether that varies by funding type."
+  },
+  {
+    "objectID": "presentation.html#question-2-team-size-by-funding",
+    "href": "presentation.html#question-2-team-size-by-funding",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Team Size by Funding",
+    "text": "Question 2 : Team Size by Funding"
+  },
+  {
+    "objectID": "presentation.html#question-2-team-size-by-funding-as-proxy-for-safety-resources-analysis",
+    "href": "presentation.html#question-2-team-size-by-funding-as-proxy-for-safety-resources-analysis",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Team Size by Funding As Proxy for Safety Resources Analysis",
+    "text": "Question 2 : Team Size by Funding As Proxy for Safety Resources Analysis\n\nLarge commercial teams often come with more resources: guides, oxygen, fixed ropes, medical support. That could partly explain why they have lower fatality rates.\nMeanwhile, small non-commercial teams might:\n\nTake harder routes (fewer sherpa or porters)\nPush limits with less redundancy\nFace more exposure if things go wrong\n\nSo while team size alone doesn’t determine safety, it’s a proxy for resourcing — and resourcing links back to safety."
   },
   {
     "objectID": "index.html",

@@ -527,8 +527,329 @@ Trevor Macdonald &amp; Nandakumar Kuthalaraja
 </section>
 <section id="question-2" class="slide level2">
 <h2>Question 2</h2>
-<h3 id="approach">Approach:</h3>
-<h3 id="wrap-up">Wrap up</h3>
+<p><strong>Does an expeditions funding affect safety outcomes?</strong></p>
+<p>The analysis will be very similar for this question. I suspect there will be some overlap, funding and success rate etc. We will use many of the same variables, but more specifically, <code>FUNDING_TYPE</code>.</p>
+<p>We will Compare specific funding types like commercial vs.&nbsp;independent expeditions across countries for more insights</p>
+</section>
+<section id="question-2-approach" class="slide level2">
+<h2>Question 2 : Approach</h2>
+<ul>
+<li>Get Data from the CSV files</li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>exped <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/exped_tidy.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<ul>
+<li>Data Wrangling - Slimmed-down tibble of key variables</li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="co"># Lean tibble of variables of interest</span></span>
+<span id="cb4-2"><a></a>exped_q2 <span class="ot">&lt;-</span> exped <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a></a>  <span class="fu">select</span>(</span>
+<span id="cb4-4"><a></a>    YEAR,           <span class="co"># Year of the expedition</span></span>
+<span id="cb4-5"><a></a>    SPONSOR,        <span class="co"># Sponsor or funding organization</span></span>
+<span id="cb4-6"><a></a>    SUCCESS1,       <span class="co"># Success on primary route</span></span>
+<span id="cb4-7"><a></a>    SUCCESS2,       <span class="co"># Success on second route</span></span>
+<span id="cb4-8"><a></a>    SUCCESS3,       <span class="co"># Success on third route</span></span>
+<span id="cb4-9"><a></a>    SUCCESS4,       <span class="co"># Success on fourth route</span></span>
+<span id="cb4-10"><a></a>    TERMDATE,       <span class="co"># Date expedition was terminated</span></span>
+<span id="cb4-11"><a></a>    TERMREASON,     <span class="co"># Numeric code for termination reason</span></span>
+<span id="cb4-12"><a></a>    TERMREASON_FACTOR, <span class="co"># Description of termination reason</span></span>
+<span id="cb4-13"><a></a>    TOTMEMBERS,     <span class="co"># Total members in the team</span></span>
+<span id="cb4-14"><a></a>    MDEATHS,        <span class="co"># Number of member deaths</span></span>
+<span id="cb4-15"><a></a>    HDEATHS,        <span class="co"># Hired staff deaths</span></span>
+<span id="cb4-16"><a></a>    OTHERSMTS,      <span class="co"># Other summits during expedition</span></span>
+<span id="cb4-17"><a></a>    ACCIDENTS,      <span class="co"># Description of accidents</span></span>
+<span id="cb4-18"><a></a>    AGENCY,         <span class="co"># Trekking/expedition agency</span></span>
+<span id="cb4-19"><a></a>    O2USED          <span class="co">#</span></span>
+<span id="cb4-20"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-21"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-22"><a></a>    <span class="at">ANY_SUCCESS =</span> SUCCESS1 <span class="sc">|</span> SUCCESS2 <span class="sc">|</span> SUCCESS3 <span class="sc">|</span> SUCCESS4,</span>
+<span id="cb4-23"><a></a>    <span class="at">FATALITIES =</span> (MDEATHS <span class="sc">+</span> HDEATHS <span class="sc">&gt;</span> <span class="dv">0</span>),</span>
+<span id="cb4-24"><a></a>    <span class="at">OUTCOME_LABEL =</span> <span class="fu">case_when</span>(</span>
+<span id="cb4-25"><a></a>      ANY_SUCCESS <span class="sc">&amp;</span> <span class="sc">!</span>FATALITIES <span class="sc">~</span> <span class="st">"Success, No Deaths"</span>,</span>
+<span id="cb4-26"><a></a>      ANY_SUCCESS <span class="sc">&amp;</span> FATALITIES  <span class="sc">~</span> <span class="st">"Success + Deaths"</span>,</span>
+<span id="cb4-27"><a></a>      <span class="sc">!</span>ANY_SUCCESS <span class="sc">&amp;</span> FATALITIES <span class="sc">~</span> <span class="st">"Failure + Deaths"</span>,</span>
+<span id="cb4-28"><a></a>      <span class="cn">TRUE</span>                      <span class="sc">~</span> <span class="st">"Failure, No Deaths"</span></span>
+<span id="cb4-29"><a></a>    )</span>
+<span id="cb4-30"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-31"><a></a>  <span class="fu">select</span>(<span class="sc">-</span>SUCCESS1, <span class="sc">-</span>SUCCESS2, <span class="sc">-</span>SUCCESS3, <span class="sc">-</span>SUCCESS4, <span class="sc">-</span>MDEATHS, <span class="sc">-</span>HDEATHS)</span>
+<span id="cb4-32"><a></a></span>
+<span id="cb4-33"><a></a></span>
+<span id="cb4-34"><a></a>exped_q2 <span class="ot">&lt;-</span> exped_q2 <span class="sc">|&gt;</span> </span>
+<span id="cb4-35"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-36"><a></a>    <span class="at">TERMINATION_TYPE =</span> <span class="fu">case_when</span>(</span>
+<span id="cb4-37"><a></a>      TERMREASON <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>) <span class="sc">~</span> <span class="st">"Successful"</span>,</span>
+<span id="cb4-38"><a></a>      TERMREASON <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>) <span class="sc">~</span> <span class="st">"Bad Weather/Conditions"</span>,</span>
+<span id="cb4-39"><a></a>      TERMREASON <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">7</span>) <span class="sc">~</span> <span class="st">"Accident/Illness/Exhaustion"</span>,</span>
+<span id="cb4-40"><a></a>      TERMREASON <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>) <span class="sc">~</span> <span class="st">"Logistics/Technical"</span>,</span>
+<span id="cb4-41"><a></a>      TERMREASON <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">11</span>, <span class="dv">12</span>, <span class="dv">13</span>) <span class="sc">~</span> <span class="st">"No Attempt/Base Only"</span>,</span>
+<span id="cb4-42"><a></a>      TERMREASON <span class="sc">==</span> <span class="dv">14</span> <span class="sc">~</span> <span class="st">"Other"</span>,</span>
+<span id="cb4-43"><a></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Unknown"</span></span>
+<span id="cb4-44"><a></a>    )</span>
+<span id="cb4-45"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<ul>
+<li>Data Wrangling - Assigns funding categories from cleaned sponsor prefixes.</li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">library</span>(stringr)</span>
+<span id="cb5-2"><a></a></span>
+<span id="cb5-3"><a></a><span class="co"># Source: https://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when</span></span>
+<span id="cb5-4"><a></a></span>
+<span id="cb5-5"><a></a>sponsor_prefix_tbl <span class="ot">&lt;-</span> exped_q2 <span class="sc">|&gt;</span> </span>
+<span id="cb5-6"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-7"><a></a>    <span class="at">SPONSOR_CLEAN =</span> <span class="fu">str_to_lower</span>(<span class="fu">str_trim</span>(SPONSOR)),</span>
+<span id="cb5-8"><a></a>    <span class="at">SPONSOR_CLEAN =</span> <span class="fu">str_remove</span>(SPONSOR_CLEAN, <span class="st">"</span><span class="sc">\\</span><span class="st">s*</span><span class="sc">\\</span><span class="st">b20</span><span class="sc">\\</span><span class="st">d{2}</span><span class="sc">\\</span><span class="st">b$"</span>),</span>
+<span id="cb5-9"><a></a>    <span class="at">SPONSOR_PREFIX =</span> <span class="fu">str_extract</span>(SPONSOR_CLEAN, <span class="st">"^</span><span class="sc">\\</span><span class="st">w+</span><span class="sc">\\</span><span class="st">s*</span><span class="sc">\\</span><span class="st">w*"</span>)</span>
+<span id="cb5-10"><a></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb5-11"><a></a>  <span class="fu">count</span>(SPONSOR_PREFIX, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-12"><a></a></span>
+<span id="cb5-13"><a></a><span class="co">#Sponsors &lt;- exped_q2 |&gt; </span></span>
+<span id="cb5-14"><a></a>  <span class="co">#distinct(SPONSOR_CLEAN) #|&gt; </span></span>
+<span id="cb5-15"><a></a> <span class="co">#count()</span></span>
+<span id="cb5-16"><a></a></span>
+<span id="cb5-17"><a></a>exped_q2 <span class="ot">&lt;-</span> exped_q2 <span class="sc">|&gt;</span> </span>
+<span id="cb5-18"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-19"><a></a>    <span class="at">SPONSOR_CLEAN =</span> <span class="fu">str_to_lower</span>(<span class="fu">str_trim</span>(SPONSOR)),</span>
+<span id="cb5-20"><a></a>    <span class="at">SPONSOR_CLEAN =</span> <span class="fu">str_remove</span>(SPONSOR_CLEAN, <span class="st">"</span><span class="sc">\\</span><span class="st">s*</span><span class="sc">\\</span><span class="st">b20</span><span class="sc">\\</span><span class="st">d{2}</span><span class="sc">\\</span><span class="st">b$"</span>),</span>
+<span id="cb5-21"><a></a>    <span class="at">SPONSOR_PREFIX =</span> <span class="fu">str_extract</span>(SPONSOR_CLEAN, <span class="st">"^</span><span class="sc">\\</span><span class="st">w+</span><span class="sc">\\</span><span class="st">s*</span><span class="sc">\\</span><span class="st">w*"</span>),</span>
+<span id="cb5-22"><a></a>    <span class="at">FUNDING_TYPE =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-23"><a></a>      <span class="fu">str_detect</span>(SPONSOR_PREFIX, <span class="st">"army|police|military|defense"</span>) <span class="sc">~</span> <span class="st">"Military"</span>,</span>
+<span id="cb5-24"><a></a>      <span class="fu">str_detect</span>(SPONSOR_PREFIX, <span class="st">"university|college|school|club|jac|univ"</span>) <span class="sc">~</span> <span class="st">"Academic/Alpine Club"</span>,</span>
+<span id="cb5-25"><a></a>      <span class="fu">str_detect</span>(SPONSOR_PREFIX, <span class="st">"guides|treks|adventure|travel|ascent|trip|climbalaya|madison|imagine|kobler|makalu|highland|satori|elite|glacier|dream|thamserku"</span>) <span class="sc">~</span> <span class="st">"Commercial"</span>,</span>
+<span id="cb5-26"><a></a>      <span class="fu">str_detect</span>(SPONSOR_PREFIX, <span class="st">"private|individual|self|solo|1st|friends|father|jon|jost|alex|kilian|marc|kishori|soren"</span>) <span class="sc">~</span> <span class="st">"Private/Individual"</span>,</span>
+<span id="cb5-27"><a></a>      <span class="fu">str_detect</span>(SPONSOR_PREFIX, <span class="st">"national geographic|japanese|korean|slovakian|french|chinese|indian|nepalese|russian|german|austrian|canadian|italian|spanish|swiss|american|latvian"</span>) <span class="sc">~</span> <span class="st">"National Program"</span>,</span>
+<span id="cb5-28"><a></a>      <span class="fu">is.na</span>(SPONSOR_PREFIX) <span class="sc">|</span> SPONSOR_PREFIX <span class="sc">==</span> <span class="st">""</span> <span class="sc">~</span> <span class="st">"Other/Unknown"</span>,</span>
+<span id="cb5-29"><a></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Other/Unknown"</span></span>
+<span id="cb5-30"><a></a>    )</span>
+<span id="cb5-31"><a></a>  )<span class="sc">|&gt;</span> </span>
+<span id="cb5-32"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-33"><a></a>    <span class="at">FUNDING_SIMPLIFIED =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-34"><a></a>      FUNDING_TYPE <span class="sc">==</span> <span class="st">"Commercial"</span> <span class="sc">~</span> <span class="st">"Commercial"</span>,</span>
+<span id="cb5-35"><a></a>      FUNDING_TYPE <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Academic/Alpine Club"</span>, <span class="st">"National Program"</span>, <span class="st">"Military"</span>) <span class="sc">~</span> <span class="st">"Non-commercial"</span>,</span>
+<span id="cb5-36"><a></a>      FUNDING_TYPE <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Private/Individual"</span>, <span class="st">"Other/Unknown"</span>) <span class="sc">~</span> <span class="st">"Independent/Other"</span></span>
+<span id="cb5-37"><a></a>    )</span>
+<span id="cb5-38"><a></a>  )</span>
+<span id="cb5-39"><a></a></span>
+<span id="cb5-40"><a></a><span class="co">#glimpse(exped_q2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="question-2-motivation-setup" class="slide level2">
+<h2>Question 2 : Motivation &amp; Setup</h2>
+<section id="does-funding-type-affect-expedition-safety" style="font-size:0.6em; line-height:1.2;">
+<h3>Does Funding Type Affect Expedition Safety?</h3>
+<h4 id="purpose">Purpose</h4>
+<p>Commercial expeditions are often seen as safer due to better logistics, guides, and resources.</p>
+<p>The following analysis aims to address this assumption by comparing commercial, private, and non-commercial groups.</p>
+<h4 id="how-sponsors-were-categorized">How Sponsors Were Categorized</h4>
+<p>To determine funding source the data was wrangled and sorted using the “SPONSOR” column. This was accomplished by repeatedly editing the sorted list. The sponsor column were nearly all unique. (As found in an example here:https://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when)</p>
+</section>
+</section>
+<section id="question-2-start" class="slide level2">
+<h2>Question 2 : Start</h2>
+<h4 id="what-is-summary-statistics-on-safety">What is Summary Statistics on Safety</h4>
+<div style="font-size:0.6em; line-height:1.2;">
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="co"># Summarize safety metrics by funding type</span></span>
+<span id="cb6-2"><a></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb6-3"><a></a><span class="fu">library</span>(knitr)</span>
+<span id="cb6-4"><a></a></span>
+<span id="cb6-5"><a></a>exped_q2 <span class="sc">|&gt;</span></span>
+<span id="cb6-6"><a></a>  <span class="fu">group_by</span>(FUNDING_SIMPLIFIED) <span class="sc">|&gt;</span></span>
+<span id="cb6-7"><a></a>  <span class="fu">summarise</span>(</span>
+<span id="cb6-8"><a></a>    <span class="at">n_expeditions =</span> <span class="fu">n</span>(),</span>
+<span id="cb6-9"><a></a>    <span class="at">n_success =</span> <span class="fu">sum</span>(ANY_SUCCESS),</span>
+<span id="cb6-10"><a></a>    <span class="at">n_fatalities =</span> <span class="fu">sum</span>(FATALITIES),</span>
+<span id="cb6-11"><a></a>    <span class="at">pct_success =</span> <span class="fu">mean</span>(ANY_SUCCESS),</span>
+<span id="cb6-12"><a></a>    <span class="at">pct_fatal =</span> <span class="fu">mean</span>(FATALITIES),</span>
+<span id="cb6-13"><a></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb6-14"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-15"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-16"><a></a>    <span class="at">pct_success =</span> scales<span class="sc">::</span><span class="fu">percent</span>(pct_success, <span class="at">accuracy =</span> <span class="fl">0.1</span>),</span>
+<span id="cb6-17"><a></a>    <span class="at">pct_fatal =</span> scales<span class="sc">::</span><span class="fu">percent</span>(pct_fatal, <span class="at">accuracy =</span> <span class="fl">0.1</span>)</span>
+<span id="cb6-18"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb6-19"><a></a>  <span class="fu">kable</span>(</span>
+<span id="cb6-20"><a></a>    <span class="at">caption =</span> <span class="st">"Expedition Outcomes by Funding Type (2020–2024)"</span>,</span>
+<span id="cb6-21"><a></a>    <span class="at">col.names =</span> <span class="fu">c</span>(</span>
+<span id="cb6-22"><a></a>      <span class="st">"Funding Type"</span>,</span>
+<span id="cb6-23"><a></a>      <span class="st">"Total Expeditions"</span>,</span>
+<span id="cb6-24"><a></a>      <span class="st">"Number Successful"</span>,</span>
+<span id="cb6-25"><a></a>      <span class="st">"Number with Fatalities"</span>,</span>
+<span id="cb6-26"><a></a>      <span class="st">"Success Rate"</span>,</span>
+<span id="cb6-27"><a></a>      <span class="st">"Fatality Rate"</span></span>
+<span id="cb6-28"><a></a>    ),</span>
+<span id="cb6-29"><a></a>    <span class="at">format =</span> <span class="st">"html"</span></span>
+<span id="cb6-30"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top" data-quarto-postprocess="true">
+<caption>Expedition Outcomes by Funding Type (2020–2024)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Funding Type</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Total Expeditions</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Number Successful</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Number with Fatalities</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Success Rate</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Fatality Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Commercial</td>
+<td style="text-align: right;">274</td>
+<td style="text-align: right;">212</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: left;">77.4%</td>
+<td style="text-align: left;">2.9%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Independent/Other</td>
+<td style="text-align: right;">517</td>
+<td style="text-align: right;">365</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: left;">70.6%</td>
+<td style="text-align: left;">5.2%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Non-commercial</td>
+<td style="text-align: right;">91</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">56.0%</td>
+<td style="text-align: left;">3.3%</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</div>
+</section>
+<section id="question-2-how-do-expeditions-end" class="slide level2">
+<h2>Question 2 : How do Expeditions End?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-19-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-20-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div class="columns">
+<div class="column" style="width:25%;">
+
+</div><div class="column" style="&quot;min-height:100px;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-21-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:25%;">
+<!-- blank right spacer -->
+</div></div>
+</section>
+<section id="question-2-expediations-end-analysis" class="slide level2">
+<h2>Question 2 : Expediations End Analysis</h2>
+<div style="font-size:0.6em; line-height:1.2;">
+<p>These figures shows that proportionally, accidents are more common with Non-commercial expeditions.</p>
+<p>While Termination due to bad weather appears uniform across all groups, which is expected.</p>
+</div>
+</section>
+<section id="question-2-fatality-trend" class="slide level2">
+<h2>Question 2 : Fatality Trend</h2>
+<div class="columns">
+<div class="column" style="width:70%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-22-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+<div style="font-size:0.5em; line-height:1.2;">
+<p>It’s one thing to say commercial expeditions are safer but is that always true? I wanted to check whether fatality rates have changed over time, and if so, whether some groups are improving faster than others. This smoothed line chart shows the share of expeditions with fatalities by year and funding type. This is overlap with question 1.</p>
+</div>
+</section>
+<section id="question-2-team-size-vs-fatality" class="slide level2">
+<h2>Question 2 : Team Size vs Fatality</h2>
+<div style="font-size:0.5em; line-height:1.2;">
+<p>Next question: does team size make a difference? You’d think larger teams might be safer due to support and redundancy, but also possibly riskier if they’re less experienced or move slowly. This scatterplot checks whether total team size correlates with success, failure, or fatalities — and whether that varies by funding type.</p>
+</div>
+<div class="columns">
+<div class="column" style="width:70%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-23-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="question-2-team-size-by-funding" class="slide level2">
+<h2>Question 2 : Team Size by Funding</h2>
+<div class="columns">
+<div class="column" style="width:90%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-24-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="question-2-team-size-by-funding-as-proxy-for-safety-resources-analysis" class="slide level2">
+<h2>Question 2 : Team Size by Funding As Proxy for Safety Resources Analysis</h2>
+<div style="font-size:0.4em; line-height:1.2;">
+<p>Large commercial teams often come with more resources: guides, oxygen, fixed ropes, medical support. That could partly explain why they have&nbsp;<strong>lower fatality rates</strong>.</p>
+<p>Meanwhile, small non-commercial teams might:</p>
+<ul>
+<li><p>Take harder routes (fewer sherpa or porters)</p></li>
+<li><p>Push limits with less redundancy</p></li>
+<li><p>Face more exposure if things go wrong</p></li>
+</ul>
+<p>So while team size alone doesn’t determine safety, it’s a&nbsp;<strong>proxy</strong>&nbsp;for resourcing — and resourcing links back to safety.</p>
+</div>
 
 
 </section>
