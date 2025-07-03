@@ -722,18 +722,19 @@ exped_q2 |>
   )
 
 ```
+
 ::: {style="font-size:0.5em; line-height:1.2;"}
--   **`Commercial expeditions appear safer—but how much safer, really?`**
+-   **`Commercial expeditions appear safer`**
 
     Commercial climbs are often assumed to be safer due to professional guides, better logistics, and more resources. The summary table supports this: commercial teams have a slightly higher success rate (77.4% vs. 70.6% for independents), but the fatality rate among independent expeditions is nearly double (5.2% vs. 2.9%).
 
--   **`Independent teams are more numerous—but face more risk`**
+-   **`Independent teams are more numerous, but face more risk`**
 
     Despite their prevalence (over 500 expeditions), independent teams experience lower success and higher fatality rates. This raises important questions about how funding structure influences safety outcomes.
 
 -   **`This motivates a deeper dive into funding and risk`**
 
-    The following analysis breaks expeditions into three groups—Commercial, Independent, and Other—and examines termination reasons, outcomes, team size distributions, and year-over-year trends to explore the relationship between funding and expedition safety.
+    The following analysis breaks expeditions into three groups Commercial, Independent, and Other and examines termination reasons, outcomes, team size distributions, and year-over-year trends to explore the relationship between funding and expedition safety.
 :::
 
 ## Question 2 : How do Expeditions End?
@@ -810,8 +811,7 @@ ggplot(exped_q2, aes(x = FUNDING_SIMPLIFIED, fill = OUTCOME_LABEL)) +
 
 -   **`Deaths occur disproportionately on failed expeditions`**
 
-    In the outcome chart, “Success + Deaths” remains a small slice across all groups. The vast majority of fatal expeditions failed to summit — especially in the independent and other categories — reinforcing that success correlates with safety.
-
+    In the outcome chart, “Success + Deaths” remains a small slice across all groups. The vast majority of fatal expeditions failed to summit, especially in the independent and other categories reinforcing that success correlates with safety.
 :::
 
 ## Question 2 : Fatality Trend
@@ -877,18 +877,18 @@ exped_q2 |>
 ```
 :::
 :::::
+
 ## Question 2 : Fatality Trend Analysis
 
 ::: {style="font-size:0.6em; line-height:1.2;"}
 -   **`Independent expeditions consistently show the highest fatality risk`**\
-    From 2021 to 2024, independent teams reported the highest fatality rate every year—rising steadily from \~4% to over 8%. This trend held across both plots, suggesting the risk isn’t a fluke of sample size.
+    From 2021 to 2024, independent teams reported the highest fatality rate every year rising steadily from \~4% to over 8%. This trend held across both plots, suggesting the risk isn’t a factor of sample size.
 
+-   **`Commercial expeditions maintain lower risk and fewer deaths overall`**\
+    The line plots show commercial expeditions peaking in 2023 with just \~3 fatalities, while independent teams saw nearly 9 in the same year more than double any other group. Their fatality rate remained under 5% throughout the entire period.
 
--   **`Commercial expeditions maintain lower risk—and fewer deaths overall`**\
-    The line plots show commercial expeditions peaking in 2023 with just \~3 fatalities, while independent teams saw nearly 9 in the same year—more than double any other group. Their fatality rate remained under 5% throughout the entire period.
-
--   **`“Other”-funded expeditions are low but volatile`**\
-    The “Other” group stayed below 2 deaths annually, but their fatality rate fluctuated wildly—peaking above 8% in 2023, then dropping back to zero by 2024. This variability likely reflects small sample sizes and inconsistent structure.
+-   **`“Other” funded expeditions are low but volatile`**\
+    The “Other” group stayed below 2 deaths annually, but their fatality rate fluctuated wildly peaking above 8% in 2023, then dropping back to zero by 2024. This variability likely reflects small sample sizes and inconsistent structure.
 
 -   **`Taken together, funding appears to shape safety outcomes`**\
     Independent expeditions show consistently worse outcomes in both rates and counts. The data suggests commercial expeditions may offer better safety due to greater resources, experienced guides, and more structured decision-making.
@@ -900,7 +900,7 @@ exped_q2 |>
 Next question: does team size make a difference? You’d think larger teams might be safer due to support and redundancy, but also possibly riskier if they’re less experienced or move slowly. This scatter plot checks whether total team size correlates with success, failure, or fatalities and whether that varies by funding type.
 :::
 
-:::: columns
+::::: columns
 ::: {.column width="50%"}
 ```{r}
 exped_q2 |>
@@ -912,7 +912,7 @@ ggplot(aes(x = TOTMEMBERS)) +
     x = "Team Size (Total Members) Bin Width = 5",
     y = "Number of Expeditions",
     title = "Distribution of Team Sizes by Funding Type",
-    subtitle = "Each panel shows team size distribution for one funding category (2020–2024)",
+    #subtitle = "Each panel shows team size distribution for one funding category (2020–2024)",
     caption = "Source: Himalayan Database via TidyTuesday (2025-01-21)"
   ) +
   theme_minimal()
@@ -943,20 +943,15 @@ exped_q2 |>
 
 ```
 :::
-::::
+:::::
 
 ## Question 2 : Team Size as Proxy for Safety Analysis
+
 ::: {style="font-size:0.6em; line-height:1.2;"}
--   **`Commercial expeditions tend to operate with smaller teams`**\
-    The first plot shows most commercial teams cluster under 10 members. These groups are lean—but often well-equipped. Their compact size may reflect efficiency rather than under-resourcing.
-
--   **`Independent teams are larger—but also riskier`**\
-    Independent expeditions skew larger, with many teams in the 10–15 range. However, the second plot shows that these mid-sized teams also account for the most fatalities, suggesting a possible safety tradeoff.
-
--   **`Fatal events concentrate in the middle—not extremes`**\
+-   **`Fatal events concentrate in the middle, not extremes`**\
     Fatalities rarely occurred among the smallest or largest teams. For both commercial and independent groups, the 5–15 range saw the most deaths, hinting that “medium” teams may face unique vulnerabilities—perhaps not small enough to retreat quickly, nor large enough for redundancy.
 
--   **`Team size is a proxy for resources—especially in commercial climbs`**\
+-   **`Team size as a proxy for resources in commercial climbs`**\
     Large commercial groups often come with oxygen, Sherpa support, and fixed lines. Smaller independent teams may lack this safety net and push harder routes with more risk exposure.
 :::
 
@@ -969,4 +964,3 @@ exped_q2 |>
 -   **Mid-altitude peaks** present the greatest risk–reward paradox: technically harder but fewer logistics.\
 
 -   **Stakeholders** (climbers, agencies, policymakers) can use these insights to optimize team size, funding models, and risk mitigation plans.
-
