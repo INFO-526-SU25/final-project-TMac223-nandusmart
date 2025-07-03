@@ -632,41 +632,49 @@ exped2 |>
 
     **Commercial**: success stays high (75–100 %) across all team sizes, peaking around 20 members.\
     **Non-commercial**: very small groups (\> 80 %) and very large groups (\~75 %) do better, but mid-sized teams (5–10 climbers) dip down near 50 %
+
+## 
 :::
 
-## Question 2
+## Question 2 : Intro
 
-The analysis will be very similar for this question. I suspect there will be some overlap, funding and success rate etc. We will use many of the same variables, but more specifically, FUNDING_TYPE.
+::: {style="font-size:0.6em; line-height:1.2;"}
+**Does an expeditions funding affect safety outcomes?**
 
-We will Compare specific funding types like commercial vs. independent expeditions across countries for more insights
+-   This question overlaps somewhat with our earlier analysis of summit success rates, but here the focus shifts to safety. Specifically, are expeditions with different types of funding, commercial versus independent, more or less likely to experience accidents, injuries, illness, or death?
 
-NOTE: Add "real world" examples of expedition success or failure to make analysis relatable.
+-   We’ll reuse some variables from the previous analysis ( `SUCCESS`, `FATALITIES`, `TERMREASON`), but this time we’ll group and compare results by a new derived variable, `FUNDING_TYPE`, which classifies expeditions as either "Commercial", "Independent" or "Other".
 
-### Approach
+-   Our analysis will explore basic climbing stats, reasons for expedition termination, distributions of safety related outcomes, and temporal trends stratified by funding type. The goal is to understand whether financial backing plays a role in the safety of Himalayan expeditions.
+:::
+
+## Question 2 : Setup
 
 -   Get Data from the CSV files
 
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
+#| label: Import
 #| echo: true
-#| results: hide
 #| message: false
 #| warning: false
+#| code-fold: true
+#| code-summary: Code
+#| results: hide
 
 exped <- read_csv("data/exped_tidy.csv")
 
 ```
 
--   Data Wrangling & Variable Inferences
+-   Data Wrangling - Lean tibble of key variables
 
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
+#| label: Wrangle Lean Tibble
 #| echo: true
-#| results: hide
 #| message: false
 #| warning: false
+#| code-fold: true
+#| code-summary: Code
+#| results: hide
 
 # Lean tibble of variables of interest
 exped_q2 <- exped |>
@@ -677,19 +685,14 @@ exped_q2 <- exped |>
     SUCCESS2,       # Success on second route
     SUCCESS3,       # Success on third route
     SUCCESS4,       # Success on fourth route
-    TERMDATE,       # Date expedition was terminated
     TERMREASON,     # Numeric code for termination reason
-    TERMREASON_FACTOR, # Description of termination reason
     TOTMEMBERS,     # Total members in the team
     MDEATHS,        # Number of member deaths
     HDEATHS,        # Hired staff deaths
-    OTHERSMTS,      # Other summits during expedition
-    ACCIDENTS,      # Description of accidents
-    AGENCY,         # Trekking/expedition agency
-    O2USED          #
   ) |>
   mutate(
-    ANY_SUCCESS = SUCCESS1 | SUCCESS2 | SUCCESS3 | SUCCESS4,
+    ANY_SUCCESS = SUCCESS1 | SUCCESS2 | SUCCESS3 | SUCCESS4, 
+    # Does NOT sum. based on expedition, not summit attempt.
     FATALITIES = (MDEATHS + HDEATHS > 0),
     OUTCOME_LABEL = case_when(
       ANY_SUCCESS & !FATALITIES ~ "Success, No Deaths",
@@ -697,16 +700,16 @@ exped_q2 <- exped |>
       !ANY_SUCCESS & FATALITIES ~ "Failure + Deaths",
       TRUE                      ~ "Failure, No Deaths"
     )
-  ) |>
+  ) |> # Remove redundant columns
   select(-SUCCESS1, -SUCCESS2, -SUCCESS3, -SUCCESS4, -MDEATHS, -HDEATHS)
 
-
-exped_q2 <- exped_q2 |> 
+# Combine categories
+exped_q2 <- exped_q2 |>  
   mutate(
-    TERMINATION_TYPE = case_when(
+    TERMINATION_TYPE = case_when( # Condensed factors for more straight forward analysis
       TERMREASON %in% c(1, 2, 3) ~ "Successful",
       TERMREASON %in% c(4, 5) ~ "Bad Weather/Conditions",
-      TERMREASON %in% c(6, 7) ~ "Accident/Illness/Exhaustion",
+      TERMREASON %in% c(6, 7) ~ "Accident/Death/Illness/Injury/Exhaustion",
       TERMREASON %in% c(8, 9, 10) ~ "Logistics/Technical",
       TERMREASON %in% c(11, 12, 13) ~ "No Attempt/Base Only",
       TERMREASON == 14 ~ "Other",
@@ -715,29 +718,41 @@ exped_q2 <- exped_q2 |>
   )
 ```
 
+## Question 2 : Data Wrangling
+
+:::: columns
+::: {.column width="90%"}
+-   Data Wrangling - Assigns funding categories from cleaned sponsor prefixes.
+
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
+#| label: Wrangle Sponsor
 #| echo: true
-#| results: hide
 #| message: false
 #| warning: false
+#| code-fold: true
+#| code-summary: Code
+#| results: hide
 
-library(stringr)
+# The sorting technique used to to determine "FUNDING_TYPE" was inspired by the example found at:
+# https://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when
+# I also used stringr Library and debugged sytax with GPT for this specific chunk.
 
-# Source: https://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when
 
 sponsor_prefix_tbl <- exped_q2 |> 
   mutate(
-    SPONSOR_CLEAN = str_to_lower(str_trim(SPONSOR)),
-    SPONSOR_CLEAN = str_remove(SPONSOR_CLEAN, "\\s*\\b20\\d{2}\\b$"),
+    SPONSOR_CLEAN = str_to_lower(str_trim(SPONSOR)), 
+    SPONSOR_CLEAN = str_remove(SPONSOR_CLEAN, "\\s*\\b20\\d{2}\\b$"), 
     SPONSOR_PREFIX = str_extract(SPONSOR_CLEAN, "^\\w+\\s*\\w*")
   ) |> 
-  count(SPONSOR_PREFIX, sort = TRUE)
+  count(SPONSOR_PREFIX, sort = TRUE) 
 
+# Test tibble to see if mutate worked.
 #Sponsors <- exped_q2 |> 
-  #distinct(SPONSOR_CLEAN) #|> 
+  #distinct(SPONSOR_CLEAN) #|>   
  #count()
+
+# I Printed the list of distinct strings after cleaning and gave it to GPT to find common words.
+# I then grouped the common words into categories to sort into funding type.
 
 exped_q2 <- exped_q2 |> 
   mutate(
@@ -754,18 +769,32 @@ exped_q2 <- exped_q2 |>
       TRUE ~ "Other/Unknown"
     )
   )|> 
+  # Simplified funding type categories
   mutate(
-    FUNDING_SIMPLIFIED = case_when(
+    FUNDING_SIMPLIFIED = case_when( 
       FUNDING_TYPE == "Commercial" ~ "Commercial",
-      FUNDING_TYPE %in% c("Academic/Alpine Club", "National Program", "Military") ~ "Non-commercial",
-      FUNDING_TYPE %in% c("Private/Individual", "Other/Unknown") ~ "Independent/Other"
+      FUNDING_TYPE %in% c("Academic/Alpine Club", "National Program", "Military") ~ "Other",
+      FUNDING_TYPE %in% c("Private/Individual", "Other/Unknown") ~ "Independent"
+      
     )
   )
 
 #glimpse(exped_q2)
 ```
+:::
+::::
 
-## 
+::::: columns
+:::: {.column width="90%"}
+::: {style="font-size:0.8em; line-height:1.2;"}
+**How Sponsors Were Categorized**
+
+To determine funding source the data was wrangled and sorted using the SPONSOR" column. This was accomplished by repeatedly editing the sorted list. The sponsor column were nearly all unique, so sorting had to be done by common string factors. The structure to sort the strings was inspired by the example found here:
+
+https://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when
+:::
+::::
+:::::
 
 ## Question 2 : Motivation
 
@@ -1037,41 +1066,12 @@ exped_q2 |>
     Large commercial groups often come with oxygen, Sherpa support, and fixed lines. Smaller independent teams may lack this safety net and push harder routes with more risk exposure.
 :::
 
-## Key Findings (Q1 – Summit Success)
-
--   **Team Size**
-    -   Very small teams (1–5) & medium-large (9–20) show the highest success\
-    -   Mid-sized groups (3–8) dip, and very large (\>20) see slight declines
--   **Peak Geography**
-    -   Mid-altitude (\~7100–7300 m) hardest—technical routes, low infrastructure\
-    -   High-traffic 8000 m peaks benefit from camps, fixed ropes and support
--   **Temporal Trend**
-    -   Pre-COVID (2020): \~72% success\
-    -   COVID slump (2021–22): \~63%\
-    -   Full rebound (2023–24): \~80%
--   **Commercial vs Non-Commercial**
-    -   Commercial teams recover faster post-COVID & hit \~95% success by 2024\
-    -   Non-commercial plateau near \~64%
-
-------------------------------------------------------------------------
-
-## Key Findings (Q2 – Funding & Safety)
-
--   **Funding Proxy**
-    -   **Commercial** – guided operators & adventure companies\
-    -   **Non-commercial** – academic clubs, national programs, military\
-    -   **Independent/Other** – private, self-organized, unknown
--   **Safety Outcomes**
-    -   Commercial expeditions have **slightly lower fatality rates** (\~ 5–8%) vs independent (\~ 10–12%)\
-    -   Accident-related terminations more common in non-commercial & independent groups\
-    -   Weather-driven turn-backs uniform across all funding types
--   **Fatality Trend**
-    -   All groups show modest declines in fatality rates over 2020–24\
-    -   **Commercial** maintain the lowest trajectory; **Independent** show the steepest decline
-
 ## Wrap Up
 
-1.  **Seasonality & route normalization** remain the strongest summit predictors.\
-2.  **Resource-intensive strategies** (guided support, oxygen deployment) boost success with only **marginal safety gains** once environment is controlled.\
-3.  **Mid-altitude peaks** present the greatest risk–reward paradox: technically harder but fewer logistics.\
-4.  **Stakeholders** (climbers, agencies, policymakers) can use these insights to optimize team size, funding models, and risk mitigation plans.
+-   **Seasonality & route normalization** remain the strongest summit predictors.
+
+-   **Resource-intensive strategies** (guided support, oxygen deployment) boost success with only **marginal safety gains** once environment is controlled.
+
+-   **Mid-altitude peaks** present the greatest risk–reward paradox: technically harder but fewer logistics.
+
+-   **Stakeholders** (climbers, agencies, policymakers) can use these insights to optimize team size, funding models, and risk mitigation plans.

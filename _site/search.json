@@ -38,8 +38,8 @@
     "objectID": "presentation.html#our-dataset",
     "href": "presentation.html#our-dataset",
     "title": "A Statistical Exploration of Himalayan Expeditions",
-    "section": "Our Dataset",
-    "text": "Our Dataset\n\nHimalayan Database - Created to continue the legacy of Elizabeth Hawley, a journalist who spent decades documenting Himalayan expeditions.\nDataset - TidyTuesday GitHub repository and has been amended to the years 2020 - 2024 to manage file size.\nThere are 2 main datasets :\n\nexped_tidy - Contains details of expeditions\npeaks_tidy - Includes data about the Himalayan Peaks"
+    "section": "",
+    "text": "Himalayan Database - Created to continue the legacy of Elizabeth Hawley, a journalist who spent decades documenting Himalayan expeditions.\nDataset - TidyTuesday GitHub repository and has been amended to the years 2020 - 2024 to manage file size.\nThere are 2 main datasets :\n\nexped_tidy - Contains details of expeditions\npeaks_tidy - Includes data about the Himalayan Peaks"
   },
   {
     "objectID": "presentation.html#question-1",
@@ -165,7 +165,7 @@
     "href": "presentation.html#question-2-fatality-trend",
     "title": "A Statistical Exploration of Himalayan Expeditions",
     "section": "Question 2 : Fatality Trend",
-    "text": "Question 2 : Fatality Trend\n\n\n\n\n\n\n\n\n\n\n\n\n\nIt’s one thing to say commercial expeditions are safer but is that always true? I wanted to check whether fatality rates have changed over time, and if so, whether some groups are improving faster than others. This smoothed line chart shows the share of expeditions with fatalities by year and funding type. This is overlap with question 1."
+    "text": "Question 2 : Fatality Trend"
   },
   {
     "objectID": "presentation.html#question-2-team-size-vs-fatality",
@@ -193,21 +193,21 @@
     "href": "presentation.html#wrap-up",
     "title": "A Statistical Exploration of Himalayan Expeditions",
     "section": "Wrap Up",
-    "text": "Wrap Up\n\nSeasonality & route normalization remain the strongest summit predictors.\n\nResource-intensive strategies (guided support, oxygen deployment) boost success with only marginal safety gains once environment is controlled.\n\nMid-altitude peaks present the greatest risk–reward paradox: technically harder but fewer logistics.\n\nStakeholders (climbers, agencies, policymakers) can use these insights to optimize team size, funding models, and risk mitigation plans."
+    "text": "Wrap Up\n\nSeasonality & route normalization remain the strongest summit predictors.\n\nResource-intensive strategies (guided support, oxygen deployment) boost success with only marginal safety gains once environment is controlled.\nMid-altitude peaks present the greatest risk–reward paradox: technically harder but fewer logistics.\n\nStakeholders (climbers, agencies, policymakers) can use these insights to optimize team size, funding models, and risk mitigation plans."
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "A Statistical Exploration of Himalayan Expeditions",
     "section": "",
-    "text": "High-altitude mountaineering offers a natural laboratory for studying how human, environmental, and logistical factors interact to shape risk and achievement. Using tidy versions of the Himalayan Database, this project leverages R (tidyverse, tidy models) and Quarto to build an interactive, reproducible data-visualisation narrative around two guiding questions:\n\nWhat factors contribute to the success or failure of a summit?\n\nWe knit together expedition, peak, and temporal attributes to explore how season, route choice, peak height, team size, leader nationality, weather windows, and oxygen strategy correlate with summit outcomes. Visual encodings include faceted ridge plots of summit probability across seasons, interactive geographic representations of route popularity versus success.\nA multilevel logistic model provides effect-size estimates while accounting for peak-level heterogeneity.\n\nDoes an expedition’s funding affect safety outcomes?\n\nBecause direct cost metrics are absent, we construct a funding proxy that blends sponsorship type, total members & hired staff, oxygen usage, and expedition duration.\nWe then relate this composite to safety indicators like member and staff fatalities, high-altitude illnesses, rescue events via scatter-plot matrices, concentration curves, and Poisson regression. Stratified visualizations highlight differential risk patterns between commercial and self-organised teams.\n\n\nPreliminary findings suggest that\n- seasonality and route normalization remain the strongest predictors of summit success\n- larger, commercially sponsored teams enjoy slightly higher success but only marginal safety advantages once altitude and weather are controlled\n- resource intensive strategies such as extensive oxygen deployment reduce high-altitude illness yet do not eliminate fatal risk."
+    "text": "https://arizona.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=85be2d25-7854-45bb-8d26-b30f0048692c"
   },
   {
     "objectID": "index.html#abstract",
     "href": "index.html#abstract",
     "title": "A Statistical Exploration of Himalayan Expeditions",
-    "section": "",
-    "text": "High-altitude mountaineering offers a natural laboratory for studying how human, environmental, and logistical factors interact to shape risk and achievement. Using tidy versions of the Himalayan Database, this project leverages R (tidyverse, tidy models) and Quarto to build an interactive, reproducible data-visualisation narrative around two guiding questions:\n\nWhat factors contribute to the success or failure of a summit?\n\nWe knit together expedition, peak, and temporal attributes to explore how season, route choice, peak height, team size, leader nationality, weather windows, and oxygen strategy correlate with summit outcomes. Visual encodings include faceted ridge plots of summit probability across seasons, interactive geographic representations of route popularity versus success.\nA multilevel logistic model provides effect-size estimates while accounting for peak-level heterogeneity.\n\nDoes an expedition’s funding affect safety outcomes?\n\nBecause direct cost metrics are absent, we construct a funding proxy that blends sponsorship type, total members & hired staff, oxygen usage, and expedition duration.\nWe then relate this composite to safety indicators like member and staff fatalities, high-altitude illnesses, rescue events via scatter-plot matrices, concentration curves, and Poisson regression. Stratified visualizations highlight differential risk patterns between commercial and self-organised teams.\n\n\nPreliminary findings suggest that\n- seasonality and route normalization remain the strongest predictors of summit success\n- larger, commercially sponsored teams enjoy slightly higher success but only marginal safety advantages once altitude and weather are controlled\n- resource intensive strategies such as extensive oxygen deployment reduce high-altitude illness yet do not eliminate fatal risk."
+    "section": "Abstract",
+    "text": "Abstract\nHigh-altitude mountaineering offers a natural laboratory for studying how human, environmental, and logistical factors interact to shape risk and achievement. Using tidy versions of the Himalayan Database, this project leverages R (tidyverse, tidy models) and Quarto to build an interactive, reproducible data-visualisation narrative around two guiding questions:\n\nWhat factors contribute to the success or failure of a summit?\n\nWe knit together expedition, peak, and temporal attributes to explore how season, route choice, peak height, team size, leader nationality, weather windows, and oxygen strategy correlate with summit outcomes. Visual encodings include faceted ridge plots of summit probability across seasons, interactive geographic representations of route popularity versus success.\nA multilevel logistic model provides effect-size estimates while accounting for peak-level heterogeneity.\n\nDoes an expedition’s funding affect safety outcomes?\n\nBecause direct cost metrics are absent, we construct a funding proxy that blends sponsorship type, total members & hired staff, oxygen usage, and expedition duration.\nWe then relate this composite to safety indicators like member and staff fatalities, high-altitude illnesses, rescue events via scatter-plot matrices, concentration curves, and Poisson regression. Stratified visualizations highlight differential risk patterns between commercial and self-organised teams."
   },
   {
     "objectID": "index.html#introduction",
@@ -249,7 +249,7 @@
     "href": "index.html#wrap-up",
     "title": "A Statistical Exploration of Himalayan Expeditions",
     "section": "Wrap Up",
-    "text": "Wrap Up\n\nSeasonality & route normalization remain the strongest summit predictors.\n\nResource-intensive strategies (guided support, oxygen deployment) boost success with only marginal safety gains once environment is controlled.\n\nMid-altitude peaks present the greatest risk–reward paradox: technically harder but fewer logistics.\n\nStakeholders (climbers, agencies, policymakers) can use these insights to optimize team size, funding models, and risk mitigation plans."
+    "text": "Wrap Up\n\nSeasonality & route normalization remain the strongest summit predictors.\nResource-intensive strategies (guided support, oxygen deployment) boost success with only marginal safety gains once environment is controlled.\nMid-altitude peaks present the greatest risk–reward paradox: technically harder but fewer logistics.\nStakeholders (climbers, agencies, policymakers) can use these insights to optimize team size, funding models, and risk mitigation plans."
   },
   {
     "objectID": "test.html#our-dataset",
@@ -383,5 +383,145 @@
     "title": "A Statistical Exploration of Himalayan Expeditions",
     "section": "Question 2 : Team Size by Funding As Proxy for Safety Resources",
     "text": "Question 2 : Team Size by Funding As Proxy for Safety Resources\nLarge commercial teams often come with more resources: guides, oxygen, fixed ropes, medical support. That could partly explain why they have lower fatality rates.\nMeanwhile, small non-commercial teams might:\n\nTake harder routes (fewer sherpa or porters)\nPush limits with less redundancy\nFace more exposure if things go wrong\n\nSo while team size alone doesn’t determine safety, it’s a proxy for resourcing — and resourcing links back to safety.\n\n\n\nDistribution of Team Size by Funding Type"
+  },
+  {
+    "objectID": "index.html#presentation-video",
+    "href": "index.html#presentation-video",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "",
+    "text": "https://arizona.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=85be2d25-7854-45bb-8d26-b30f0048692c"
+  },
+  {
+    "objectID": "index.html#question-2-intro",
+    "href": "index.html#question-2-intro",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Intro",
+    "text": "Question 2 : Intro\n\nDoes an expeditions funding affect safety outcomes?\n\nThis question overlaps somewhat with our earlier analysis of summit success rates, but here the focus shifts to safety. Specifically, are expeditions with different types of funding, commercial versus independent, more or less likely to experience accidents, injuries, illness, or death?\nWe’ll reuse some variables from the previous analysis ( SUCCESS, FATALITIES, TERMREASON), but this time we’ll group and compare results by a new derived variable, FUNDING_TYPE, which classifies expeditions as either “Commercial”, “Independent” or “Other”.\nOur analysis will explore basic climbing stats, reasons for expedition termination, distributions of safety related outcomes, and temporal trends stratified by funding type. The goal is to understand whether financial backing plays a role in the safety of Himalayan expeditions."
+  },
+  {
+    "objectID": "index.html#question-2-setup",
+    "href": "index.html#question-2-setup",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Setup",
+    "text": "Question 2 : Setup\n\nGet Data from the CSV files\n\n\n\nCode\nexped &lt;- read_csv(\"data/exped_tidy.csv\")\n\n\n\nData Wrangling - Lean tibble of key variables\n\n\n\nCode\n# Lean tibble of variables of interest\nexped_q2 &lt;- exped |&gt;\n  select(\n    YEAR,           # Year of the expedition\n    SPONSOR,        # Sponsor or funding organization\n    SUCCESS1,       # Success on primary route\n    SUCCESS2,       # Success on second route\n    SUCCESS3,       # Success on third route\n    SUCCESS4,       # Success on fourth route\n    TERMREASON,     # Numeric code for termination reason\n    TOTMEMBERS,     # Total members in the team\n    MDEATHS,        # Number of member deaths\n    HDEATHS,        # Hired staff deaths\n  ) |&gt;\n  mutate(\n    ANY_SUCCESS = SUCCESS1 | SUCCESS2 | SUCCESS3 | SUCCESS4, \n    # Does NOT sum. based on expedition, not summit attempt.\n    FATALITIES = (MDEATHS + HDEATHS &gt; 0),\n    OUTCOME_LABEL = case_when(\n      ANY_SUCCESS & !FATALITIES ~ \"Success, No Deaths\",\n      ANY_SUCCESS & FATALITIES  ~ \"Success + Deaths\",\n      !ANY_SUCCESS & FATALITIES ~ \"Failure + Deaths\",\n      TRUE                      ~ \"Failure, No Deaths\"\n    )\n  ) |&gt; # Remove redundant columns\n  select(-SUCCESS1, -SUCCESS2, -SUCCESS3, -SUCCESS4, -MDEATHS, -HDEATHS)\n\n# Combine categories\nexped_q2 &lt;- exped_q2 |&gt;  \n  mutate(\n    TERMINATION_TYPE = case_when( # Condensed factors for more straight forward analysis\n      TERMREASON %in% c(1, 2, 3) ~ \"Successful\",\n      TERMREASON %in% c(4, 5) ~ \"Bad Weather/Conditions\",\n      TERMREASON %in% c(6, 7) ~ \"Accident/Death/Illness/Injury/Exhaustion\",\n      TERMREASON %in% c(8, 9, 10) ~ \"Logistics/Technical\",\n      TERMREASON %in% c(11, 12, 13) ~ \"No Attempt/Base Only\",\n      TERMREASON == 14 ~ \"Other\",\n      TRUE ~ \"Unknown\"\n    )\n  )"
+  },
+  {
+    "objectID": "index.html#question-2-data-wrangling",
+    "href": "index.html#question-2-data-wrangling",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Data Wrangling",
+    "text": "Question 2 : Data Wrangling\n\n\n\nData Wrangling - Assigns funding categories from cleaned sponsor prefixes.\n\n\n\nCode\n# The sorting technique used to to determine \"FUNDING_TYPE\" was inspired by the example found at:\n# https://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when\n# I also used stringr Library and debugged sytax with GPT for this specific chunk.\n\n\nsponsor_prefix_tbl &lt;- exped_q2 |&gt; \n  mutate(\n    SPONSOR_CLEAN = str_to_lower(str_trim(SPONSOR)), \n    SPONSOR_CLEAN = str_remove(SPONSOR_CLEAN, \"\\\\s*\\\\b20\\\\d{2}\\\\b$\"), \n    SPONSOR_PREFIX = str_extract(SPONSOR_CLEAN, \"^\\\\w+\\\\s*\\\\w*\")\n  ) |&gt; \n  count(SPONSOR_PREFIX, sort = TRUE) \n\n# Test tibble to see if mutate worked.\n#Sponsors &lt;- exped_q2 |&gt; \n  #distinct(SPONSOR_CLEAN) #|&gt;   \n #count()\n\n# I Printed the list of distinct strings after cleaning and gave it to GPT to find common words.\n# I then grouped the common words into categories to sort into funding type.\n\nexped_q2 &lt;- exped_q2 |&gt; \n  mutate(\n    SPONSOR_CLEAN = str_to_lower(str_trim(SPONSOR)),\n    SPONSOR_CLEAN = str_remove(SPONSOR_CLEAN, \"\\\\s*\\\\b20\\\\d{2}\\\\b$\"),\n    SPONSOR_PREFIX = str_extract(SPONSOR_CLEAN, \"^\\\\w+\\\\s*\\\\w*\"),\n    FUNDING_TYPE = case_when(\n      str_detect(SPONSOR_PREFIX, \"army|police|military|defense\") ~ \"Military\",\n      str_detect(SPONSOR_PREFIX, \"university|college|school|club|jac|univ\") ~ \"Academic/Alpine Club\",\n      str_detect(SPONSOR_PREFIX, \"guides|treks|adventure|travel|ascent|trip|climbalaya|madison|imagine|kobler|makalu|highland|satori|elite|glacier|dream|thamserku\") ~ \"Commercial\",\n      str_detect(SPONSOR_PREFIX, \"private|individual|self|solo|1st|friends|father|jon|jost|alex|kilian|marc|kishori|soren\") ~ \"Private/Individual\",\n      str_detect(SPONSOR_PREFIX, \"national geographic|japanese|korean|slovakian|french|chinese|indian|nepalese|russian|german|austrian|canadian|italian|spanish|swiss|american|latvian\") ~ \"National Program\",\n      is.na(SPONSOR_PREFIX) | SPONSOR_PREFIX == \"\" ~ \"Other/Unknown\",\n      TRUE ~ \"Other/Unknown\"\n    )\n  )|&gt; \n  # Simplified funding type categories\n  mutate(\n    FUNDING_SIMPLIFIED = case_when( \n      FUNDING_TYPE == \"Commercial\" ~ \"Commercial\",\n      FUNDING_TYPE %in% c(\"Academic/Alpine Club\", \"National Program\", \"Military\") ~ \"Other\",\n      FUNDING_TYPE %in% c(\"Private/Individual\", \"Other/Unknown\") ~ \"Independent\"\n      \n    )\n  )\n\n#glimpse(exped_q2)\n\n\n\n\n\n\n\nHow Sponsors Were Categorized\nTo determine funding source the data was wrangled and sorted using the SPONSOR” column. This was accomplished by repeatedly editing the sorted list. The sponsor column were nearly all unique, so sorting had to be done by common string factors. The structure to sort the strings was inspired by the example found here:\nhttps://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when"
+  },
+  {
+    "objectID": "index.html#question-2-motivation",
+    "href": "index.html#question-2-motivation",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Motivation",
+    "text": "Question 2 : Motivation\nSummary Statistics on Safety\n\n\n\n\n\n\n\n\nExpedition Outcomes by Funding Type (2020–2024)\n\n\nFunding Type\nTotal Expeditions\nNumber Successful\nNumber with Fatalities\nSuccess Rate\nFatality Rate\n\n\n\n\nCommercial\n274\n212\n8\n77.4%\n2.9%\n\n\nIndependent\n517\n365\n27\n70.6%\n5.2%\n\n\nOther\n91\n51\n3\n56.0%\n3.3%\n\n\n\n\n\n\n\n\n\nCommercial expeditions appear safer\nCommercial climbs are often assumed to be safer due to professional guides, better logistics, and more resources. The summary table supports this: commercial teams have a slightly higher success rate (77.4% vs. 70.6% for independents), but the fatality rate among independent expeditions is nearly double (5.2% vs. 2.9%).\nIndependent teams are more numerous, but face more risk\nDespite their prevalence (over 500 expeditions), independent teams experience lower success and higher fatality rates. This raises important questions about how funding structure influences safety outcomes.\nThis motivates a deeper dive into funding and risk\nThe following analysis breaks expeditions into three groups Commercial, Independent, and Other and examines termination reasons, outcomes, team size distributions, and year-over-year trends to explore the relationship between funding and expedition safety."
+  },
+  {
+    "objectID": "index.html#question-2-how-do-expeditions-end",
+    "href": "index.html#question-2-how-do-expeditions-end",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : How do Expeditions End?",
+    "text": "Question 2 : How do Expeditions End?"
+  },
+  {
+    "objectID": "index.html#question-2-expeditions-end-analysis",
+    "href": "index.html#question-2-expeditions-end-analysis",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Expeditions End Analysis",
+    "text": "Question 2 : Expeditions End Analysis\n\n\nCommercial expeditions are far more likely to end successfully\nOver 75% of commercial expeditions ended in success, compared to around 65% for independent teams and closer to 60% for the “Other” group. Independent and other-funded expeditions show higher rates of failure, including both bad weather and medical/logistical setbacks.\nTermination reasons differ subtly by funding structure\nCommercial expeditions rarely terminate due to logistical or medical issues. Most reach the summit or are turned back by weather. Independent and other expeditions show a higher share of terminations due to accidents, illness, or exhaustion.\nDeaths occur disproportionately on failed expeditions\nIn the outcome chart, “Success + Deaths” remains a small slice across all groups. The vast majority of fatal expeditions failed to summit, especially in the independent and other categories reinforcing that success correlates with safety."
+  },
+  {
+    "objectID": "index.html#question-2-fatality-trend",
+    "href": "index.html#question-2-fatality-trend",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Fatality Trend",
+    "text": "Question 2 : Fatality Trend"
+  },
+  {
+    "objectID": "index.html#question-2-fatality-trend-analysis",
+    "href": "index.html#question-2-fatality-trend-analysis",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Fatality Trend Analysis",
+    "text": "Question 2 : Fatality Trend Analysis\n\n\nIndependent expeditions consistently show the highest fatality risk\nFrom 2021 to 2024, independent teams reported the highest fatality rate every year rising steadily from ~4% to over 8%. This trend held across both plots, suggesting the risk isn’t a factor of sample size.\nCommercial expeditions maintain lower risk and fewer deaths overall\nThe line plots show commercial expeditions peaking in 2023 with just ~3 fatalities, while independent teams saw nearly 9 in the same year more than double any other group. Their fatality rate remained under 5% throughout the entire period.\n“Other” funded expeditions are low but volatile\nThe “Other” group stayed below 2 deaths annually, but their fatality rate fluctuated wildly peaking above 8% in 2023, then dropping back to zero by 2024. This variability likely reflects small sample sizes and inconsistent structure.\nTaken together, funding appears to shape safety outcomes\nIndependent expeditions show consistently worse outcomes in both rates and counts. The data suggests commercial expeditions may offer better safety due to greater resources, experienced guides, and more structured decision-making."
+  },
+  {
+    "objectID": "index.html#question-2-team-size-a-proxy-for-safety",
+    "href": "index.html#question-2-team-size-a-proxy-for-safety",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Team Size a Proxy for Safety",
+    "text": "Question 2 : Team Size a Proxy for Safety\n\nNext question: does team size make a difference? You’d think larger teams might be safer due to support and redundancy, but also possibly riskier if they’re less experienced or move slowly. This scatter plot checks whether total team size correlates with success, failure, or fatalities and whether that varies by funding type."
+  },
+  {
+    "objectID": "index.html#question-2-team-size-as-proxy-for-safety-analysis",
+    "href": "index.html#question-2-team-size-as-proxy-for-safety-analysis",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Team Size as Proxy for Safety Analysis",
+    "text": "Question 2 : Team Size as Proxy for Safety Analysis\n\n\nFatal events concentrate in the middle, not extremes\nFatalities rarely occurred among the smallest or largest teams. For both commercial and independent groups, the 5–15 range saw the most deaths, hinting that “medium” teams may face unique vulnerabilities—perhaps not small enough to retreat quickly, nor large enough for redundancy.\nTeam size as a proxy for resources in commercial climbs\nLarge commercial groups often come with oxygen, Sherpa support, and fixed lines. Smaller independent teams may lack this safety net and push harder routes with more risk exposure."
+  },
+  {
+    "objectID": "presentation.html",
+    "href": "presentation.html",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "",
+    "text": "Himalayan Database - Created to continue the legacy of Elizabeth Hawley, a journalist who spent decades documenting Himalayan expeditions.\nDataset - TidyTuesday GitHub repository and has been amended to the years 2020 - 2024 to manage file size.\nThere are 2 main datasets :\n\nexped_tidy - Contains details of expeditions\npeaks_tidy - Includes data about the Himalayan Peaks"
+  },
+  {
+    "objectID": "presentation.html#question-2-intro",
+    "href": "presentation.html#question-2-intro",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Intro",
+    "text": "Question 2 : Intro\n\nDoes an expeditions funding affect safety outcomes?\n\nThis question overlaps somewhat with our earlier analysis of summit success rates, but here the focus shifts to safety. Specifically, are expeditions with different types of funding, commercial versus independent, more or less likely to experience accidents, injuries, illness, or death?\nWe’ll reuse some variables from the previous analysis ( SUCCESS, FATALITIES, TERMREASON), but this time we’ll group and compare results by a new derived variable, FUNDING_TYPE, which classifies expeditions as either “Commercial”, “Independent” or “Other”.\nOur analysis will explore basic climbing stats, reasons for expedition termination, distributions of safety related outcomes, and temporal trends stratified by funding type. The goal is to understand whether financial backing plays a role in the safety of Himalayan expeditions."
+  },
+  {
+    "objectID": "presentation.html#question-2-setup",
+    "href": "presentation.html#question-2-setup",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Setup",
+    "text": "Question 2 : Setup\n\nGet Data from the CSV files\n\n\n\nCode\nexped &lt;- read_csv(\"data/exped_tidy.csv\")\n\n\n\nData Wrangling - Lean tibble of key variables\n\n\n\nCode\n# Lean tibble of variables of interest\nexped_q2 &lt;- exped |&gt;\n  select(\n    YEAR,           # Year of the expedition\n    SPONSOR,        # Sponsor or funding organization\n    SUCCESS1,       # Success on primary route\n    SUCCESS2,       # Success on second route\n    SUCCESS3,       # Success on third route\n    SUCCESS4,       # Success on fourth route\n    TERMREASON,     # Numeric code for termination reason\n    TOTMEMBERS,     # Total members in the team\n    MDEATHS,        # Number of member deaths\n    HDEATHS,        # Hired staff deaths\n  ) |&gt;\n  mutate(\n    ANY_SUCCESS = SUCCESS1 | SUCCESS2 | SUCCESS3 | SUCCESS4, \n    # Does NOT sum. based on expedition, not summit attempt.\n    FATALITIES = (MDEATHS + HDEATHS &gt; 0),\n    OUTCOME_LABEL = case_when(\n      ANY_SUCCESS & !FATALITIES ~ \"Success, No Deaths\",\n      ANY_SUCCESS & FATALITIES  ~ \"Success + Deaths\",\n      !ANY_SUCCESS & FATALITIES ~ \"Failure + Deaths\",\n      TRUE                      ~ \"Failure, No Deaths\"\n    )\n  ) |&gt; # Remove redundant columns\n  select(-SUCCESS1, -SUCCESS2, -SUCCESS3, -SUCCESS4, -MDEATHS, -HDEATHS)\n\n# Combine categories\nexped_q2 &lt;- exped_q2 |&gt;  \n  mutate(\n    TERMINATION_TYPE = case_when( # Condensed factors for more straight forward analysis\n      TERMREASON %in% c(1, 2, 3) ~ \"Successful\",\n      TERMREASON %in% c(4, 5) ~ \"Bad Weather/Conditions\",\n      TERMREASON %in% c(6, 7) ~ \"Accident/Death/Illness/Injury/Exhaustion\",\n      TERMREASON %in% c(8, 9, 10) ~ \"Logistics/Technical\",\n      TERMREASON %in% c(11, 12, 13) ~ \"No Attempt/Base Only\",\n      TERMREASON == 14 ~ \"Other\",\n      TRUE ~ \"Unknown\"\n    )\n  )"
+  },
+  {
+    "objectID": "presentation.html#question-2-data-wrangling",
+    "href": "presentation.html#question-2-data-wrangling",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Data Wrangling",
+    "text": "Question 2 : Data Wrangling\n\n\n\nData Wrangling - Assigns funding categories from cleaned sponsor prefixes.\n\n\n\nCode\n# The sorting technique used to to determine \"FUNDING_TYPE\" was inspired by the example found at:\n# https://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when\n# I also used stringr Library and debugged sytax with GPT for this specific chunk.\n\n\nsponsor_prefix_tbl &lt;- exped_q2 |&gt; \n  mutate(\n    SPONSOR_CLEAN = str_to_lower(str_trim(SPONSOR)), \n    SPONSOR_CLEAN = str_remove(SPONSOR_CLEAN, \"\\\\s*\\\\b20\\\\d{2}\\\\b$\"), \n    SPONSOR_PREFIX = str_extract(SPONSOR_CLEAN, \"^\\\\w+\\\\s*\\\\w*\")\n  ) |&gt; \n  count(SPONSOR_PREFIX, sort = TRUE) \n\n# Test tibble to see if mutate worked.\n#Sponsors &lt;- exped_q2 |&gt; \n  #distinct(SPONSOR_CLEAN) #|&gt;   \n #count()\n\n# I Printed the list of distinct strings after cleaning and gave it to GPT to find common words.\n# I then grouped the common words into categories to sort into funding type.\n\nexped_q2 &lt;- exped_q2 |&gt; \n  mutate(\n    SPONSOR_CLEAN = str_to_lower(str_trim(SPONSOR)),\n    SPONSOR_CLEAN = str_remove(SPONSOR_CLEAN, \"\\\\s*\\\\b20\\\\d{2}\\\\b$\"),\n    SPONSOR_PREFIX = str_extract(SPONSOR_CLEAN, \"^\\\\w+\\\\s*\\\\w*\"),\n    FUNDING_TYPE = case_when(\n      str_detect(SPONSOR_PREFIX, \"army|police|military|defense\") ~ \"Military\",\n      str_detect(SPONSOR_PREFIX, \"university|college|school|club|jac|univ\") ~ \"Academic/Alpine Club\",\n      str_detect(SPONSOR_PREFIX, \"guides|treks|adventure|travel|ascent|trip|climbalaya|madison|imagine|kobler|makalu|highland|satori|elite|glacier|dream|thamserku\") ~ \"Commercial\",\n      str_detect(SPONSOR_PREFIX, \"private|individual|self|solo|1st|friends|father|jon|jost|alex|kilian|marc|kishori|soren\") ~ \"Private/Individual\",\n      str_detect(SPONSOR_PREFIX, \"national geographic|japanese|korean|slovakian|french|chinese|indian|nepalese|russian|german|austrian|canadian|italian|spanish|swiss|american|latvian\") ~ \"National Program\",\n      is.na(SPONSOR_PREFIX) | SPONSOR_PREFIX == \"\" ~ \"Other/Unknown\",\n      TRUE ~ \"Other/Unknown\"\n    )\n  )|&gt; \n  # Simplified funding type categories\n  mutate(\n    FUNDING_SIMPLIFIED = case_when( \n      FUNDING_TYPE == \"Commercial\" ~ \"Commercial\",\n      FUNDING_TYPE %in% c(\"Academic/Alpine Club\", \"National Program\", \"Military\") ~ \"Other\",\n      FUNDING_TYPE %in% c(\"Private/Individual\", \"Other/Unknown\") ~ \"Independent\"\n      \n    )\n  )\n\n#glimpse(exped_q2)\n\n\n\n\n\n\n\nHow Sponsors Were Categorized\nTo determine funding source the data was wrangled and sorted using the SPONSOR” column. This was accomplished by repeatedly editing the sorted list. The sponsor column were nearly all unique, so sorting had to be done by common string factors. The structure to sort the strings was inspired by the example found here:\nhttps://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when"
+  },
+  {
+    "objectID": "presentation.html#question-2-motivation",
+    "href": "presentation.html#question-2-motivation",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Motivation",
+    "text": "Question 2 : Motivation\nSummary Statistics on Safety\n\n\n\n\n\n\n\n\nExpedition Outcomes by Funding Type (2020–2024)\n\n\nFunding Type\nTotal Expeditions\nNumber Successful\nNumber with Fatalities\nSuccess Rate\nFatality Rate\n\n\n\n\nCommercial\n274\n212\n8\n77.4%\n2.9%\n\n\nIndependent\n517\n365\n27\n70.6%\n5.2%\n\n\nOther\n91\n51\n3\n56.0%\n3.3%\n\n\n\n\n\n\n\n\n\nCommercial expeditions appear safer\nCommercial climbs are often assumed to be safer due to professional guides, better logistics, and more resources. The summary table supports this: commercial teams have a slightly higher success rate (77.4% vs. 70.6% for independents), but the fatality rate among independent expeditions is nearly double (5.2% vs. 2.9%).\nIndependent teams are more numerous, but face more risk\nDespite their prevalence (over 500 expeditions), independent teams experience lower success and higher fatality rates. This raises important questions about how funding structure influences safety outcomes.\nThis motivates a deeper dive into funding and risk\nThe following analysis breaks expeditions into three groups Commercial, Independent, and Other and examines termination reasons, outcomes, team size distributions, and year-over-year trends to explore the relationship between funding and expedition safety."
+  },
+  {
+    "objectID": "presentation.html#question-2-expeditions-end-analysis",
+    "href": "presentation.html#question-2-expeditions-end-analysis",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Expeditions End Analysis",
+    "text": "Question 2 : Expeditions End Analysis\n\n\nCommercial expeditions are far more likely to end successfully\nOver 75% of commercial expeditions ended in success, compared to around 65% for independent teams and closer to 60% for the “Other” group. Independent and other-funded expeditions show higher rates of failure, including both bad weather and medical/logistical setbacks.\nTermination reasons differ subtly by funding structure\nCommercial expeditions rarely terminate due to logistical or medical issues. Most reach the summit or are turned back by weather. Independent and other expeditions show a higher share of terminations due to accidents, illness, or exhaustion.\nDeaths occur disproportionately on failed expeditions\nIn the outcome chart, “Success + Deaths” remains a small slice across all groups. The vast majority of fatal expeditions failed to summit, especially in the independent and other categories reinforcing that success correlates with safety."
+  },
+  {
+    "objectID": "presentation.html#question-2-fatality-trend-analysis",
+    "href": "presentation.html#question-2-fatality-trend-analysis",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Fatality Trend Analysis",
+    "text": "Question 2 : Fatality Trend Analysis\n\n\nIndependent expeditions consistently show the highest fatality risk\nFrom 2021 to 2024, independent teams reported the highest fatality rate every year rising steadily from ~4% to over 8%. This trend held across both plots, suggesting the risk isn’t a factor of sample size.\nCommercial expeditions maintain lower risk and fewer deaths overall\nThe line plots show commercial expeditions peaking in 2023 with just ~3 fatalities, while independent teams saw nearly 9 in the same year more than double any other group. Their fatality rate remained under 5% throughout the entire period.\n“Other” funded expeditions are low but volatile\nThe “Other” group stayed below 2 deaths annually, but their fatality rate fluctuated wildly peaking above 8% in 2023, then dropping back to zero by 2024. This variability likely reflects small sample sizes and inconsistent structure.\nTaken together, funding appears to shape safety outcomes\nIndependent expeditions show consistently worse outcomes in both rates and counts. The data suggests commercial expeditions may offer better safety due to greater resources, experienced guides, and more structured decision-making."
+  },
+  {
+    "objectID": "presentation.html#question-2-team-size-a-proxy-for-safety",
+    "href": "presentation.html#question-2-team-size-a-proxy-for-safety",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Team Size a Proxy for Safety",
+    "text": "Question 2 : Team Size a Proxy for Safety\n\nNext question: does team size make a difference? You’d think larger teams might be safer due to support and redundancy, but also possibly riskier if they’re less experienced or move slowly. This scatter plot checks whether total team size correlates with success, failure, or fatalities and whether that varies by funding type."
+  },
+  {
+    "objectID": "presentation.html#question-2-team-size-as-proxy-for-safety-analysis",
+    "href": "presentation.html#question-2-team-size-as-proxy-for-safety-analysis",
+    "title": "A Statistical Exploration of Himalayan Expeditions",
+    "section": "Question 2 : Team Size as Proxy for Safety Analysis",
+    "text": "Question 2 : Team Size as Proxy for Safety Analysis\n\n\nFatal events concentrate in the middle, not extremes\nFatalities rarely occurred among the smallest or largest teams. For both commercial and independent groups, the 5–15 range saw the most deaths, hinting that “medium” teams may face unique vulnerabilities—perhaps not small enough to retreat quickly, nor large enough for redundancy.\nTeam size as a proxy for resources in commercial climbs\nLarge commercial groups often come with oxygen, Sherpa support, and fixed lines. Smaller independent teams may lack this safety net and push harder routes with more risk exposure."
   }
 ]
