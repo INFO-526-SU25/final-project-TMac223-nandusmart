@@ -525,14 +525,19 @@ Trevor Macdonald &amp; Nandakumar Kuthalaraja
 </ul>
 </div>
 </section>
-<section id="question-2" class="slide level2">
-<h2>Question 2</h2>
+<section id="question-2-intro" class="slide level2">
+<h2>Question 2 : Intro</h2>
+<div style="font-size:0.6em; line-height:1.2;">
 <p><strong>Does an expeditions funding affect safety outcomes?</strong></p>
-<p>The analysis will be very similar for this question. I suspect there will be some overlap, funding and success rate etc. We will use many of the same variables, but more specifically, <code>FUNDING_TYPE</code>.</p>
-<p>We will Compare specific funding types like commercial vs.&nbsp;independent expeditions across countries for more insights</p>
+<ul>
+<li><p>This question overlaps somewhat with our earlier analysis of summit success rates, but here the focus shifts to safety. Specifically, are expeditions with different types of funding, commercial versus independent, more or less likely to experience accidents, injuries, illness, or death?</p></li>
+<li><p>We’ll reuse some variables from the previous analysis (&nbsp;<code>SUCCESS</code>,&nbsp;<code>FATALITIES</code>,&nbsp;<code>TERMREASON</code>), but this time we’ll group and compare results by a new derived variable,&nbsp;<code>FUNDING_TYPE</code>, which classifies expeditions as either “Commercial”, “Independent” or “Other”.</p></li>
+<li><p>Our analysis will explore basic climbing stats, reasons for expedition termination, distributions of safety related outcomes, and temporal trends stratified by funding type. The goal is to understand whether financial backing plays a role in the safety of Himalayan expeditions.</p></li>
+</ul>
+</div>
 </section>
-<section id="question-2-approach" class="slide level2">
-<h2>Question 2 : Approach</h2>
+<section id="question-2-setup" class="slide level2">
+<h2>Question 2 : Setup</h2>
 <ul>
 <li>Get Data from the CSV files</li>
 </ul>
@@ -543,7 +548,7 @@ Trevor Macdonald &amp; Nandakumar Kuthalaraja
 </details>
 </div>
 <ul>
-<li>Data Wrangling - Slimmed-down tibble of key variables</li>
+<li>Data Wrangling - Lean tibble of key variables</li>
 </ul>
 <div class="cell">
 <details class="code-fold">
@@ -557,186 +562,618 @@ Trevor Macdonald &amp; Nandakumar Kuthalaraja
 <span id="cb4-7"><a></a>    SUCCESS2,       <span class="co"># Success on second route</span></span>
 <span id="cb4-8"><a></a>    SUCCESS3,       <span class="co"># Success on third route</span></span>
 <span id="cb4-9"><a></a>    SUCCESS4,       <span class="co"># Success on fourth route</span></span>
-<span id="cb4-10"><a></a>    TERMDATE,       <span class="co"># Date expedition was terminated</span></span>
-<span id="cb4-11"><a></a>    TERMREASON,     <span class="co"># Numeric code for termination reason</span></span>
-<span id="cb4-12"><a></a>    TERMREASON_FACTOR, <span class="co"># Description of termination reason</span></span>
-<span id="cb4-13"><a></a>    TOTMEMBERS,     <span class="co"># Total members in the team</span></span>
-<span id="cb4-14"><a></a>    MDEATHS,        <span class="co"># Number of member deaths</span></span>
-<span id="cb4-15"><a></a>    HDEATHS,        <span class="co"># Hired staff deaths</span></span>
-<span id="cb4-16"><a></a>    OTHERSMTS,      <span class="co"># Other summits during expedition</span></span>
-<span id="cb4-17"><a></a>    ACCIDENTS,      <span class="co"># Description of accidents</span></span>
-<span id="cb4-18"><a></a>    AGENCY,         <span class="co"># Trekking/expedition agency</span></span>
-<span id="cb4-19"><a></a>    O2USED          <span class="co">#</span></span>
-<span id="cb4-20"><a></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb4-21"><a></a>  <span class="fu">mutate</span>(</span>
-<span id="cb4-22"><a></a>    <span class="at">ANY_SUCCESS =</span> SUCCESS1 <span class="sc">|</span> SUCCESS2 <span class="sc">|</span> SUCCESS3 <span class="sc">|</span> SUCCESS4,</span>
-<span id="cb4-23"><a></a>    <span class="at">FATALITIES =</span> (MDEATHS <span class="sc">+</span> HDEATHS <span class="sc">&gt;</span> <span class="dv">0</span>),</span>
-<span id="cb4-24"><a></a>    <span class="at">OUTCOME_LABEL =</span> <span class="fu">case_when</span>(</span>
-<span id="cb4-25"><a></a>      ANY_SUCCESS <span class="sc">&amp;</span> <span class="sc">!</span>FATALITIES <span class="sc">~</span> <span class="st">"Success, No Deaths"</span>,</span>
-<span id="cb4-26"><a></a>      ANY_SUCCESS <span class="sc">&amp;</span> FATALITIES  <span class="sc">~</span> <span class="st">"Success + Deaths"</span>,</span>
-<span id="cb4-27"><a></a>      <span class="sc">!</span>ANY_SUCCESS <span class="sc">&amp;</span> FATALITIES <span class="sc">~</span> <span class="st">"Failure + Deaths"</span>,</span>
-<span id="cb4-28"><a></a>      <span class="cn">TRUE</span>                      <span class="sc">~</span> <span class="st">"Failure, No Deaths"</span></span>
-<span id="cb4-29"><a></a>    )</span>
-<span id="cb4-30"><a></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb4-31"><a></a>  <span class="fu">select</span>(<span class="sc">-</span>SUCCESS1, <span class="sc">-</span>SUCCESS2, <span class="sc">-</span>SUCCESS3, <span class="sc">-</span>SUCCESS4, <span class="sc">-</span>MDEATHS, <span class="sc">-</span>HDEATHS)</span>
-<span id="cb4-32"><a></a></span>
-<span id="cb4-33"><a></a></span>
-<span id="cb4-34"><a></a>exped_q2 <span class="ot">&lt;-</span> exped_q2 <span class="sc">|&gt;</span> </span>
-<span id="cb4-35"><a></a>  <span class="fu">mutate</span>(</span>
-<span id="cb4-36"><a></a>    <span class="at">TERMINATION_TYPE =</span> <span class="fu">case_when</span>(</span>
-<span id="cb4-37"><a></a>      TERMREASON <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>) <span class="sc">~</span> <span class="st">"Successful"</span>,</span>
-<span id="cb4-38"><a></a>      TERMREASON <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>) <span class="sc">~</span> <span class="st">"Bad Weather/Conditions"</span>,</span>
-<span id="cb4-39"><a></a>      TERMREASON <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">7</span>) <span class="sc">~</span> <span class="st">"Accident/Illness/Exhaustion"</span>,</span>
-<span id="cb4-40"><a></a>      TERMREASON <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>) <span class="sc">~</span> <span class="st">"Logistics/Technical"</span>,</span>
-<span id="cb4-41"><a></a>      TERMREASON <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">11</span>, <span class="dv">12</span>, <span class="dv">13</span>) <span class="sc">~</span> <span class="st">"No Attempt/Base Only"</span>,</span>
-<span id="cb4-42"><a></a>      TERMREASON <span class="sc">==</span> <span class="dv">14</span> <span class="sc">~</span> <span class="st">"Other"</span>,</span>
-<span id="cb4-43"><a></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Unknown"</span></span>
-<span id="cb4-44"><a></a>    )</span>
-<span id="cb4-45"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-10"><a></a>    TERMREASON,     <span class="co"># Numeric code for termination reason</span></span>
+<span id="cb4-11"><a></a>    TOTMEMBERS,     <span class="co"># Total members in the team</span></span>
+<span id="cb4-12"><a></a>    MDEATHS,        <span class="co"># Number of member deaths</span></span>
+<span id="cb4-13"><a></a>    HDEATHS,        <span class="co"># Hired staff deaths</span></span>
+<span id="cb4-14"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-15"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-16"><a></a>    <span class="at">ANY_SUCCESS =</span> SUCCESS1 <span class="sc">|</span> SUCCESS2 <span class="sc">|</span> SUCCESS3 <span class="sc">|</span> SUCCESS4, </span>
+<span id="cb4-17"><a></a>    <span class="co"># Does NOT sum. based on expedition, not summit attempt.</span></span>
+<span id="cb4-18"><a></a>    <span class="at">FATALITIES =</span> (MDEATHS <span class="sc">+</span> HDEATHS <span class="sc">&gt;</span> <span class="dv">0</span>),</span>
+<span id="cb4-19"><a></a>    <span class="at">OUTCOME_LABEL =</span> <span class="fu">case_when</span>(</span>
+<span id="cb4-20"><a></a>      ANY_SUCCESS <span class="sc">&amp;</span> <span class="sc">!</span>FATALITIES <span class="sc">~</span> <span class="st">"Success, No Deaths"</span>,</span>
+<span id="cb4-21"><a></a>      ANY_SUCCESS <span class="sc">&amp;</span> FATALITIES  <span class="sc">~</span> <span class="st">"Success + Deaths"</span>,</span>
+<span id="cb4-22"><a></a>      <span class="sc">!</span>ANY_SUCCESS <span class="sc">&amp;</span> FATALITIES <span class="sc">~</span> <span class="st">"Failure + Deaths"</span>,</span>
+<span id="cb4-23"><a></a>      <span class="cn">TRUE</span>                      <span class="sc">~</span> <span class="st">"Failure, No Deaths"</span></span>
+<span id="cb4-24"><a></a>    )</span>
+<span id="cb4-25"><a></a>  ) <span class="sc">|&gt;</span> <span class="co"># Remove redundant columns</span></span>
+<span id="cb4-26"><a></a>  <span class="fu">select</span>(<span class="sc">-</span>SUCCESS1, <span class="sc">-</span>SUCCESS2, <span class="sc">-</span>SUCCESS3, <span class="sc">-</span>SUCCESS4, <span class="sc">-</span>MDEATHS, <span class="sc">-</span>HDEATHS)</span>
+<span id="cb4-27"><a></a></span>
+<span id="cb4-28"><a></a><span class="co"># Combine categories</span></span>
+<span id="cb4-29"><a></a>exped_q2 <span class="ot">&lt;-</span> exped_q2 <span class="sc">|&gt;</span>  </span>
+<span id="cb4-30"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-31"><a></a>    <span class="at">TERMINATION_TYPE =</span> <span class="fu">case_when</span>( <span class="co"># Condensed factors for more straight forward analysis</span></span>
+<span id="cb4-32"><a></a>      TERMREASON <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>) <span class="sc">~</span> <span class="st">"Successful"</span>,</span>
+<span id="cb4-33"><a></a>      TERMREASON <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>) <span class="sc">~</span> <span class="st">"Bad Weather/Conditions"</span>,</span>
+<span id="cb4-34"><a></a>      TERMREASON <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">7</span>) <span class="sc">~</span> <span class="st">"Accident/Death/Illness/Injury/Exhaustion"</span>,</span>
+<span id="cb4-35"><a></a>      TERMREASON <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>) <span class="sc">~</span> <span class="st">"Logistics/Technical"</span>,</span>
+<span id="cb4-36"><a></a>      TERMREASON <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">11</span>, <span class="dv">12</span>, <span class="dv">13</span>) <span class="sc">~</span> <span class="st">"No Attempt/Base Only"</span>,</span>
+<span id="cb4-37"><a></a>      TERMREASON <span class="sc">==</span> <span class="dv">14</span> <span class="sc">~</span> <span class="st">"Other"</span>,</span>
+<span id="cb4-38"><a></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Unknown"</span></span>
+<span id="cb4-39"><a></a>    )</span>
+<span id="cb4-40"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+</section>
+<section id="question-2-data-wrangling" class="slide level2">
+<h2>Question 2 : Data Wrangling</h2>
+<div class="columns">
+<div class="column" style="width:90%;">
 <ul>
 <li>Data Wrangling - Assigns funding categories from cleaned sponsor prefixes.</li>
 </ul>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="fu">library</span>(stringr)</span>
-<span id="cb5-2"><a></a></span>
-<span id="cb5-3"><a></a><span class="co"># Source: https://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when</span></span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="co"># The sorting technique used to to determine "FUNDING_TYPE" was inspired by the example found at:</span></span>
+<span id="cb5-2"><a></a><span class="co"># https://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when</span></span>
+<span id="cb5-3"><a></a><span class="co"># I also used stringr Library and debugged sytax with GPT for this specific chunk.</span></span>
 <span id="cb5-4"><a></a></span>
-<span id="cb5-5"><a></a>sponsor_prefix_tbl <span class="ot">&lt;-</span> exped_q2 <span class="sc">|&gt;</span> </span>
-<span id="cb5-6"><a></a>  <span class="fu">mutate</span>(</span>
-<span id="cb5-7"><a></a>    <span class="at">SPONSOR_CLEAN =</span> <span class="fu">str_to_lower</span>(<span class="fu">str_trim</span>(SPONSOR)),</span>
-<span id="cb5-8"><a></a>    <span class="at">SPONSOR_CLEAN =</span> <span class="fu">str_remove</span>(SPONSOR_CLEAN, <span class="st">"</span><span class="sc">\\</span><span class="st">s*</span><span class="sc">\\</span><span class="st">b20</span><span class="sc">\\</span><span class="st">d{2}</span><span class="sc">\\</span><span class="st">b$"</span>),</span>
-<span id="cb5-9"><a></a>    <span class="at">SPONSOR_PREFIX =</span> <span class="fu">str_extract</span>(SPONSOR_CLEAN, <span class="st">"^</span><span class="sc">\\</span><span class="st">w+</span><span class="sc">\\</span><span class="st">s*</span><span class="sc">\\</span><span class="st">w*"</span>)</span>
-<span id="cb5-10"><a></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb5-11"><a></a>  <span class="fu">count</span>(SPONSOR_PREFIX, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-12"><a></a></span>
-<span id="cb5-13"><a></a><span class="co">#Sponsors &lt;- exped_q2 |&gt; </span></span>
-<span id="cb5-14"><a></a>  <span class="co">#distinct(SPONSOR_CLEAN) #|&gt; </span></span>
-<span id="cb5-15"><a></a> <span class="co">#count()</span></span>
-<span id="cb5-16"><a></a></span>
-<span id="cb5-17"><a></a>exped_q2 <span class="ot">&lt;-</span> exped_q2 <span class="sc">|&gt;</span> </span>
-<span id="cb5-18"><a></a>  <span class="fu">mutate</span>(</span>
-<span id="cb5-19"><a></a>    <span class="at">SPONSOR_CLEAN =</span> <span class="fu">str_to_lower</span>(<span class="fu">str_trim</span>(SPONSOR)),</span>
-<span id="cb5-20"><a></a>    <span class="at">SPONSOR_CLEAN =</span> <span class="fu">str_remove</span>(SPONSOR_CLEAN, <span class="st">"</span><span class="sc">\\</span><span class="st">s*</span><span class="sc">\\</span><span class="st">b20</span><span class="sc">\\</span><span class="st">d{2}</span><span class="sc">\\</span><span class="st">b$"</span>),</span>
-<span id="cb5-21"><a></a>    <span class="at">SPONSOR_PREFIX =</span> <span class="fu">str_extract</span>(SPONSOR_CLEAN, <span class="st">"^</span><span class="sc">\\</span><span class="st">w+</span><span class="sc">\\</span><span class="st">s*</span><span class="sc">\\</span><span class="st">w*"</span>),</span>
-<span id="cb5-22"><a></a>    <span class="at">FUNDING_TYPE =</span> <span class="fu">case_when</span>(</span>
-<span id="cb5-23"><a></a>      <span class="fu">str_detect</span>(SPONSOR_PREFIX, <span class="st">"army|police|military|defense"</span>) <span class="sc">~</span> <span class="st">"Military"</span>,</span>
-<span id="cb5-24"><a></a>      <span class="fu">str_detect</span>(SPONSOR_PREFIX, <span class="st">"university|college|school|club|jac|univ"</span>) <span class="sc">~</span> <span class="st">"Academic/Alpine Club"</span>,</span>
-<span id="cb5-25"><a></a>      <span class="fu">str_detect</span>(SPONSOR_PREFIX, <span class="st">"guides|treks|adventure|travel|ascent|trip|climbalaya|madison|imagine|kobler|makalu|highland|satori|elite|glacier|dream|thamserku"</span>) <span class="sc">~</span> <span class="st">"Commercial"</span>,</span>
-<span id="cb5-26"><a></a>      <span class="fu">str_detect</span>(SPONSOR_PREFIX, <span class="st">"private|individual|self|solo|1st|friends|father|jon|jost|alex|kilian|marc|kishori|soren"</span>) <span class="sc">~</span> <span class="st">"Private/Individual"</span>,</span>
-<span id="cb5-27"><a></a>      <span class="fu">str_detect</span>(SPONSOR_PREFIX, <span class="st">"national geographic|japanese|korean|slovakian|french|chinese|indian|nepalese|russian|german|austrian|canadian|italian|spanish|swiss|american|latvian"</span>) <span class="sc">~</span> <span class="st">"National Program"</span>,</span>
-<span id="cb5-28"><a></a>      <span class="fu">is.na</span>(SPONSOR_PREFIX) <span class="sc">|</span> SPONSOR_PREFIX <span class="sc">==</span> <span class="st">""</span> <span class="sc">~</span> <span class="st">"Other/Unknown"</span>,</span>
-<span id="cb5-29"><a></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Other/Unknown"</span></span>
-<span id="cb5-30"><a></a>    )</span>
-<span id="cb5-31"><a></a>  )<span class="sc">|&gt;</span> </span>
-<span id="cb5-32"><a></a>  <span class="fu">mutate</span>(</span>
-<span id="cb5-33"><a></a>    <span class="at">FUNDING_SIMPLIFIED =</span> <span class="fu">case_when</span>(</span>
-<span id="cb5-34"><a></a>      FUNDING_TYPE <span class="sc">==</span> <span class="st">"Commercial"</span> <span class="sc">~</span> <span class="st">"Commercial"</span>,</span>
-<span id="cb5-35"><a></a>      FUNDING_TYPE <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Academic/Alpine Club"</span>, <span class="st">"National Program"</span>, <span class="st">"Military"</span>) <span class="sc">~</span> <span class="st">"Non-commercial"</span>,</span>
-<span id="cb5-36"><a></a>      FUNDING_TYPE <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Private/Individual"</span>, <span class="st">"Other/Unknown"</span>) <span class="sc">~</span> <span class="st">"Independent/Other"</span></span>
-<span id="cb5-37"><a></a>    )</span>
-<span id="cb5-38"><a></a>  )</span>
-<span id="cb5-39"><a></a></span>
-<span id="cb5-40"><a></a><span class="co">#glimpse(exped_q2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-5"><a></a></span>
+<span id="cb5-6"><a></a>sponsor_prefix_tbl <span class="ot">&lt;-</span> exped_q2 <span class="sc">|&gt;</span> </span>
+<span id="cb5-7"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-8"><a></a>    <span class="at">SPONSOR_CLEAN =</span> <span class="fu">str_to_lower</span>(<span class="fu">str_trim</span>(SPONSOR)), </span>
+<span id="cb5-9"><a></a>    <span class="at">SPONSOR_CLEAN =</span> <span class="fu">str_remove</span>(SPONSOR_CLEAN, <span class="st">"</span><span class="sc">\\</span><span class="st">s*</span><span class="sc">\\</span><span class="st">b20</span><span class="sc">\\</span><span class="st">d{2}</span><span class="sc">\\</span><span class="st">b$"</span>), </span>
+<span id="cb5-10"><a></a>    <span class="at">SPONSOR_PREFIX =</span> <span class="fu">str_extract</span>(SPONSOR_CLEAN, <span class="st">"^</span><span class="sc">\\</span><span class="st">w+</span><span class="sc">\\</span><span class="st">s*</span><span class="sc">\\</span><span class="st">w*"</span>)</span>
+<span id="cb5-11"><a></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb5-12"><a></a>  <span class="fu">count</span>(SPONSOR_PREFIX, <span class="at">sort =</span> <span class="cn">TRUE</span>) </span>
+<span id="cb5-13"><a></a></span>
+<span id="cb5-14"><a></a><span class="co"># Test tibble to see if mutate worked.</span></span>
+<span id="cb5-15"><a></a><span class="co">#Sponsors &lt;- exped_q2 |&gt; </span></span>
+<span id="cb5-16"><a></a>  <span class="co">#distinct(SPONSOR_CLEAN) #|&gt;   </span></span>
+<span id="cb5-17"><a></a> <span class="co">#count()</span></span>
+<span id="cb5-18"><a></a></span>
+<span id="cb5-19"><a></a><span class="co"># I Printed the list of distinct strings after cleaning and gave it to GPT to find common words.</span></span>
+<span id="cb5-20"><a></a><span class="co"># I then grouped the common words into categories to sort into funding type.</span></span>
+<span id="cb5-21"><a></a></span>
+<span id="cb5-22"><a></a>exped_q2 <span class="ot">&lt;-</span> exped_q2 <span class="sc">|&gt;</span> </span>
+<span id="cb5-23"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-24"><a></a>    <span class="at">SPONSOR_CLEAN =</span> <span class="fu">str_to_lower</span>(<span class="fu">str_trim</span>(SPONSOR)),</span>
+<span id="cb5-25"><a></a>    <span class="at">SPONSOR_CLEAN =</span> <span class="fu">str_remove</span>(SPONSOR_CLEAN, <span class="st">"</span><span class="sc">\\</span><span class="st">s*</span><span class="sc">\\</span><span class="st">b20</span><span class="sc">\\</span><span class="st">d{2}</span><span class="sc">\\</span><span class="st">b$"</span>),</span>
+<span id="cb5-26"><a></a>    <span class="at">SPONSOR_PREFIX =</span> <span class="fu">str_extract</span>(SPONSOR_CLEAN, <span class="st">"^</span><span class="sc">\\</span><span class="st">w+</span><span class="sc">\\</span><span class="st">s*</span><span class="sc">\\</span><span class="st">w*"</span>),</span>
+<span id="cb5-27"><a></a>    <span class="at">FUNDING_TYPE =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-28"><a></a>      <span class="fu">str_detect</span>(SPONSOR_PREFIX, <span class="st">"army|police|military|defense"</span>) <span class="sc">~</span> <span class="st">"Military"</span>,</span>
+<span id="cb5-29"><a></a>      <span class="fu">str_detect</span>(SPONSOR_PREFIX, <span class="st">"university|college|school|club|jac|univ"</span>) <span class="sc">~</span> <span class="st">"Academic/Alpine Club"</span>,</span>
+<span id="cb5-30"><a></a>      <span class="fu">str_detect</span>(SPONSOR_PREFIX, <span class="st">"guides|treks|adventure|travel|ascent|trip|climbalaya|madison|imagine|kobler|makalu|highland|satori|elite|glacier|dream|thamserku"</span>) <span class="sc">~</span> <span class="st">"Commercial"</span>,</span>
+<span id="cb5-31"><a></a>      <span class="fu">str_detect</span>(SPONSOR_PREFIX, <span class="st">"private|individual|self|solo|1st|friends|father|jon|jost|alex|kilian|marc|kishori|soren"</span>) <span class="sc">~</span> <span class="st">"Private/Individual"</span>,</span>
+<span id="cb5-32"><a></a>      <span class="fu">str_detect</span>(SPONSOR_PREFIX, <span class="st">"national geographic|japanese|korean|slovakian|french|chinese|indian|nepalese|russian|german|austrian|canadian|italian|spanish|swiss|american|latvian"</span>) <span class="sc">~</span> <span class="st">"National Program"</span>,</span>
+<span id="cb5-33"><a></a>      <span class="fu">is.na</span>(SPONSOR_PREFIX) <span class="sc">|</span> SPONSOR_PREFIX <span class="sc">==</span> <span class="st">""</span> <span class="sc">~</span> <span class="st">"Other/Unknown"</span>,</span>
+<span id="cb5-34"><a></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Other/Unknown"</span></span>
+<span id="cb5-35"><a></a>    )</span>
+<span id="cb5-36"><a></a>  )<span class="sc">|&gt;</span> </span>
+<span id="cb5-37"><a></a>  <span class="co"># Simplified funding type categories</span></span>
+<span id="cb5-38"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-39"><a></a>    <span class="at">FUNDING_SIMPLIFIED =</span> <span class="fu">case_when</span>( </span>
+<span id="cb5-40"><a></a>      FUNDING_TYPE <span class="sc">==</span> <span class="st">"Commercial"</span> <span class="sc">~</span> <span class="st">"Commercial"</span>,</span>
+<span id="cb5-41"><a></a>      FUNDING_TYPE <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Academic/Alpine Club"</span>, <span class="st">"National Program"</span>, <span class="st">"Military"</span>) <span class="sc">~</span> <span class="st">"Other"</span>,</span>
+<span id="cb5-42"><a></a>      FUNDING_TYPE <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Private/Individual"</span>, <span class="st">"Other/Unknown"</span>) <span class="sc">~</span> <span class="st">"Independent"</span></span>
+<span id="cb5-43"><a></a>      </span>
+<span id="cb5-44"><a></a>    )</span>
+<span id="cb5-45"><a></a>  )</span>
+<span id="cb5-46"><a></a></span>
+<span id="cb5-47"><a></a><span class="co">#glimpse(exped_q2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+</div></div>
+<div class="columns">
+<div class="column" style="width:90%;">
+<div style="font-size:0.8em; line-height:1.2;">
+<p><strong>How Sponsors Were Categorized</strong></p>
+<p>To determine funding source the data was wrangled and sorted using the SPONSOR” column. This was accomplished by repeatedly editing the sorted list. The sponsor column were nearly all unique, so sorting had to be done by common string factors. The structure to sort the strings was inspired by the example found here:</p>
+<p>https://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when</p>
+</div>
+</div></div>
 </section>
-<section id="question-2-motivation-setup" class="slide level2">
-<h2>Question 2 : Motivation &amp; Setup</h2>
-<section id="does-funding-type-affect-expedition-safety" style="font-size:0.6em; line-height:1.2;">
-<h3>Does Funding Type Affect Expedition Safety?</h3>
-<h4 id="purpose">Purpose</h4>
-<p>Commercial expeditions are often seen as safer due to better logistics, guides, and resources.</p>
-<p>The following analysis aims to address this assumption by comparing commercial, private, and non-commercial groups.</p>
-<h4 id="how-sponsors-were-categorized">How Sponsors Were Categorized</h4>
-<p>To determine funding source the data was wrangled and sorted using the “SPONSOR” column. This was accomplished by repeatedly editing the sorted list. The sponsor column were nearly all unique. (As found in an example here:https://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when)</p>
-</section>
-</section>
-<section id="question-2-start" class="slide level2">
-<h2>Question 2 : Start</h2>
-<h4 id="what-is-summary-statistics-on-safety">What is Summary Statistics on Safety</h4>
-<div style="font-size:0.6em; line-height:1.2;">
+<section id="question-2-motivation" class="slide level2">
+<h2>Question 2 : Motivation</h2>
+<p>Summary Statistics on Safety</p>
 <div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="co"># Summarize safety metrics by funding type</span></span>
-<span id="cb6-2"><a></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb6-3"><a></a><span class="fu">library</span>(knitr)</span>
-<span id="cb6-4"><a></a></span>
-<span id="cb6-5"><a></a>exped_q2 <span class="sc">|&gt;</span></span>
-<span id="cb6-6"><a></a>  <span class="fu">group_by</span>(FUNDING_SIMPLIFIED) <span class="sc">|&gt;</span></span>
-<span id="cb6-7"><a></a>  <span class="fu">summarise</span>(</span>
-<span id="cb6-8"><a></a>    <span class="at">n_expeditions =</span> <span class="fu">n</span>(),</span>
-<span id="cb6-9"><a></a>    <span class="at">n_success =</span> <span class="fu">sum</span>(ANY_SUCCESS),</span>
-<span id="cb6-10"><a></a>    <span class="at">n_fatalities =</span> <span class="fu">sum</span>(FATALITIES),</span>
-<span id="cb6-11"><a></a>    <span class="at">pct_success =</span> <span class="fu">mean</span>(ANY_SUCCESS),</span>
-<span id="cb6-12"><a></a>    <span class="at">pct_fatal =</span> <span class="fu">mean</span>(FATALITIES),</span>
-<span id="cb6-13"><a></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb6-14"><a></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb6-15"><a></a>  <span class="fu">mutate</span>(</span>
-<span id="cb6-16"><a></a>    <span class="at">pct_success =</span> scales<span class="sc">::</span><span class="fu">percent</span>(pct_success, <span class="at">accuracy =</span> <span class="fl">0.1</span>),</span>
-<span id="cb6-17"><a></a>    <span class="at">pct_fatal =</span> scales<span class="sc">::</span><span class="fu">percent</span>(pct_fatal, <span class="at">accuracy =</span> <span class="fl">0.1</span>)</span>
-<span id="cb6-18"><a></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb6-19"><a></a>  <span class="fu">kable</span>(</span>
-<span id="cb6-20"><a></a>    <span class="at">caption =</span> <span class="st">"Expedition Outcomes by Funding Type (2020–2024)"</span>,</span>
-<span id="cb6-21"><a></a>    <span class="at">col.names =</span> <span class="fu">c</span>(</span>
-<span id="cb6-22"><a></a>      <span class="st">"Funding Type"</span>,</span>
-<span id="cb6-23"><a></a>      <span class="st">"Total Expeditions"</span>,</span>
-<span id="cb6-24"><a></a>      <span class="st">"Number Successful"</span>,</span>
-<span id="cb6-25"><a></a>      <span class="st">"Number with Fatalities"</span>,</span>
-<span id="cb6-26"><a></a>      <span class="st">"Success Rate"</span>,</span>
-<span id="cb6-27"><a></a>      <span class="st">"Fatality Rate"</span></span>
-<span id="cb6-28"><a></a>    ),</span>
-<span id="cb6-29"><a></a>    <span class="at">format =</span> <span class="st">"html"</span></span>
-<span id="cb6-30"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
 <div class="cell-output-display">
-<table class="caption-top" data-quarto-postprocess="true">
-<caption>Expedition Outcomes by Funding Type (2020–2024)</caption>
+<div id="bkftwhclof" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#bkftwhclof table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#bkftwhclof thead, #bkftwhclof tbody, #bkftwhclof tfoot, #bkftwhclof tr, #bkftwhclof td, #bkftwhclof th {
+  border-style: none;
+}
+
+#bkftwhclof p {
+  margin: 0;
+  padding: 0;
+}
+
+#bkftwhclof .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#bkftwhclof .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#bkftwhclof .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#bkftwhclof .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#bkftwhclof .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bkftwhclof .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bkftwhclof .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bkftwhclof .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#bkftwhclof .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#bkftwhclof .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#bkftwhclof .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#bkftwhclof .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#bkftwhclof .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#bkftwhclof .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#bkftwhclof .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#bkftwhclof .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#bkftwhclof .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#bkftwhclof .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#bkftwhclof .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bkftwhclof .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#bkftwhclof .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#bkftwhclof .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#bkftwhclof .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bkftwhclof .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#bkftwhclof .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#bkftwhclof .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bkftwhclof .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bkftwhclof .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#bkftwhclof .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bkftwhclof .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#bkftwhclof .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bkftwhclof .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bkftwhclof .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bkftwhclof .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bkftwhclof .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bkftwhclof .gt_left {
+  text-align: left;
+}
+
+#bkftwhclof .gt_center {
+  text-align: center;
+}
+
+#bkftwhclof .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#bkftwhclof .gt_font_normal {
+  font-weight: normal;
+}
+
+#bkftwhclof .gt_font_bold {
+  font-weight: bold;
+}
+
+#bkftwhclof .gt_font_italic {
+  font-style: italic;
+}
+
+#bkftwhclof .gt_super {
+  font-size: 65%;
+}
+
+#bkftwhclof .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#bkftwhclof .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#bkftwhclof .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#bkftwhclof .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#bkftwhclof .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#bkftwhclof .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#bkftwhclof .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#bkftwhclof .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#bkftwhclof div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
 <thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">Funding Type</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Total Expeditions</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Number Successful</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Number with Fatalities</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Success Rate</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Fatality Rate</th>
+<tr class="gt_heading header">
+<th colspan="6" class="gt_heading gt_title gt_font_normal gt_bottom_border">Expedition Outcomes by Funding Type (2020–2024)</th>
+</tr>
+<tr class="gt_col_headings even">
+<th id="FUNDING_SIMPLIFIED" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Funding Type</th>
+<th id="n_expeditions" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Total Expeditions</th>
+<th id="n_success" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Number Successful</th>
+<th id="n_fatalities" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Number with Fatalities</th>
+<th id="pct_success" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Success Rate</th>
+<th id="pct_fatal" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Fatality Rate</th>
 </tr>
 </thead>
-<tbody>
+<tbody class="gt_table_body">
 <tr class="odd">
-<td style="text-align: left;">Commercial</td>
-<td style="text-align: right;">274</td>
-<td style="text-align: right;">212</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: left;">77.4%</td>
-<td style="text-align: left;">2.9%</td>
+<td class="gt_row gt_left" headers="FUNDING_SIMPLIFIED">Commercial</td>
+<td class="gt_row gt_right" headers="n_expeditions">274</td>
+<td class="gt_row gt_right" headers="n_success">212</td>
+<td class="gt_row gt_right" headers="n_fatalities">8</td>
+<td class="gt_row gt_right" headers="pct_success">77.4%</td>
+<td class="gt_row gt_right" headers="pct_fatal">2.9%</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Independent/Other</td>
-<td style="text-align: right;">517</td>
-<td style="text-align: right;">365</td>
-<td style="text-align: right;">27</td>
-<td style="text-align: left;">70.6%</td>
-<td style="text-align: left;">5.2%</td>
+<td class="gt_row gt_left" headers="FUNDING_SIMPLIFIED">Independent</td>
+<td class="gt_row gt_right" headers="n_expeditions">517</td>
+<td class="gt_row gt_right" headers="n_success">365</td>
+<td class="gt_row gt_right" headers="n_fatalities">27</td>
+<td class="gt_row gt_right" headers="pct_success">70.6%</td>
+<td class="gt_row gt_right" headers="pct_fatal">5.2%</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Non-commercial</td>
-<td style="text-align: right;">91</td>
-<td style="text-align: right;">51</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: left;">56.0%</td>
-<td style="text-align: left;">3.3%</td>
+<td class="gt_row gt_left" headers="FUNDING_SIMPLIFIED">Other</td>
+<td class="gt_row gt_right" headers="n_expeditions">91</td>
+<td class="gt_row gt_right" headers="n_success">51</td>
+<td class="gt_row gt_right" headers="n_fatalities">3</td>
+<td class="gt_row gt_right" headers="pct_success">56.0%</td>
+<td class="gt_row gt_right" headers="pct_fatal">3.3%</td>
 </tr>
 </tbody>
 </table>
 
-
 </div>
 </div>
+</div>
+<div style="font-size:0.5em; line-height:1.2;">
+<ul>
+<li><p><strong><code>Commercial expeditions appear safer—but how much safer, really?</code></strong></p>
+<p>Commercial climbs are often assumed to be safer due to professional guides, better logistics, and more resources. The summary table supports this: commercial teams have a slightly higher success rate (77.4% vs.&nbsp;70.6% for independents), but the fatality rate among independent expeditions is nearly double (5.2% vs.&nbsp;2.9%).</p></li>
+<li><p><strong><code>Independent teams are more numerous—but face more risk</code></strong></p>
+<p>Despite their prevalence (over 500 expeditions), independent teams experience lower success and higher fatality rates. This raises important questions about how funding structure influences safety outcomes.</p></li>
+<li><p><strong><code>This motivates a deeper dive into funding and risk</code></strong></p>
+<p>The following analysis breaks expeditions into three groups—Commercial, Independent, and Other—and examines termination reasons, outcomes, team size distributions, and year-over-year trends to explore the relationship between funding and expedition safety.</p></li>
+</ul>
 </div>
 </section>
 <section id="question-2-how-do-expeditions-end" class="slide level2">
@@ -747,7 +1184,7 @@ Trevor Macdonald &amp; Nandakumar Kuthalaraja
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-19-1.png" width="1800"></p>
+<p><img data-src="presentation_files/figure-revealjs/Termination Type-1.png" width="1800"></p>
 </figure>
 </div>
 </div>
@@ -757,111 +1194,119 @@ Trevor Macdonald &amp; Nandakumar Kuthalaraja
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-20-1.png" width="1800"></p>
+<p><img data-src="presentation_files/figure-revealjs/Expedition Outcomes-1.png" width="1800"></p>
 </figure>
 </div>
 </div>
 </div>
-</div></div>
-<div class="columns">
-<div class="column" style="width:25%;">
-
-</div><div class="column" style="&quot;min-height:100px;">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-21-1.png" width="1800"></p>
-</figure>
-</div>
-</div>
-</div>
-</div><div class="column" style="width:25%;">
-<!-- blank right spacer -->
 </div></div>
 </section>
-<section id="question-2-expediations-end-analysis" class="slide level2">
-<h2>Question 2 : Expediations End Analysis</h2>
+<section id="question-2-expeditions-end-analysis" class="slide level2">
+<h2>Question 2 : Expeditions End Analysis</h2>
 <div style="font-size:0.6em; line-height:1.2;">
-<p>These figures shows that proportionally, accidents are more common with Non-commercial expeditions.</p>
-<p>While Termination due to bad weather appears uniform across all groups, which is expected.</p>
+<ul>
+<li><p><strong><code>Commercial expeditions are far more likely to end successfully</code></strong></p>
+<p>Over 75% of commercial expeditions ended in success, compared to around 65% for independent teams and closer to 60% for the “Other” group. Independent and other-funded expeditions show higher rates of failure, including both bad weather and medical/logistical setbacks.</p></li>
+<li><p><strong><code>Termination reasons differ subtly by funding structure</code></strong></p>
+<p>Commercial expeditions rarely terminate due to logistical or medical issues. Most reach the summit or are turned back by weather. Independent and other expeditions show a higher share of terminations due to accidents, illness, or exhaustion.</p></li>
+<li><p><strong><code>Deaths occur disproportionately on failed expeditions</code></strong></p>
+<p>In the outcome chart, “Success + Deaths” remains a small slice across all groups. The vast majority of fatal expeditions failed to summit — especially in the independent and other categories — reinforcing that success correlates with safety.</p></li>
+</ul>
 </div>
 </section>
 <section id="question-2-fatality-trend" class="slide level2">
 <h2>Question 2 : Fatality Trend</h2>
 <div class="columns">
-<div class="column" style="width:70%;">
+<div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-22-1.png" width="1800"></p>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-17-1.png" width="1800"></p>
 </figure>
 </div>
 </div>
 </div>
-</div></div>
-<div style="font-size:0.5em; line-height:1.2;">
-<p>It’s one thing to say commercial expeditions are safer but is that always true? I wanted to check whether fatality rates have changed over time, and if so, whether some groups are improving faster than others. This smoothed line chart shows the share of expeditions with fatalities by year and funding type. This is overlap with question 1.</p>
-</div>
-</section>
-<section id="question-2-team-size-vs-fatality" class="slide level2">
-<h2>Question 2 : Team Size vs Fatality</h2>
-<div style="font-size:0.5em; line-height:1.2;">
-<p>Next question: does team size make a difference? You’d think larger teams might be safer due to support and redundancy, but also possibly riskier if they’re less experienced or move slowly. This scatterplot checks whether total team size correlates with success, failure, or fatalities — and whether that varies by funding type.</p>
-</div>
-<div class="columns">
-<div class="column" style="width:70%;">
+</div><div class="column" style="width:50%;">
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-23-1.png" width="1800"></p>
+<p><img data-src="presentation_files/figure-revealjs/Yearly Fatality by Funding Type-1.png" width="1800"></p>
 </figure>
 </div>
 </div>
 </div>
 </div></div>
 </section>
-<section id="question-2-team-size-by-funding" class="slide level2">
-<h2>Question 2 : Team Size by Funding</h2>
-<div class="columns">
-<div class="column" style="width:90%;">
-<div class="cell">
-<div class="cell-output-display">
-<div>
-<figure>
-<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-24-1.png" width="1800"></p>
-</figure>
-</div>
-</div>
-</div>
-</div></div>
-</section>
-<section id="question-2-team-size-by-funding-as-proxy-for-safety-resources-analysis" class="slide level2">
-<h2>Question 2 : Team Size by Funding As Proxy for Safety Resources Analysis</h2>
-<div style="font-size:0.4em; line-height:1.2;">
-<p>Large commercial teams often come with more resources: guides, oxygen, fixed ropes, medical support. That could partly explain why they have&nbsp;<strong>lower fatality rates</strong>.</p>
-<p>Meanwhile, small non-commercial teams might:</p>
+<section id="question-2-fatality-trend-analysis" class="slide level2">
+<h2>Question 2 : Fatality Trend Analysis</h2>
+<div style="font-size:0.6em; line-height:1.2;">
 <ul>
-<li><p>Take harder routes (fewer sherpa or porters)</p></li>
-<li><p>Push limits with less redundancy</p></li>
-<li><p>Face more exposure if things go wrong</p></li>
+<li><p><strong><code>Independent expeditions consistently show the highest fatality risk</code></strong><br>
+From 2021 to 2024, independent teams reported the highest fatality rate every year—rising steadily from ~4% to over 8%. This trend held across both plots, suggesting the risk isn’t a fluke of sample size.</p></li>
+<li><p><strong><code>Commercial expeditions maintain lower risk—and fewer deaths overall</code></strong><br>
+The line plots show commercial expeditions peaking in 2023 with just ~3 fatalities, while independent teams saw nearly 9 in the same year—more than double any other group. Their fatality rate remained under 5% throughout the entire period.</p></li>
+<li><p><strong><code>“Other”-funded expeditions are low but volatile</code></strong><br>
+The “Other” group stayed below 2 deaths annually, but their fatality rate fluctuated wildly—peaking above 8% in 2023, then dropping back to zero by 2024. This variability likely reflects small sample sizes and inconsistent structure.</p></li>
+<li><p><strong><code>Taken together, funding appears to shape safety outcomes</code></strong><br>
+Independent expeditions show consistently worse outcomes in both rates and counts. The data suggests commercial expeditions may offer better safety due to greater resources, experienced guides, and more structured decision-making.</p></li>
 </ul>
-<p>So while team size alone doesn’t determine safety, it’s a&nbsp;<strong>proxy</strong>&nbsp;for resourcing — and resourcing links back to safety.</p>
+</div>
+</section>
+<section id="question-2-team-size-a-proxy-for-safety" class="slide level2">
+<h2>Question 2 : Team Size a Proxy for Safety</h2>
+<div style="font-size:0.5em; line-height:1.2;">
+<p>Next question: does team size make a difference? You’d think larger teams might be safer due to support and redundancy, but also possibly riskier if they’re less experienced or move slowly. This scatter plot checks whether total team size correlates with success, failure, or fatalities and whether that varies by funding type.</p>
+</div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-18-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="presentation_files/figure-revealjs/unnamed-chunk-19-1.png" width="1800"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="question-2-team-size-as-proxy-for-safety-analysis" class="slide level2">
+<h2>Question 2 : Team Size as Proxy for Safety Analysis</h2>
+<div style="font-size:0.6em; line-height:1.2;">
+<ul>
+<li><p><strong><code>Commercial expeditions tend to operate with smaller teams</code></strong><br>
+The first plot shows most commercial teams cluster under 10 members. These groups are lean—but often well-equipped. Their compact size may reflect efficiency rather than under-resourcing.</p></li>
+<li><p><strong><code>Independent teams are larger—but also riskier</code></strong><br>
+Independent expeditions skew larger, with many teams in the 10–15 range. However, the second plot shows that these mid-sized teams also account for the most fatalities, suggesting a possible safety tradeoff.</p></li>
+<li><p><strong><code>Fatal events concentrate in the middle—not extremes</code></strong><br>
+Fatalities rarely occurred among the smallest or largest teams. For both commercial and independent groups, the 5–15 range saw the most deaths, hinting that “medium” teams may face unique vulnerabilities—perhaps not small enough to retreat quickly, nor large enough for redundancy.</p></li>
+<li><p><strong><code>Team size is a proxy for resources—especially in commercial climbs</code></strong><br>
+Large commercial groups often come with oxygen, Sherpa support, and fixed lines. Smaller independent teams may lack this safety net and push harder routes with more risk exposure.</p></li>
+</ul>
 </div>
 </section>
 <section id="wrap-up" class="slide level2">
 <h2>Wrap Up</h2>
-<ol type="1">
-<li><strong>Seasonality &amp; route normalization</strong> remain the strongest summit predictors.<br>
-</li>
-<li><strong>Resource-intensive strategies</strong> (guided support, oxygen deployment) boost success with only <strong>marginal safety gains</strong> once environment is controlled.<br>
-</li>
-<li><strong>Mid-altitude peaks</strong> present the greatest risk–reward paradox: technically harder but fewer logistics.<br>
-</li>
-<li><strong>Stakeholders</strong> (climbers, agencies, policymakers) can use these insights to optimize team size, funding models, and risk mitigation plans.</li>
-</ol>
+<ul>
+<li><p><strong>Seasonality &amp; route normalization</strong> remain the strongest summit predictors.<br>
+</p></li>
+<li><p><strong>Resource-intensive strategies</strong> (guided support, oxygen deployment) boost success with only <strong>marginal safety gains</strong> once environment is controlled.</p></li>
+<li><p><strong>Mid-altitude peaks</strong> present the greatest risk–reward paradox: technically harder but fewer logistics.<br>
+</p></li>
+<li><p><strong>Stakeholders</strong> (climbers, agencies, policymakers) can use these insights to optimize team size, funding models, and risk mitigation plans.</p></li>
+</ul>
 
 
 </section>
