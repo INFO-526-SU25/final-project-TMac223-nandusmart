@@ -530,14 +530,14 @@ exped2 |>
 ::: {style="font-size:0.6em; line-height:1.2;"}
 **Does an expeditions funding affect safety outcomes?**
 
-This question overlaps somewhat with our earlier analysis of summit success rates, but here the focus shifts to safety. Specifically, are expeditions with different types of funding, commercial versus independent, more or less likely to experience accidents, injuries, illness, or death?
+-   This question overlaps somewhat with our earlier analysis of summit success rates, but here the focus shifts to safety. Specifically, are expeditions with different types of funding, commercial versus independent, more or less likely to experience accidents, injuries, illness, or death?
 
-We’ll reuse some variables from the previous analysis ( `SUCCESS`, `FATALITIES`, `TERMREASON`), but this time we’ll group and compare results by a new derived variable, `FUNDING_TYPE`, which classifies expeditions as either "Commercial", "Independent" or "Other".
+-   We’ll reuse some variables from the previous analysis ( `SUCCESS`, `FATALITIES`, `TERMREASON`), but this time we’ll group and compare results by a new derived variable, `FUNDING_TYPE`, which classifies expeditions as either "Commercial", "Independent" or "Other".
 
-Our analysis will explore basic climbing stats, reasons for expedition termination, distributions of safety related outcomes, and temporal trends stratified by funding type. The goal is to understand whether financial backing plays a role in the safety of Himalayan expeditions.
+-   Our analysis will explore basic climbing stats, reasons for expedition termination, distributions of safety related outcomes, and temporal trends stratified by funding type. The goal is to understand whether financial backing plays a role in the safety of Himalayan expeditions.
 :::
 
-## Question 2 : Setup and data cleaning
+## Question 2 : Setup
 
 -   Get Data from the CSV files
 
@@ -607,6 +607,10 @@ exped_q2 <- exped_q2 |>
   )
 ```
 
+## Question 2 : Data Wrangling
+
+:::: columns
+::: {.column width="90%"}
 -   Data Wrangling - Assigns funding categories from cleaned sponsor prefixes.
 
 ```{r}
@@ -666,26 +670,26 @@ exped_q2 <- exped_q2 |>
 
 #glimpse(exped_q2)
 ```
+:::
+::::
 
-How Sponsors Were Categorized
+::::: columns
+:::: {.column width="90%"}
+::: {style="font-size:0.8em; line-height:1.2;"}
+**How Sponsors Were Categorized**
 
 To determine funding source the data was wrangled and sorted using the SPONSOR" column. This was accomplished by repeatedly editing the sorted list. The sponsor column were nearly all unique, so sorting had to be done by common string factors. The structure to sort the strings was inspired by the example found here:
 
 https://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when
+:::
+::::
+:::::
 
 ## Question 2 : Motivation
-
-<div>
 
 Summary Statistics on Safety
 
 ```{r}
-#| label: safety-summary-table
-#| echo: true
-#| message: false
-#| warning: false
-#| code-fold: true
-#| code-summary: Code
 
 library(gt)
 
@@ -718,7 +722,7 @@ exped_q2 |>
   )
 
 ```
-
+::: {style="font-size:0.5em; line-height:1.2;"}
 -   **`Commercial expeditions appear safer—but how much safer, really?`**
 
     Commercial climbs are often assumed to be safer due to professional guides, better logistics, and more resources. The summary table supports this: commercial teams have a slightly higher success rate (77.4% vs. 70.6% for independents), but the fatality rate among independent expeditions is nearly double (5.2% vs. 2.9%).
@@ -730,8 +734,7 @@ exped_q2 |>
 -   **`This motivates a deeper dive into funding and risk`**
 
     The following analysis breaks expeditions into three groups—Commercial, Independent, and Other—and examines termination reasons, outcomes, team size distributions, and year-over-year trends to explore the relationship between funding and expedition safety.
-
-</div>
+:::
 
 ## Question 2 : How do Expeditions End?
 
@@ -792,7 +795,11 @@ ggplot(exped_q2, aes(x = FUNDING_SIMPLIFIED, fill = OUTCOME_LABEL)) +
 
 ```
 :::
+:::::
 
+## Question 2 : Expeditions End Analysis
+
+::: {style="font-size:0.6em; line-height:1.2;"}
 -   **`Commercial expeditions are far more likely to end successfully`**
 
     Over 75% of commercial expeditions ended in success, compared to around 65% for independent teams and closer to 60% for the "Other" group. Independent and other-funded expeditions show higher rates of failure, including both bad weather and medical/logistical setbacks.
@@ -805,15 +812,12 @@ ggplot(exped_q2, aes(x = FUNDING_SIMPLIFIED, fill = OUTCOME_LABEL)) +
 
     In the outcome chart, “Success + Deaths” remains a small slice across all groups. The vast majority of fatal expeditions failed to summit — especially in the independent and other categories — reinforcing that success correlates with safety.
 
-These figures shows that proportionally, accidents are more common with Non-commercial expeditions. Termination due to bad weather appears uniform across all groups, which is expected.
-
-It appears that deaths are more common in successful expeditions rather than failed.
-:::::
+:::
 
 ## Question 2 : Fatality Trend
 
-:::::::::: columns
-:::: {.column width="70%"}
+::::: columns
+::: {.column width="50%"}
 ```{r}
 
 exped_q2 |> 
@@ -839,7 +843,9 @@ exped_q2 |>
 
 
 ```
+:::
 
+::: {.column width="50%"}
 ```{r}
 #| label: Yearly Fatality by Funding Type
 #| warning: false
@@ -869,11 +875,14 @@ exped_q2 |>
   theme_minimal() 
 
 ```
+:::
+:::::
+## Question 2 : Fatality Trend Analysis
 
-::: {style="font-size:0.5em; line-height:1.2;"}
+::: {style="font-size:0.6em; line-height:1.2;"}
 -   **`Independent expeditions consistently show the highest fatality risk`**\
     From 2021 to 2024, independent teams reported the highest fatality rate every year—rising steadily from \~4% to over 8%. This trend held across both plots, suggesting the risk isn’t a fluke of sample size.
-:::
+
 
 -   **`Commercial expeditions maintain lower risk—and fewer deaths overall`**\
     The line plots show commercial expeditions peaking in 2023 with just \~3 fatalities, while independent teams saw nearly 9 in the same year—more than double any other group. Their fatality rate remained under 5% throughout the entire period.
@@ -883,7 +892,7 @@ exped_q2 |>
 
 -   **`Taken together, funding appears to shape safety outcomes`**\
     Independent expeditions show consistently worse outcomes in both rates and counts. The data suggests commercial expeditions may offer better safety due to greater resources, experienced guides, and more structured decision-making.
-::::
+:::
 
 ## Question 2 : Team Size a Proxy for Safety
 
@@ -892,7 +901,7 @@ Next question: does team size make a difference? You’d think larger teams migh
 :::
 
 :::: columns
-::: {.column width="70%"}
+::: {.column width="50%"}
 ```{r}
 exped_q2 |>
   filter(!is.na(TOTMEMBERS), TOTMEMBERS < 25) |>
@@ -910,12 +919,8 @@ ggplot(aes(x = TOTMEMBERS)) +
 
 ```
 :::
-::::
 
-## Question 2 : Team Size by Funding
-
-:::: columns
-::: {.column width="90%"}
+::: {.column width="50%"}
 ```{r}
 exped_q2 |>
   filter(FATALITIES == TRUE, !is.na(TOTMEMBERS), TOTMEMBERS < 25) |>
@@ -940,8 +945,8 @@ exped_q2 |>
 :::
 ::::
 
-## Question 2 : Team Size as Proxy for Safety
-
+## Question 2 : Team Size as Proxy for Safety Analysis
+::: {style="font-size:0.6em; line-height:1.2;"}
 -   **`Commercial expeditions tend to operate with smaller teams`**\
     The first plot shows most commercial teams cluster under 10 members. These groups are lean—but often well-equipped. Their compact size may reflect efficiency rather than under-resourcing.
 
@@ -953,8 +958,9 @@ exped_q2 |>
 
 -   **`Team size is a proxy for resources—especially in commercial climbs`**\
     Large commercial groups often come with oxygen, Sherpa support, and fixed lines. Smaller independent teams may lack this safety net and push harder routes with more risk exposure.
+:::
 
-    ## Wrap Up
+## Wrap Up
 
 -   **Seasonality & route normalization** remain the strongest summit predictors.\
 
@@ -963,4 +969,4 @@ exped_q2 |>
 -   **Mid-altitude peaks** present the greatest risk–reward paradox: technically harder but fewer logistics.\
 
 -   **Stakeholders** (climbers, agencies, policymakers) can use these insights to optimize team size, funding models, and risk mitigation plans.
-::::::::::
+
