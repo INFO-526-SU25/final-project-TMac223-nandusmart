@@ -42,6 +42,10 @@ knitr::opts_chunk$set(
   )
 ```
 
+## Presentation Video
+
+<https://arizona.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=85be2d25-7854-45bb-8d26-b30f0048692c>
+
 ## Abstract
 
 High-altitude mountaineering offers a natural laboratory for studying how human, environmental, and logistical factors interact to shape risk and achievement. Using tidy versions of the Himalayan Database, this project leverages R (tidyverse, tidy models) and Quarto to build an interactive, reproducible data-visualisation narrative around two guiding questions:
@@ -761,35 +765,17 @@ exped_q2 <- exped_q2 |>
 #glimpse(exped_q2)
 ```
 
-### Motivation & Setup
+## 
 
-#### Does Funding Type Affect Expedition Safety?
+## Question 2 : Motivation
 
-##### Purpose
-
-Commercial expeditions are often seen as safer due to better logistics, guides, and resources.
-
-The following analysis aims to address this assumption by comparing commercial, private, and non-commercial groups.
-
-##### How Sponsors Were Categorized
-
-To determine funding source the data was wrangled and sorted using the "SPONSOR" column. This was accomplished by repeatedly editing the sorted list. The sponsor column were nearly all unique. I found an example here:https://stackoverflow.com/questions/59082243/multiple-patterns-for-string-matching-using-case-when
-
-#### Summary Statistics on Safety
+Summary Statistics on Safety
 
 ```{r}
-#| label: safety-summary-table
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
 
-# Summarize safety metrics by funding type
-library(dplyr)
-library(knitr)
+library(gt)
 
+# Summarize safety metrics and render as HTML table
 exped_q2 |>
   group_by(FUNDING_SIMPLIFIED) |>
   summarise(
@@ -804,76 +790,78 @@ exped_q2 |>
     pct_success = scales::percent(pct_success, accuracy = 0.1),
     pct_fatal = scales::percent(pct_fatal, accuracy = 0.1)
   ) |>
-  kable(
-    caption = "Expedition Outcomes by Funding Type (2020–2024)",
-    col.names = c(
-      "Funding Type",
-      "Total Expeditions",
-      "Number Successful",
-      "Number with Fatalities",
-      "Success Rate",
-      "Fatality Rate"
-    ),
-    format = "html"
+  gt() |>
+  tab_header(
+    title = "Expedition Outcomes by Funding Type (2020–2024)"
+  ) |>
+  cols_label(
+    FUNDING_SIMPLIFIED = "Funding Type",
+    n_expeditions = "Total Expeditions",
+    n_success = "Number Successful",
+    n_fatalities = "Number with Fatalities",
+    pct_success = "Success Rate",
+    pct_fatal = "Fatality Rate"
   )
+
 ```
 
-Let's Start the plotting
+::: {style="font-size:0.5em; line-height:1.2;"}
+-   **`Commercial expeditions appear safer`**
 
-### How do Expeditions End?
+    Commercial climbs are often assumed to be safer due to professional guides, better logistics, and more resources. The summary table supports this: commercial teams have a slightly higher success rate (77.4% vs. 70.6% for independents), but the fatality rate among independent expeditions is nearly double (5.2% vs. 2.9%).
 
-These figures shows that proportionally, accidents are more common with None-commercial expeditions. Termination due to bad weather appears uniform across all groups, which is expected.
+-   **`Independent teams are more numerous, but face more risk`**
+
+    Despite their prevalence (over 500 expeditions), independent teams experience lower success and higher fatality rates. This raises important questions about how funding structure influences safety outcomes.
+
+-   **`This motivates a deeper dive into funding and risk`**
+
+    The following analysis breaks expeditions into three groups Commercial, Independent, and Other and examines termination reasons, outcomes, team size distributions, and year-over-year trends to explore the relationship between funding and expedition safety.
+:::
+
+## Question 2 : How do Expeditions End?
 
 ::::: columns
 ::: {.column width="50%"}
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
+#| label: Termination Type
 #| message: false
 #| warning: false
 
-ggplot(exped_q2, aes(
-  x = FUNDING_SIMPLIFIED,
-  fill = TERMINATION_TYPE
-)) +
-  geom_bar(position = "fill") + 
-  scale_fill_brewer(
-  palette = "YlGnBu",
-  direction = 1,
-  name = "Termination reason"
-) +
-  scale_y_continuous(labels = scales::percent_format()) +
+
+# Filter
+exped_q2 |>
+  filter(
+    !is.na(TERMINATION_TYPE),
+    !TERMINATION_TYPE %in% c("Other", "No Attempt/Base Only","Unknown","Successful")
+  ) |>
+  ggplot(aes(
+    x = FUNDING_SIMPLIFIED,
+    fill = TERMINATION_TYPE
+  )) +
+  geom_bar(position = "fill") +  # stacked bar shows proportions
+  scale_fill_brewer(palette = "YlGnBu",direction = 1, name = "Termination reason"
+  ) +
+  scale_y_continuous(labels = scales::percent) +
   labs(
     x = NULL,
-    y = NULL, 
-    fill = "Termination reason",
-    title = "How do expeditions end?",
-    subtitle = "By funding type, Himalayan expeditions 2020–2024",
-    caption = "Source: Himalayan Database via TidyTuesday (2025-01-21)"
+    y = NULL,
+    fill = "Termination reason of attempted summit",
+    title = "Termination Reason by Funding Type",
+    subtitle = "Excludes 'Other' and 'No attempt'",
+    caption = "Source: Himalayan Database (TidyTuesday 2025)"
   ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    axis.text.x = element_text(size = 6),
-    axis.text.y = element_text(size = 6),
-    plot.title = element_text(face = "bold"),
-    plot.subtitle = element_text(margin = margin(b = 6), size = 8),
-    plot.caption = element_text(color = "gray40", size = 6),
-    legend.position = "right",
-    panel.grid.major.x = element_blank()
-  )
+  theme_minimal()
+
 ```
 :::
 
 ::: {.column width="50%"}
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
+#| label: Expedition Outcomes
 #| message: false
 #| warning: false
+
 
 ggplot(exped_q2, aes(x = FUNDING_SIMPLIFIED, fill = OUTCOME_LABEL)) +
   geom_bar(position = "fill") +
@@ -881,211 +869,209 @@ ggplot(exped_q2, aes(x = FUNDING_SIMPLIFIED, fill = OUTCOME_LABEL)) +
   scale_fill_brewer(palette = "YlGnBu", direction = 1) +
   labs(
     title = "Expedition Outcomes by Funding Source",
-    subtitle = "Independent groups have more fatal or failed climbs",
     x = NULL,
-    y = "Proportion of Expeditions",
+    y = NULL,
     fill = "Outcome"
-  )
+  ) + 
+  theme_minimal()
+
 
 ```
 :::
 :::::
 
-:::::: columns
-::: {.column width="25%"}
+## Question 2 : Expeditions End Analysis
+
+::: {style="font-size:0.6em; line-height:1.2;"}
+-   **`Commercial expeditions are far more likely to end successfully`**
+
+    Over 75% of commercial expeditions ended in success, compared to around 65% for independent teams and closer to 60% for the "Other" group. Independent and other-funded expeditions show higher rates of failure, including both bad weather and medical/logistical setbacks.
+
+-   **`Termination reasons differ subtly by funding structure`**
+
+    Commercial expeditions rarely terminate due to logistical or medical issues. Most reach the summit or are turned back by weather. Independent and other expeditions show a higher share of terminations due to accidents, illness, or exhaustion.
+
+-   **`Deaths occur disproportionately on failed expeditions`**
+
+    In the outcome chart, “Success + Deaths” remains a small slice across all groups. The vast majority of fatal expeditions failed to summit, especially in the independent and other categories reinforcing that success correlates with safety.
 :::
 
+## Question 2 : Fatality Trend
 
-::: {.column width="50%" style="\"min-height:100px;"}
-```{r, fig.height=3}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
-
-
-ggplot(exped_q2, aes(x = FUNDING_SIMPLIFIED, fill = OUTCOME_LABEL)) +
-  geom_bar(position = "fill") +
-  scale_fill_brewer(palette = "YlGnBu", direction = 1) +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(
-    x = NULL,
-    y = "Proportion of expeditions",
-    title = "Distribution of Expedition Outcomes by Funding Type",
-    subtitle = "Includes success and death combinations for Himalayan expeditions (2020–2024)",
-    fill = "Outcome",
-    caption = "Source: Himalayan Database via TidyTuesday (2025-01-21)"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    axis.text.x = element_text(size = 10),
-    axis.text.y = element_text(size = 10),
-    legend.position = "right",
-    panel.grid.major.x = element_blank()
-  )
-
-```
-
-:::
-
-::: {.column width="25%"}
-<!-- blank right spacer -->
-:::
-::::::
-
-### Fatality Trend
-
-
+::::: columns
+::: {.column width="50%"}
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
 
 exped_q2 |> 
   group_by(YEAR, FUNDING_SIMPLIFIED) |> 
-  summarise(fatality_rate = mean(FATALITIES, na.rm = TRUE), .groups = "drop") |> 
+  summarise(
+    fatality_rate = mean(FATALITIES, na.rm = TRUE),
+    .groups = "drop"
+  ) |> 
   ggplot(aes(x = YEAR, y = fatality_rate, color = FUNDING_SIMPLIFIED)) +
-  geom_line(size = 1.2) +
-  geom_smooth(method = "loess", se = FALSE, linewidth = 1, linetype = "dashed") +
-  scale_color_brewer(palette = "YlGnBu", direction = 1) +
-  scale_y_continuous(labels = scales::percent_format()) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2.5) +
+  scale_color_brewer(palette = "YlGnBu", direction = -1, name = "Funding Type") +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   labs(
-    title = "Trend in Member Fatalities by Funding Type",
+    title = "Yearly Trend Fatalities by Funding Type",
     subtitle = "Fatality rate = expeditions with ≥1 member or hired death",
     x = "Year",
     y = "Fatality Rate (%)",
-    color = "Funding Type",
     caption = "Source: Himalayan Database via TidyTuesday (2025-01-21)"
   ) +
-  theme_minimal(base_size = 14)
+  theme_minimal() +
+  theme(legend.position = "top")
+
+
 ```
+:::
 
-It’s one thing to say commercial expeditions are safer but is that always true? I wanted to check whether fatality rates have changed over time, and if so, whether some groups are improving faster than others. This smoothed line chart shows the share of expeditions with fatalities by year and funding type. This is overlap with question 1.
-
-### Team Size vs Fatality
-
-Next question: does team size make a difference? You’d think larger teams might be safer due to support and redundancy, but also possibly riskier if they’re less experienced or move slowly. This scatterplot checks whether total team size correlates with success, failure, or fatalities — and whether that varies by funding type.
-
+::: {.column width="50%"}
 ```{r}
-#| label: plot-teamsize-vs-outcome
-#| fig-cap: "Team Size and Expedition Outcome by Funding Type"
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
+#| label: Yearly Fatality by Funding Type
 #| warning: false
 
-ggplot(exped_q2, aes(x = TOTMEMBERS, y = OUTCOME_LABEL, color = FUNDING_SIMPLIFIED)) +
-  geom_jitter(width = 0.3, height = 0.2, alpha = 0.6, size = 2) +
-  scale_color_brewer(palette = "YlGnBu", direction = 1) +
+
+exped_q2 |>
+  filter(!is.na(FUNDING_SIMPLIFIED), !is.na(YEAR)) |>
+  group_by(YEAR, FUNDING_SIMPLIFIED) |>
+  summarise(
+    total_deaths = sum(FATALITIES, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(x = YEAR, y = total_deaths, color = FUNDING_SIMPLIFIED)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  scale_color_brewer(palette = "YlGnBu", direction = -1, name = "Funding Type") +
   labs(
-    x = "Total team members",
-    y = "Outcome type",
-    title = "Team Size and Expedition Outcome by Funding Type",
-    subtitle = "Each point is one expedition (2020–2024)",
-    color = "Funding Type",
+    x = "Year",
+    y = "Total Member Fatalities",
+    title = "Yearly Fatality by Funding Type",
+    subtitle = "Total deaths per expedition 2020–2024",
     caption = "Source: Himalayan Database via TidyTuesday (2025-01-21)"
   ) +
-  theme_minimal(base_size = 14)
+  theme(
+    legend.position = "top"
+  ) +
+  theme_minimal() 
 
 ```
+:::
+:::::
 
-### Team Size by Funding As Proxy for Safety Resources
+## Question 2 : Fatality Trend Analysis
 
-Large commercial teams often come with more resources: guides, oxygen, fixed ropes, medical support. That could partly explain why they have **lower fatality rates**.
+::: {style="font-size:0.6em; line-height:1.2;"}
+-   **`Independent expeditions consistently show the highest fatality risk`**\
+    From 2021 to 2024, independent teams reported the highest fatality rate every year rising steadily from \~4% to over 8%. This trend held across both plots, suggesting the risk isn’t a factor of sample size.
 
-Meanwhile, small non-commercial teams might:
+-   **`Commercial expeditions maintain lower risk and fewer deaths overall`**\
+    The line plots show commercial expeditions peaking in 2023 with just \~3 fatalities, while independent teams saw nearly 9 in the same year more than double any other group. Their fatality rate remained under 5% throughout the entire period.
 
--   Take harder routes (fewer sherpa or porters)
+-   **`“Other” funded expeditions are low but volatile`**\
+    The “Other” group stayed below 2 deaths annually, but their fatality rate fluctuated wildly peaking above 8% in 2023, then dropping back to zero by 2024. This variability likely reflects small sample sizes and inconsistent structure.
 
--   Push limits with less redundancy
+-   **`Taken together, funding appears to shape safety outcomes`**\
+    Independent expeditions show consistently worse outcomes in both rates and counts. The data suggests commercial expeditions may offer better safety due to greater resources, experienced guides, and more structured decision-making.
+:::
 
--   Face more exposure if things go wrong
+## Question 2 : Team Size a Proxy for Safety
 
-So while team size alone doesn’t determine safety, it’s a **proxy** for resourcing — and resourcing links back to safety.
+::: {style="font-size:0.5em; line-height:1.2;"}
+Next question: does team size make a difference? You’d think larger teams might be safer due to support and redundancy, but also possibly riskier if they’re less experienced or move slowly. This scatter plot checks whether total team size correlates with success, failure, or fatalities and whether that varies by funding type.
+:::
 
+::::: columns
+::: {.column width="50%"}
 ```{r}
-#| code-fold: true
-#| code-summary: "Code"
-#| echo: true
-#| results: hide
-#| message: false
-#| warning: false
+exped_q2 |>
+  filter(!is.na(TOTMEMBERS), TOTMEMBERS < 25) |>
+ggplot(aes(x = TOTMEMBERS)) +
+  geom_histogram(binwidth = 5, fill = "steelblue", color = "white") +
+  facet_wrap(~ FUNDING_SIMPLIFIED) +
+  labs(
+    x = "Team Size (Total Members) Bin Width = 5",
+    y = "Number of Expeditions",
+    title = "Distribution of Team Sizes by Funding Type",
+    #subtitle = "Each panel shows team size distribution for one funding category (2020–2024)",
+    caption = "Source: Himalayan Database via TidyTuesday (2025-01-21)"
+  ) +
+  theme_minimal()
 
-library(ggridges)
+```
+:::
 
-exped_q2 |> 
-  filter(TOTMEMBERS < 50) |>  # Trim extreme outliers for better scaling
-  ggplot(aes(
-    x = TOTMEMBERS,
-    y = FUNDING_SIMPLIFIED,
-    fill = FUNDING_SIMPLIFIED
-  )) +
-  geom_density_ridges(
-    scale = 1.2,
-    rel_min_height = 0.01,
-    alpha = 0.6,
+::: {.column width="50%"}
+```{r}
+exped_q2 |>
+  filter(FATALITIES == TRUE, !is.na(TOTMEMBERS), TOTMEMBERS < 25) |>
+  ggplot(aes(x = TOTMEMBERS)) +
+  geom_histogram(
+    binwidth = 5,
+    boundary = 0,
+    fill = "#2c7fb8",   # consistent with YlGnBu middle-range blue
     color = "white"
   ) +
-  scale_fill_brewer(palette = "YlGnBu", direction = 1) +
+  facet_wrap(~ FUNDING_SIMPLIFIED) +
   labs(
-    x = "Team Size (Total Members)",
-    y = "Funding Type",
-    title = "Distribution of Team Size by Funding Type",
-    subtitle = "Commercial expeditions tend to bring more people",
+    title = "Distribution of Team Sizes for Expeditions with Fatalities",
+    subtitle = "Faceted by Funding Type, 2020–2024 (Team size < 25)",
+    x = "Team Size (Total Members) Bin Width = 5",
+    y = "Number of Fatal Expeditions",
     caption = "Source: Himalayan Database via TidyTuesday (2025-01-21)"
   ) +
-  theme_minimal(base_size = 14) +
-  theme(legend.position = "none")
+  theme_minimal()
 
 ```
+:::
+:::::
+
+## Question 2 : Team Size as Proxy for Safety Analysis
+
+::: {style="font-size:0.6em; line-height:1.2;"}
+-   **`Fatal events concentrate in the middle, not extremes`**\
+    Fatalities rarely occurred among the smallest or largest teams. For both commercial and independent groups, the 5–15 range saw the most deaths, hinting that “medium” teams may face unique vulnerabilities—perhaps not small enough to retreat quickly, nor large enough for redundancy.
+
+-   **`Team size as a proxy for resources in commercial climbs`**\
+    Large commercial groups often come with oxygen, Sherpa support, and fixed lines. Smaller independent teams may lack this safety net and push harder routes with more risk exposure.
+:::
+
 ## Key Findings (Q1 – Summit Success)
 
-- **Team Size**  
-  - Very small teams (1–5) & medium-large (9–20) show the highest success  
-  - Mid-sized groups (3–8) dip, and very large (>20) see slight declines  
+-   **Team Size**
+    -   Very small teams (1–5) & medium-large (9–20) show the highest success\
+    -   Mid-sized groups (3–8) dip, and very large (\>20) see slight declines
+-   **Peak Geography**
+    -   Mid-altitude (\~7100–7300 m) hardest—technical routes, low infrastructure\
+    -   High-traffic 8000 m peaks benefit from camps, fixed ropes and support
+-   **Temporal Trend**
+    -   Pre-COVID (2020): \~72% success\
+    -   COVID slump (2021–22): \~63%\
+    -   Full rebound (2023–24): \~80%
+-   **Commercial vs Non-Commercial**
+    -   Commercial teams recover faster post-COVID & hit \~95% success by 2024\
+    -   Non-commercial plateau near \~64%
 
-- **Peak Geography**  
-  - Mid-altitude (~7100–7300 m) hardest—technical routes, low infrastructure  
-  - High-traffic 8000 m peaks benefit from camps, fixed ropes and support  
-
-- **Temporal Trend**  
-  - Pre-COVID (2020): ~72% success  
-  - COVID slump (2021–22): ~63%  
-  - Full rebound (2023–24): ~80%  
-
-- **Commercial vs Non-Commercial**  
-  - Commercial teams recover faster post-COVID & hit ~95% success by 2024  
-  - Non-commercial plateau near ~64%
-
----
+------------------------------------------------------------------------
 
 ## Key Findings (Q2 – Funding & Safety)
 
-- **Funding Proxy**  
-  - **Commercial** – guided operators & adventure companies  
-  - **Non-commercial** – academic clubs, national programs, military  
-  - **Independent/Other** – private, self-organized, unknown  
+-   **Funding Proxy**
+    -   **Commercial** – guided operators & adventure companies\
+    -   **Non-commercial** – academic clubs, national programs, military\
+    -   **Independent/Other** – private, self-organized, unknown
+-   **Safety Outcomes**
+    -   Commercial expeditions have **slightly lower fatality rates** (\~ 5–8%) vs independent (\~ 10–12%)\
+    -   Accident-related terminations more common in non-commercial & independent groups\
+    -   Weather-driven turn-backs uniform across all funding types
+-   **Fatality Trend**
+    -   All groups show modest declines in fatality rates over 2020–24\
+    -   **Commercial** maintain the lowest trajectory; **Independent** show the steepest decline
 
-- **Safety Outcomes**  
-  - Commercial expeditions have **slightly lower fatality rates** (~ 5–8%) vs independent (~ 10–12%)  
-  - Accident-related terminations more common in non-commercial & independent groups  
-  - Weather-driven turn-backs uniform across all funding types  
-
-- **Fatality Trend**  
-  - All groups show modest declines in fatality rates over 2020–24  
-  - **Commercial** maintain the lowest trajectory; **Independent** show the steepest decline
-  
 ## Wrap Up
 
-1. **Seasonality & route normalization** remain the strongest summit predictors.  
-2. **Resource-intensive strategies** (guided support, oxygen deployment) boost success with only **marginal safety gains** once environment is controlled.  
-3. **Mid-altitude peaks** present the greatest risk–reward paradox: technically harder but fewer logistics.  
-4. **Stakeholders** (climbers, agencies, policymakers) can use these insights to optimize team size, funding models, and risk mitigation plans.
-
+1.  **Seasonality & route normalization** remain the strongest summit predictors.\
+2.  **Resource-intensive strategies** (guided support, oxygen deployment) boost success with only **marginal safety gains** once environment is controlled.\
+3.  **Mid-altitude peaks** present the greatest risk–reward paradox: technically harder but fewer logistics.\
+4.  **Stakeholders** (climbers, agencies, policymakers) can use these insights to optimize team size, funding models, and risk mitigation plans.
